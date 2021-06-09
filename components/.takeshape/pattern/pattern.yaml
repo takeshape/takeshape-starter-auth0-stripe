@@ -1,0 +1,7 @@
+name: Auth0 Starter
+description: 'This project pattern shows how to use TakeShape with auth0 as an authentication provider.'
+icon: lock
+color: '#95bf46'
+categories:
+  - authentication
+  - services

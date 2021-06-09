@@ -1,6 +1,6 @@
-import React from "react";
-import Link from "next/link";
-import { useUser } from "@auth0/nextjs-auth0";
+import React from 'react';
+import Link from 'next/link';
+import { useUser } from '@auth0/nextjs-auth0';
 
 const Header = () => {
   const { user } = useUser();
@@ -20,20 +20,20 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link href="/shows">
-              <a>TV Shows</a>
+            <Link href="/everybody">
+              <a>Everybody</a>
             </Link>
           </li>
           {user ? (
             <>
               <li>
-                <Link href="/profile">
-                  <a>Profile</a>
+                <Link href="/account">
+                  <a>Account</a>
                 </Link>
-              </li>{" "}
+              </li>{' '}
               <li>
-                <a href="/profile-ssr">Profile (SSR)</a>
-              </li>{" "}
+                <a href="/account-ssr">Account (SSR)</a>
+              </li>{' '}
               <li>
                 <a href="/api/auth/logout" data-testid="logout">
                   Logout
