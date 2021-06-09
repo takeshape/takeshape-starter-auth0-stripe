@@ -21,7 +21,7 @@ const Header = () => {
           </li>
           <li>
             <Link href="/everybody">
-              <a>Everybody</a>
+              <a>Everybody (SSR)</a>
             </Link>
           </li>
           {user ? (

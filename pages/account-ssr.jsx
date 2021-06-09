@@ -1,10 +1,13 @@
 import React from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import useApi from '../lib/use-api';
 import Layout from '../components/layout';
+import ProfileForm from '../components/profile-form';
+import useSWR, { mutate } from 'swr';
+import { get } from '../lib/fetcher';
+import { updateProfile } from '../lib/update-profile';
 
 export default function Account({ user }) {
-  const { response, error, isLoading } = useApi('/api/my/profile');
+  const { data, error } = useSWR('/api/my/profile', get);
 
   return (
     <Layout>
@@ -15,12 +18,15 @@ export default function Account({ user }) {
         <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
       </div>
 
-      {isLoading && <p>Loading TakeShape profile...</p>}
+      {!data && <p>Loading TakeShape profile...</p>}
 
-      {response && (
+      {data && (
         <div>
           <h4>TakeShape Profile</h4>
-          <pre>{JSON.stringify(response.profile, null, 2)}</pre>
+          <pre>{JSON.stringify(data.profile, null, 2)}</pre>
+
+          <h4>TakeShape Profile</h4>
+          <ProfileForm profile={data.profile} updateProfile={updateProfile} />
         </div>
       )}
 

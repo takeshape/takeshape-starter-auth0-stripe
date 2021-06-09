@@ -1,7 +1,6 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { GraphQLClient, gql } from 'graphql-request';
-
-const client = new GraphQLClient(process.env.TAKESHAPE_API);
+import { gql } from 'graphql-request';
+import graphqlClient from '../../../lib/graphql-client';
 
 const getMyProfileQuery = gql`
   query GetMyProfile {
@@ -33,14 +32,14 @@ export default withApiAuthRequired(async function profile(req, res) {
       scopes: ['takeshape:auth0']
     });
 
-    client.setHeader('authorization', `Bearer ${accessToken}`);
+    graphqlClient.setHeader('Authorization', `Bearer ${accessToken}`);
 
     let data;
 
     if (req.method === 'POST') {
-      data = await client.request(upsertMyProfileQuery, req.body);
+      data = await graphqlClient(upsertMyProfileQuery, req.body);
     } else {
-      data = await client.request(getMyProfileQuery);
+      data = await graphqlClient(getMyProfileQuery);
     }
 
     res.status(200).json(data);

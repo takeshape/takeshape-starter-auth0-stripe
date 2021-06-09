@@ -1,26 +1,24 @@
-import React, { useEffect } from 'react';
-import useApi from '../lib/use-api';
+import React from 'react';
 import Layout from '../components/layout';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import useSWR from 'swr';
+import { get } from '../lib/fetcher';
 
-export default withPageAuthRequired(function Everybody() {
-  const { response, error, isLoading, fetchData } = useApi();
+const baseUrl = process.env.AUTH0_BASE_URL;
 
-  useEffect(() => {
-    fetchData('/api/everybody');
-  }, []);
+export default function Everybody({ data: initialData }) {
+  const { data, error } = useSWR('/api/everybody', get, { initialData });
 
   return (
     <Layout>
-      <h1>All TakeShape Profiles</h1>
+      <h1>All TakeShape Profiles (SSR)</h1>
 
-      {isLoading && <p>Loading TakeShape profiles...</p>}
+      {!data && <p>Loading TakeShape profiles...</p>}
 
-      {response && (
+      {data && (
         <ul>
-          {response.profileList.items.map((profile) => {
+          {data.profileList.items.map((profile) => {
             return (
-              <li>
+              <li key={profile._id}>
                 <strong>
                   {profile.firstName} {profile.lastName}
                 </strong>
@@ -39,4 +37,9 @@ export default withPageAuthRequired(function Everybody() {
       )}
     </Layout>
   );
-});
+}
+
+export async function getServerSideProps() {
+  const data = await get(`${baseUrl}/api/everybody`);
+  return { props: { data } };
+}

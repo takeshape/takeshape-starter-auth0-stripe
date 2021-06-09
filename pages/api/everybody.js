@@ -1,13 +1,13 @@
-import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
+import graphqlClient from '../../../lib/graphql-client';
 
 const apiKey = process.env.TAKESHAPE_API_KEY;
-const client = new GraphQLClient(process.env.TAKESHAPE_API);
 
 const getProfileListQuery = gql`
   query getProfileListQuery {
     profileList: getProfileList {
       items {
+        _id
         firstName
         lastName
         bio
@@ -16,12 +16,10 @@ const getProfileListQuery = gql`
   }
 `;
 
-export default withApiAuthRequired(async function everybody(req, res) {
+async function everybody(req, res) {
   try {
-    client.setHeader('authorization', `Bearer ${apiKey}`);
-
-    const data = await client.request(getProfileListQuery);
-
+    graphqlClient.setHeader('Authorization', `Bearer ${apiKey}`);
+    const data = await graphqlClient.request(getProfileListQuery);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -30,4 +28,6 @@ export default withApiAuthRequired(async function everybody(req, res) {
       error: error.message
     });
   }
-});
+}
+
+export default everybody;

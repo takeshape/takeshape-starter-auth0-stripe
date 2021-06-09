@@ -1,65 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useForm } from 'react-hook-form';
-import useApi from '../lib/use-api';
+import useSWR, { mutate } from 'swr';
 import Layout from '../components/layout';
-
-function ProfileForm({ profile, updateProfile }) {
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      bio: profile.bio || ''
-    }
-  });
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit(updateProfile)}>
-        <div>
-          <label htmlFor="firstName">First Name</label>
-          <input {...register('firstName')} />
-        </div>
-        <div>
-          <label htmlFor="lastName">Last Name</label>
-          <input {...register('lastName')} />
-        </div>
-        <div>
-          <label htmlFor="bio">Bio</label>
-          <textarea {...register('bio')} rows="4" cols="50"></textarea>
-        </div>
-        <button type="submit">Update</button>
-      </form>
-
-      <style jsx>{`
-        form {
-          width: 100%;
-        }
-        input,
-        textarea {
-          width: 20rem;
-          font-size: 1rem;
-          margin-bottom: 1.2rem;
-        }
-        label {
-          display: block;
-        }
-      `}</style>
-    </div>
-  );
-}
+import ProfileForm from '../components/profile-form';
+import { get, post } from '../lib/fetcher';
+import { updateProfile } from '../lib/update-profile';
 
 export default withPageAuthRequired(function Account() {
   const { user } = useUser();
-  const { response, error, isLoading, fetchData } = useApi();
-
-  useEffect(() => {
-    fetchData('/api/my/profile');
-  }, []);
-
-  const updateProfile = (data) => {
-    fetchData('/api/my/profile', { method: 'POST', body: JSON.stringify(data) });
-  };
+  const { data, error } = useSWR('/api/my/profile', get);
 
   return (
     <Layout>
@@ -70,15 +19,15 @@ export default withPageAuthRequired(function Account() {
         <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
       </div>
 
-      {isLoading && <p>Loading TakeShape profile...</p>}
+      {!data && <p>Loading TakeShape profile...</p>}
 
-      {response && (
+      {data && (
         <div>
           <h4>TakeShape Profile</h4>
-          <pre>{JSON.stringify(response.profile, null, 2)}</pre>
+          <pre>{JSON.stringify(data.profile, null, 2)}</pre>
 
           <h4>Update TakeShape Profile</h4>
-          <ProfileForm profile={response.profile} updateProfile={updateProfile} />
+          <ProfileForm profile={data.profile} updateProfile={updateProfile} />
         </div>
       )}
 
