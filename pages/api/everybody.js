@@ -1,6 +1,6 @@
-import { gql } from 'graphql-request';
-import graphqlClient from '../../../lib/graphql-client';
+import { GraphQLClient, gql } from 'graphql-request';
 
+const client = new GraphQLClient(process.env.TAKESHAPE_API);
 const apiKey = process.env.TAKESHAPE_API_KEY;
 
 const getProfileListQuery = gql`
@@ -11,6 +11,9 @@ const getProfileListQuery = gql`
         firstName
         lastName
         bio
+        avatar {
+          path
+        }
       }
     }
   }
@@ -18,8 +21,8 @@ const getProfileListQuery = gql`
 
 async function everybody(req, res) {
   try {
-    graphqlClient.setHeader('Authorization', `Bearer ${apiKey}`);
-    const data = await graphqlClient.request(getProfileListQuery);
+    client.setHeader('Authorization', `Bearer ${apiKey}`);
+    const data = await client.request(getProfileListQuery);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);

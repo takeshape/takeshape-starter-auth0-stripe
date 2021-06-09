@@ -1,10 +1,9 @@
 import React from 'react';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import Layout from '../components/layout';
 import ProfileForm from '../components/profile-form';
-import { get, post } from '../lib/fetcher';
-import { updateProfile } from '../lib/update-profile';
+import { get } from '../lib/fetcher';
 
 export default withPageAuthRequired(function Account() {
   const { user } = useUser();
@@ -13,6 +12,22 @@ export default withPageAuthRequired(function Account() {
   return (
     <Layout>
       <h1>Account</h1>
+
+      <p>
+        This page will display your Auth0 user token, your profile information fetched from TakeShape's GraphQL API, and
+        a form for making updates to the TakeShape data.
+      </p>
+      <p>
+        You Auth0 claims are stored in an{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#restrict_access_to_cookies">
+          HttpOnly session cookie
+        </a>{' '}
+        for maximum security.
+      </p>
+      <p>
+        Behind the Next.js API proxy, your Auth0 access token will be sent with your request. TakeShape will
+        automatically append information from that token to your GraphQL mutation payload.
+      </p>
 
       <div>
         <h4>Auth0 User Token</h4>
@@ -27,7 +42,7 @@ export default withPageAuthRequired(function Account() {
           <pre>{JSON.stringify(data.profile, null, 2)}</pre>
 
           <h4>Update TakeShape Profile</h4>
-          <ProfileForm profile={data.profile} updateProfile={updateProfile} />
+          <ProfileForm profile={data.profile} />
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { handleAuth, handleCallback } from '@auth0/nextjs-auth0';
-import { gql } from 'graphql-request';
-import graphqlClient from '../../../lib/graphql-client';
+import { GraphQLClient, gql } from 'graphql-request';
 
+const client = new GraphQLClient(process.env.TAKESHAPE_API);
 const upsertMyProfileQuery = gql`
   mutation UpsertMyProfile {
     profile: upsertMyProfile {
@@ -13,8 +13,8 @@ const upsertMyProfileQuery = gql`
 const afterCallback = async (req, res, session) => {
   try {
     const { accessToken } = session;
-    graphqlClient.setHeader('Authorization', `Bearer ${accessToken}`);
-    await graphqlClient.request(upsertMyProfileQuery);
+    client.setHeader('Authorization', `Bearer ${accessToken}`);
+    await client.request(upsertMyProfileQuery);
     return session;
   } catch (error) {
     console.error(error);

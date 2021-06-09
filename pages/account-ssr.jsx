@@ -2,9 +2,8 @@ import React from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Layout from '../components/layout';
 import ProfileForm from '../components/profile-form';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { get } from '../lib/fetcher';
-import { updateProfile } from '../lib/update-profile';
 
 export default function Account({ user }) {
   const { data, error } = useSWR('/api/my/profile', get);
@@ -12,6 +11,15 @@ export default function Account({ user }) {
   return (
     <Layout>
       <h1>Account (Server Rendered)</h1>
+
+      <p>
+        This page will display your Auth0 user token, your profile information fetched from TakeShape's GraphQL API, and
+        a form for making updates to the TakeShape data.
+      </p>
+
+      <p>
+        Similar to <a href="/account">/account</a> but leveraging the Next.js SSR approach.
+      </p>
 
       <div>
         <h4>Auth0 User Token</h4>
@@ -26,7 +34,7 @@ export default function Account({ user }) {
           <pre>{JSON.stringify(data.profile, null, 2)}</pre>
 
           <h4>TakeShape Profile</h4>
-          <ProfileForm profile={data.profile} updateProfile={updateProfile} />
+          <ProfileForm profile={data.profile} />
         </div>
       )}
 

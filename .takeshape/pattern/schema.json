@@ -71,7 +71,8 @@
               "input.email": [["get", { "path": "claims.email" }]],
               "input.firstName": [["get", { "path": "args.firstName" }]],
               "input.lastName": [["get", { "path": "args.lastName" }]],
-              "input.bio": [["get", { "path": "args.bio" }]]
+              "input.bio": [["get", { "path": "args.bio" }]],
+              "input.avatar.id": [["get", { "path": "args.avatarId" }]]
             },
             "name": "takeshape:create",
             "service": "takeshape:local",
@@ -87,7 +88,8 @@
               "input.email": [["get", { "path": "claims.email" }]],
               "input.firstName": [["get", { "path": "args.firstName" }]],
               "input.lastName": [["get", { "path": "args.lastName" }]],
-              "input.bio": [["get", { "path": "args.bio" }]]
+              "input.bio": [["get", { "path": "args.bio" }]],
+              "input.avatar.id": [["get", { "path": "args.avatarId" }]]
             },
             "name": "takeshape:update",
             "service": "takeshape:local",
@@ -167,7 +169,7 @@
           "bio": {
             "type": "string"
           },
-          "email": {
+          "avatarId": {
             "type": "string"
           }
         }

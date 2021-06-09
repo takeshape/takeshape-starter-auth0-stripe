@@ -6,7 +6,7 @@ import Header from './header';
 const Layout = ({ children }) => (
   <>
     <Head>
-      <title>Next.js with Auth0</title>
+      <title>TakeShape Starter for Auth0</title>
     </Head>
 
     <Header />

@@ -56,7 +56,7 @@ const Header = () => {
         header {
           padding: 0.2rem;
           color: #fff;
-          background-color: #333;
+          background-color: #28214a;
         }
         nav {
           max-width: 42rem;
@@ -75,7 +75,7 @@ const Header = () => {
           margin-right: auto;
         }
         a {
-          color: #fff;
+          color: #5edeb3;
           text-decoration: none;
         }
         button {

@@ -8,9 +8,9 @@ export default function Home() {
 
   return (
     <Layout>
-      <h1>Next.js and Auth0 Example</h1>
+      <h1>TakeShape Starter for Auth0</h1>
 
-      {isLoading && <p>Loading login info...</p>}
+      {isLoading && <p>Loading login...</p>}
 
       {error && (
         <>
@@ -21,18 +21,23 @@ export default function Home() {
 
       {user && (
         <>
-          <h4>Rendered user info on the client</h4>
+          <h4>User info from Auth0</h4>
           <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
         </>
       )}
 
       {!isLoading && !error && !user && (
         <>
+          <h4>
+            Before you proceed follow the instructions in the{' '}
+            <a href="https://github.com/takeshape/takeshape-starter-auth0/">readme</a>
+          </h4>
+
           <p>
             To test the login click in <i>Login</i>
           </p>
           <p>
-            Once you have logged in you should be able to click in <i>Protected Page</i> and <i>Logout</i>
+            Once you are logged in you will be able to view protected profile URLs and update your profile in TakeShape.
           </p>
         </>
       )}

@@ -1,27 +1,35 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { gql } from 'graphql-request';
-import graphqlClient from '../../../lib/graphql-client';
+import { GraphQLClient, gql } from 'graphql-request';
 
-const getMyProfileQuery = gql`
-  query GetMyProfile {
-    profile: getMyProfile {
-      id
-      email
-      firstName
-      lastName
-      bio
+const client = new GraphQLClient(process.env.TAKESHAPE_API);
+
+const ProfileFieldsFragment = gql`
+  fragment ProfileFields on Profile {
+    id
+    email
+    firstName
+    lastName
+    bio
+    avatar {
+      path
     }
   }
 `;
 
-const upsertMyProfileQuery = gql`
-  mutation UpsertMyProfile($firstName: String, $lastName: String, $bio: String) {
-    profile: upsertMyProfile(firstName: $firstName, lastName: $lastName, bio: $bio) {
-      id
-      email
-      firstName
-      lastName
-      bio
+const getMyProfileQuery = gql`
+  ${ProfileFieldsFragment}
+  query GetMyProfile {
+    profile: getMyProfile {
+      ...ProfileFields
+    }
+  }
+`;
+
+const upsertMyProfileMutation = gql`
+  ${ProfileFieldsFragment}
+  mutation UpsertMyProfile($firstName: String, $lastName: String, $bio: String, $avatarId: String) {
+    profile: upsertMyProfile(firstName: $firstName, lastName: $lastName, bio: $bio, avatarId: $avatarId) {
+      ...ProfileFields
     }
   }
 `;
@@ -32,14 +40,14 @@ export default withApiAuthRequired(async function profile(req, res) {
       scopes: ['takeshape:auth0']
     });
 
-    graphqlClient.setHeader('Authorization', `Bearer ${accessToken}`);
+    client.setHeader('Authorization', `Bearer ${accessToken}`);
 
     let data;
 
     if (req.method === 'POST') {
-      data = await graphqlClient(upsertMyProfileQuery, req.body);
+      data = await client.request(upsertMyProfileMutation, req.body);
     } else {
-      data = await graphqlClient(getMyProfileQuery);
+      data = await client.request(getMyProfileQuery);
     }
 
     res.status(200).json(data);
