@@ -17,12 +17,6 @@ const upsertMyProfileMutation = gql`
   }
 `;
 
-// export async function getUploadUrls(files: File[]): Promise<UploadFile[]> {
-//   const res = await client.mutate(UPLOAD_ASSETS_MUTATION, { files: files.map(({ name, type }) => ({ name, type })) });
-
-//   return res.uploadAssets.map((upload: Upload, i: number): UploadFile => ({ file: files[i], ...upload }));
-// }
-
 export default withApiAuthRequired(async function profile(req, res) {
   try {
     if (req.method !== 'POST') {

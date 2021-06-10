@@ -30,15 +30,15 @@ export default function Everybody({ data: initialData }) {
 
           {data.length ? (
             <ul>
-              {data.map((profile) => {
+              {data.map(({ _id, avatar, firstName, lastName, bio }) => {
                 return (
-                  <li key={profile._id}>
-                    <div>{profile.avatar && <img src={buildImageUrl(profile.avatar, { h: 100, w: 100 })} />}</div>
+                  <li key={_id}>
+                    <div>{avatar && <img src={buildImageUrl(avatar, { h: 100, w: 100 })} />}</div>
                     <div>
                       <strong>
-                        {profile.firstName} {profile.lastName}
+                        {firstName} {lastName}
                       </strong>
-                      <div>{profile.bio}</div>
+                      <div>{bio}</div>
                     </div>
                   </li>
                 );
