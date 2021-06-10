@@ -58,7 +58,9 @@ and TakeShape to store custom user profile information.
    - Create the API.
    - Got to the `Permissions` tab, add a `takeshape:auth0` scope and description.
 
-8. Clone this repo and set up the project.
+8. Head over to your trusty terminal or tool of choice and clone this repo.
+
+9. Set up the project from the repo you just cloned.
 
    - Create a copy of the file `.env.local-example`, name it `.env.local`
    - Fill in the values as instructed in the `.env.local` file.
