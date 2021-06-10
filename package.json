@@ -27,6 +27,16 @@
     "singleQuote": true,
     "trailingComma": "none",
     "bracketSpacing": true,
-    "jsxBracketSameLine": false
+    "jsxBracketSameLine": false,
+    "overrides": [
+      {
+        "files": [
+          "*.md"
+        ],
+        "options": {
+          "proseWrap": "always"
+        }
+      }
+    ]
   }
 }
