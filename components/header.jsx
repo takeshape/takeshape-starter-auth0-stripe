@@ -43,7 +43,10 @@ const Header = () => {
                   Logout
                 </a>
                 {profile?.avatar?.path && (
-                  <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
+                  <img
+                    class="avatar"
+                    src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })}
+                  />
                 )}
               </li>
             </>
@@ -81,6 +84,9 @@ const Header = () => {
           align-items: center;
           margin-right: 1rem;
           height: 60px;
+        }
+        img {
+          margin: 1rem;
         }
         li:nth-child(3) {
           margin-right: auto;
