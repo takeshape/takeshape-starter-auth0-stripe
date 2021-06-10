@@ -11,10 +11,11 @@ and TakeShape to store custom user profile information.
 
    - Choose Regular Web Application
    - Go to the `Settings` tab
-   - Allowed Callback URLs: http://localhost:3000/api/auth/callback
-   - Allowed Logout URLs: http://localhost:3000/
-   - Allowed Web Origins: http://localhost:3000/
-   - Allowed Origins (CORS): http://localhost:3000/
+   - Copy all the following values to the indicated fields:
+     - Allowed Callback URLs: http://localhost:3000/api/auth/callback
+     - Allowed Logout URLs: http://localhost:3000/
+     - Allowed Web Origins: http://localhost:3000/
+     - Allowed Origins (CORS): http://localhost:3000/
    - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
 
 3. Create a TakeShape project using the pattern in this repo.
