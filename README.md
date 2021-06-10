@@ -35,13 +35,14 @@ and TakeShape to store custom user profile information.
    - Create a new custom role named `auth0` and give it the following permissions:
      - `Admin.Workflow.*`
      - `Admin.WorkFlowStep.*`
-     - `API.Queries.getMyProfile`
-     - `API.Mutations.upsertMyProfile`
-     - `API.Shapes.TSRelationship`
-     - `API.Shapes.Asset`
-     - `API.Shapes.GetMyProfileInput`
-     - `API.Shapes.UpsertMyProfileInput`
-     - `API.Shapes.Profile`
+     - `API.Queries.getMyProfile.*`
+     - `API.Mutations.upsertMyProfile.*`
+     - `API.Shapes.TSRelationship.*`
+     - `API.Shapes.Asset.*`
+     - `API.Shapes.GetMyProfileInput.*`
+     - `API.Shapes.UpsertMyProfileInput.*`
+     - `API.Shapes.Profile.*`
+   - Click `Save`.
 
 6. Set up your TakeShape API Key
 
