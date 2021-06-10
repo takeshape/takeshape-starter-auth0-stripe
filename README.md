@@ -31,7 +31,7 @@ and TakeShape to store custom user profile information.
 
 5. Set up your TakeShape roles.
 
-   - Go to Settings > Roles
+   - Go to `Settings` > `Roles`
    - Create a new custom role named `auth0` and give it the following permissions:
      - `Admin.Workflow.*`
      - `Admin.WorkFlowStep.*`
