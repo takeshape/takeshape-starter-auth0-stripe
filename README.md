@@ -51,7 +51,7 @@ and TakeShape to store custom user profile information.
    - Give it `Read` permissions
    - Copy the key
 
-7. Create an Auth0 API (Applications > APIs).
+7. Now go back to your Auth0 account and create an API (`Applications` > `APIs`).
 
    - Set the `audience` you copied from the TakeShape UI earlier as the `identifier`.
    - Create the API.
