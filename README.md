@@ -1,7 +1,7 @@
 # TakeShape Starter Auth0
 
-The following is a guide to launch a Next.JS projet that uses Auth0 for authentication
-and TakeShape to store custom profile information.
+The following is a guide to launch a Next.JS project that uses Auth0 for authentication
+and TakeShape to store custom user profile information.
 
 ## Instructions
 
