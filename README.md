@@ -63,7 +63,7 @@ and TakeShape to store custom user profile information.
 9. Set up the project from the repo you just cloned.
 
    - Create a copy of the file `.env.local-example`, name it `.env.local`
-   - Fill in the values as instructed in the `.env.local` file.
+   - Fill in the values as instructed in the `.env.local` file. Most of the values will come from your **Auth0 Application**, some you will generate, and some will come from TakeShape.
 
 9. Run `npm install`
 
