@@ -1,5 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request';
 
+const apiUrl = process.env.TAKESHAPE_API_URL;
 const apiKey = process.env.TAKESHAPE_API_KEY;
 
 const ProfileFieldsFragment = gql`
@@ -31,6 +32,13 @@ const getProfileListQuery = gql`
   }
 `;
 
+export async function getProfileList() {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${apiKey}`);
+  const data = await client.request(getProfileListQuery);
+  return data?.profileList?.items;
+}
+
 const getMyProfileQuery = gql`
   ${ProfileFieldsFragment}
   query GetMyProfile {
@@ -39,6 +47,13 @@ const getMyProfileQuery = gql`
     }
   }
 `;
+
+export async function getMyProfile(accessToken) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(getMyProfileQuery);
+  return data?.profile;
+}
 
 const upsertMyProfileMutation = gql`
   ${ProfileFieldsFragment}
@@ -49,23 +64,29 @@ const upsertMyProfileMutation = gql`
   }
 `;
 
-export async function getProfileList() {
-  const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
-  client.setHeader('Authorization', `Bearer ${apiKey}`);
-  const data = await client.request(getProfileListQuery);
-  return data?.profileList?.items;
-}
-
-export async function getMyProfile(accessToken) {
-  const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
-  client.setHeader('Authorization', `Bearer ${accessToken}`);
-  const data = await client.request(getMyProfileQuery);
-  return data?.profile;
-}
-
 export async function upsertMyProfile(accessToken, payload) {
-  const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
+  const client = new GraphQLClient(apiUrl);
   client.setHeader('Authorization', `Bearer ${accessToken}`);
   const data = await client.request(upsertMyProfileMutation, payload);
   return data?.profile;
+}
+
+const uploadAssetsMutation = gql`
+  mutation UploadAssets($files: [TSFile]!) {
+    uploadAssets(files: $files) {
+      uploadUrl
+      asset {
+        _id
+        _version
+        filename
+      }
+    }
+  }
+`;
+
+export async function uploadAssets(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(uploadAssetsMutation, payload);
+  return data?.uploadAssets?.[0];
 }

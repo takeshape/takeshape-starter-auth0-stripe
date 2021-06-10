@@ -28,9 +28,15 @@ export default withPageAuthRequired(function Account() {
         Behind the Next.js API proxy, your Auth0 access token will be sent with your request. TakeShape will
         automatically append information from that token to your GraphQL mutation payload.
       </p>
+      <p>
+        <strong>
+          Try editing your profile and uploading an avatar below. You should see the data update immediately.
+        </strong>
+      </p>
 
       <div>
-        <h4>Auth0 User Token</h4>
+        <h2>Auth0 User Token</h2>
+        <hr />
         <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
       </div>
 
@@ -38,10 +44,12 @@ export default withPageAuthRequired(function Account() {
 
       {data && (
         <div>
+          <h2>TakeShape Profile</h2>
+          <hr />
           {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <pre>No profile created yet.</pre>}
-          <h4>TakeShape Profile</h4>
 
-          <h4>Update TakeShape Profile</h4>
+          <h2>Update TakeShape Profile</h2>
+          <hr />
           <ProfileForm profile={data} />
         </div>
       )}

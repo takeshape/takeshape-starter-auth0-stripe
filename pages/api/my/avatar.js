@@ -1,21 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { GraphQLClient, gql } from 'graphql-request';
-
-const scope = process.env.TAKESHAPE_ROLE_SCOPE;
-const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
-
-const upsertMyProfileMutation = gql`
-  mutation UploadProfileAssets($files: [TSFile]!) {
-    uploadAssets(files: $files) {
-      uploadUrl
-      asset {
-        _id
-        _version
-        filename
-      }
-    }
-  }
-`;
+import { uploadAssets } from '../../../data/takeshape';
 
 export default withApiAuthRequired(async function profile(req, res) {
   try {
@@ -24,14 +8,12 @@ export default withApiAuthRequired(async function profile(req, res) {
     }
 
     const { accessToken } = await getAccessToken(req, res, {
-      scopes: [scope]
+      scopes: [process.env.TAKESHAPE_ROLE_SCOPE]
     });
 
-    client.setHeader('Authorization', `Bearer ${accessToken}`);
+    const assetUpload = await uploadAssets(accessToken, { files: [req.body] });
 
-    const data = await client.request(upsertMyProfileMutation, { files: [req.body] });
-
-    res.status(200).json(data.uploadAssets[0]);
+    res.status(200).json(assetUpload || {});
   } catch (error) {
     console.error(error);
     res.status(error.status || 500).json({

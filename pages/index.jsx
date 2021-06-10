@@ -23,6 +23,10 @@ export default function Home() {
         <div>
           <h2>Congratulations {user.name || user.email}! You've logged in. 🎉</h2>
           <p>
+            When you signed in a TakeShape profile was automatically created for you using identifying details from your
+            Auth0 user token.
+          </p>
+          <p>
             Now head over to the <a href="/account">account</a> page and update your profile.
           </p>
         </div>
@@ -32,7 +36,10 @@ export default function Home() {
         <>
           <h4>
             Before you proceed follow the instructions in the{' '}
-            <a href="https://github.com/takeshape/takeshape-starter-auth0/">README</a>.
+            <a target="_blank" href="https://github.com/takeshape/takeshape-starter-auth0/">
+              README
+            </a>
+            .
           </h4>
 
           <p>

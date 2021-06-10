@@ -28,6 +28,11 @@ const Layout = ({ children }) => (
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
           'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
       }
+      pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
     `}</style>
   </>
 );

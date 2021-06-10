@@ -13,16 +13,12 @@ export default function Account({ user }) {
       <h1>Account (Server Rendered)</h1>
 
       <p>
-        This page will display your Auth0 user token, your profile information fetched from TakeShape's GraphQL API, and
-        a form for making updates to the TakeShape data.
-      </p>
-
-      <p>
         Similar to <a href="/account">/account</a> but leveraging the Next.js SSR approach.
       </p>
 
       <div>
-        <h4>Auth0 User Token</h4>
+        <h2>Auth0 User Token</h2>
+        <hr />
         <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
       </div>
 
@@ -30,10 +26,12 @@ export default function Account({ user }) {
 
       {data && (
         <div>
-          <h4>TakeShape Profile</h4>
+          <h2>TakeShape Profile</h2>
+          <hr />
           {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <pre>No profile created yet.</pre>}
 
-          <h4>TakeShape Profile</h4>
+          <h2>Update TakeShape Profile</h2>
+          <hr />
           <ProfileForm profile={data} />
         </div>
       )}

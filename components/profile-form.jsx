@@ -27,7 +27,9 @@ function ProfileAvatarUploadForm({ profile }) {
     <div>
       <div>{profile?.avatar && <img src={buildImageUrl(profile.avatar, { h: 400, w: 400 })} />}</div>
       <form>
-        <label htmlFor="avatar">Upload Avatar</label>
+        <h3>
+          <label htmlFor="avatar">Upload Avatar</label>
+        </h3>
         <input onChange={updateAvatar} type="file" />
         {progress === null ? null : (
           <div>
@@ -67,6 +69,8 @@ function ProfileForm({ profile }) {
 
         <button type="submit">Update</button>
       </form>
+
+      <hr />
 
       <ProfileAvatarUploadForm profile={profile} />
 

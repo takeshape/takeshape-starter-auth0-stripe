@@ -1,21 +1,9 @@
 import { handleAuth, handleCallback } from '@auth0/nextjs-auth0';
-import { GraphQLClient, gql } from 'graphql-request';
-
-const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
-
-const upsertMyProfileQuery = gql`
-  mutation UpsertMyProfile {
-    profile: upsertMyProfile {
-      _id
-    }
-  }
-`;
+import { upsertMyProfile } from '../../../data/takeshape';
 
 const afterCallback = async (req, res, session) => {
   try {
-    const { accessToken } = session;
-    client.setHeader('Authorization', `Bearer ${accessToken}`);
-    await client.request(upsertMyProfileQuery);
+    await upsertMyProfile(session.accessToken);
     return session;
   } catch (error) {
     console.error(error);
