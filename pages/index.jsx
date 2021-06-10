@@ -20,24 +20,26 @@ export default function Home() {
       )}
 
       {user && (
-        <>
-          <h4>User info from Auth0</h4>
-          <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
-        </>
+        <div>
+          <h2>Congratulations {user.name || user.email}! You've logged in. 🎉</h2>
+          <p>
+            Now head over to the <a href="/account">account</a> page and update your profile.
+          </p>
+        </div>
       )}
 
       {!isLoading && !error && !user && (
         <>
           <h4>
             Before you proceed follow the instructions in the{' '}
-            <a href="https://github.com/takeshape/takeshape-starter-auth0/">readme</a>
+            <a href="https://github.com/takeshape/takeshape-starter-auth0/">README</a>.
           </h4>
 
           <p>
-            To test the login click in <i>Login</i>
+            To test the login click <a href="/api/auth/login">Login</a> here or in the header.
           </p>
           <p>
-            Once you are logged in you will be able to view protected profile URLs and update your profile in TakeShape.
+            Once you are logged in you will be able to view protected account URLs and update your profile in TakeShape.
           </p>
         </>
       )}

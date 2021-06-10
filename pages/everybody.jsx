@@ -3,19 +3,18 @@ import Layout from '../components/layout';
 import useSWR from 'swr';
 import { get } from '../lib/fetcher';
 import { buildImageUrl } from '../lib/images';
+import { getProfileList } from '../data/takeshape';
 
-const baseUrl = process.env.AUTH0_BASE_URL;
-
-export default function Everybody({ data: initialData }) {
+export default function everybodyPage({ data: initialData }) {
   const { data, error } = useSWR('/api/everybody', get, { initialData });
 
   return (
     <Layout>
-      <h1>All TakeShape Profiles (SSR)</h1>
+      <h1>All TakeShape Profiles (Static Page)</h1>
 
       <p>
         This page will display a list of information from all the profiles in your TakeShape project. It is a public
-        path, and will be rendered on the server.
+        path, and will be rendered statically.
       </p>
       <p>
         It utilizes the Next.js API proxy to include a TakeShape API key with your request. TakeShape API keys can be
@@ -60,7 +59,7 @@ export default function Everybody({ data: initialData }) {
   );
 }
 
-export async function getServerSideProps() {
-  const data = await get(`${baseUrl}/api/everybody`);
-  return { props: { data } };
+export async function getStaticProps() {
+  const data = await getProfileList();
+  return { props: { data: data || [] } };
 }

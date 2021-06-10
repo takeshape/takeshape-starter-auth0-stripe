@@ -1,29 +1,9 @@
-import { GraphQLClient, gql } from 'graphql-request';
+import { getProfileList } from '../../data/takeshape';
 
-const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
-const apiKey = process.env.TAKESHAPE_API_KEY;
-
-const getProfileListQuery = gql`
-  query getProfileListQuery {
-    profileList: getProfileList {
-      items {
-        _id
-        firstName
-        lastName
-        bio
-        avatar {
-          path
-        }
-      }
-    }
-  }
-`;
-
-async function everybody(req, res) {
+export default async function everybodyHandler(req, res) {
   try {
-    client.setHeader('Authorization', `Bearer ${apiKey}`);
-    const data = await client.request(getProfileListQuery);
-    res.status(200).json(data?.profileList?.items || []);
+    const profileList = await getProfileList();
+    res.status(200).json(profileList || []);
   } catch (error) {
     console.error(error);
     res.status(error.status || 500).json({
@@ -32,5 +12,3 @@ async function everybody(req, res) {
     });
   }
 }
-
-export default everybody;
