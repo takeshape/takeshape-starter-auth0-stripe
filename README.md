@@ -53,9 +53,10 @@ and TakeShape to store custom user profile information.
 
 7. Now go back to your Auth0 account and create an API (`Applications` > `APIs`).
 
-   - Set the `audience` you copied from the TakeShape UI earlier as the `identifier`.
+   - Set the `identifier` to the `audience` you encountered earlier on the TakeShape Auth0 Service page.
+   - Leave the signing algorithm as `RS256`.
    - Create the API.
-   - Got to the `Permissions` tab, add a `takeshape:auth0` scope.
+   - Got to the `Permissions` tab, add a `takeshape:auth0` scope and description.
 
 8. Clone this repo and set up the project.
 
