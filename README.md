@@ -10,6 +10,7 @@ and TakeShape to store custom user profile information.
 2. Create an Auth0 application (Applications > Applications).
 
    - Choose Regular Web Application
+   - Go to the `Settings` tab
    - Allowed Callback URLs: http://localhost:3000/api/auth/callback
    - Allowed Logout URLs: http://localhost:3000/
    - Allowed Web Origins: http://localhost:3000/
