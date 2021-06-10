@@ -40,11 +40,11 @@ const Header = () => {
               </li>{' '}
               <li>
                 <a href="/api/auth/logout" data-testid="logout">
-                  {profile?.avatar?.path && (
-                    <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
-                  )}{' '}
                   Logout
                 </a>
+                {profile?.avatar?.path && (
+                  <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
+                )}
               </li>
             </>
           ) : (
@@ -67,7 +67,7 @@ const Header = () => {
         }
         nav {
           max-width: 42rem;
-          margin: 1.5rem auto;
+          margin: 0.5rem auto;
         }
         ul {
           display: flex;
@@ -76,7 +76,11 @@ const Header = () => {
           padding-left: 0;
         }
         li {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
           margin-right: 1rem;
+          height: 60px;
         }
         li:nth-child(3) {
           margin-right: auto;
