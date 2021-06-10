@@ -1,11 +1,12 @@
 import React from 'react';
+import Link from 'next/link';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Layout from '../components/layout';
 import ProfileForm from '../components/profile-form';
 import useSWR from 'swr';
 import { get } from '../lib/fetcher';
 
-export default function Account({ user }) {
+export default function AccountPageSSR({ user }) {
   const { data, error } = useSWR('/api/my/profile', get);
 
   return (
@@ -13,7 +14,7 @@ export default function Account({ user }) {
       <h1>Account (Server Rendered)</h1>
 
       <p>
-        Similar to <a href="/account">/account</a> but leveraging the Next.js SSR approach.
+        Similar to <Link href="/account">/account</Link> but leveraging the Next.js SSR approach.
       </p>
 
       <div>

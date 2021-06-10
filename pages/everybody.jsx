@@ -5,7 +5,7 @@ import { get } from '../lib/fetcher';
 import { buildImageUrl } from '../lib/images';
 import { getProfileList } from '../data/takeshape';
 
-export default function everybodyPage({ data: initialData }) {
+export default function EverybodyPage({ data: initialData }) {
   const { data, error } = useSWR('/api/everybody', get, { initialData });
 
   return (

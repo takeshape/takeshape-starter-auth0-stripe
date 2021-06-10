@@ -1,9 +1,10 @@
 import React from 'react';
+import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 
 import Layout from '../components/layout';
 
-export default function Home() {
+export default function HomePage() {
   const { user, error, isLoading } = useUser();
 
   return (
@@ -27,7 +28,7 @@ export default function Home() {
             Auth0 user token.
           </p>
           <p>
-            Now head over to the <a href="/account">account</a> page and update your profile.
+            Now head over to the <Link href="/account">account</Link> page and update your profile.
           </p>
         </div>
       )}

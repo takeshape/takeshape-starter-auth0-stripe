@@ -5,7 +5,7 @@ import Layout from '../components/layout';
 import ProfileForm from '../components/profile-form';
 import { get } from '../lib/fetcher';
 
-export default withPageAuthRequired(function Account() {
+export default withPageAuthRequired(function AccountPage() {
   const { user } = useUser();
   const { data, error } = useSWR('/api/my/profile', get);
 

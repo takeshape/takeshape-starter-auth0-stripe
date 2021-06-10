@@ -1,7 +1,7 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
 import { uploadAssets } from '../../../data/takeshape';
 
-export default withApiAuthRequired(async function profile(req, res) {
+export default withApiAuthRequired(async function avatarHandler(req, res) {
   try {
     if (req.method !== 'POST') {
       throw new Error('Invalid request');
