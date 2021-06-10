@@ -1,7 +1,7 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
 import { GraphQLClient, gql } from 'graphql-request';
 
-const client = new GraphQLClient(process.env.TAKESHAPE_API);
+const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
 
 const upsertMyProfileMutation = gql`
   mutation UploadProfileAssets($files: [TSFile]!) {

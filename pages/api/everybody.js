@@ -1,6 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request';
 
-const client = new GraphQLClient(process.env.TAKESHAPE_API);
+const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
 const apiKey = process.env.TAKESHAPE_API_KEY;
 
 const getProfileListQuery = gql`
