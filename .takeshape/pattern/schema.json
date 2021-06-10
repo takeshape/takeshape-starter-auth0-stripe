@@ -218,6 +218,13 @@
             "description": "",
             "title": "Bio",
             "@mapping": "takeshape:local:Profile.2nWp5by8j"
+          },
+          "avatar": {
+            "description": "",
+            "$ref": "#/shapes/TSRelationship/schema",
+            "@relationship": { "shapeIds": ["ASSET"] },
+            "title": "Avatar",
+            "@mapping": "takeshape:local:Profile.k0Ha4O7oV"
           }
         }
       }
@@ -232,9 +239,10 @@
           "firstName": { "widget": "singleLineText" },
           "lastName": { "widget": "singleLineText" },
           "email": { "widget": "singleLineText" },
-          "bio": { "widget": "paragraphText" }
+          "bio": { "widget": "paragraphText" },
+          "avatar": { "widget": "image" }
         },
-        "order": ["id", "firstName", "lastName", "email", "bio"]
+        "order": ["id", "firstName", "lastName", "email", "bio", "avatar"]
       }
     }
   }
