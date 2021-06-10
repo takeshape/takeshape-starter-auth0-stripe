@@ -1,6 +1,7 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
 import { GraphQLClient, gql } from 'graphql-request';
 
+const scope = process.env.TAKESHAPE_ROLE_SCOPE;
 const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
 
 const upsertMyProfileMutation = gql`
@@ -29,7 +30,7 @@ export default withApiAuthRequired(async function profile(req, res) {
     }
 
     const { accessToken } = await getAccessToken(req, res, {
-      scopes: ['takeshape:auth0']
+      scopes: [scope]
     });
 
     client.setHeader('Authorization', `Bearer ${accessToken}`);

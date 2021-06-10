@@ -2,6 +2,7 @@ import { handleAuth, handleCallback } from '@auth0/nextjs-auth0';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const client = new GraphQLClient(process.env.TAKESHAPE_API_URL);
+
 const upsertMyProfileQuery = gql`
   mutation UpsertMyProfile {
     profile: upsertMyProfile {
