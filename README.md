@@ -49,7 +49,7 @@ and TakeShape to store custom user profile information.
    - Go to API > API Keys
    - Create a new API Key
    - Give it `Read` permissions
-   - Copy the key
+   - Copy the key and save it somewhere. This is the only time you'll see it.
 
 7. Now go back to your Auth0 account and create an API (`Applications` > `APIs`).
 
