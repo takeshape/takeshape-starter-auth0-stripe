@@ -43,9 +43,9 @@ function ProfileAvatarUploadForm({ profile }) {
 function ProfileForm({ profile }) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      bio: profile.bio || ''
+      firstName: profile?.firstName || '',
+      lastName: profile?.lastName || '',
+      bio: profile?.bio || ''
     }
   });
 
