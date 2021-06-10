@@ -12,7 +12,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 2. Create an Auth0 application (Applications > Applications).
 
-   - Choose Regular Web Application
+   - Choose `Regular Web Application`
    - Go to the `Settings` tab
    - Copy all the following values to the indicated fields:
      - Allowed Callback URLs: http://localhost:3000/api/auth/callback
