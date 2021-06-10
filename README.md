@@ -1,7 +1,7 @@
 # TakeShape Starter Auth0
 
-The following is a guide to launch a Next.JS projet that uses Auth0 for authentication
-and TakeShape to store custom profile information.
+The following is a guide to launch a Next.JS project that uses Auth0 for authentication
+and TakeShape to store custom user profile information.
 
 ## Instructions
 
@@ -10,53 +10,61 @@ and TakeShape to store custom profile information.
 2. Create an Auth0 application (Applications > Applications).
 
    - Choose Regular Web Application
-   - Allowed Callback URLs: http://localhost:3000/api/auth/callback
-   - Allowed Logout URLs: http://localhost:3000/
-   - Allowed Web Origins: http://localhost:3000/
-   - Allowed Origins (CORS): http://localhost:3000/
-   - Copy your `domain`
+   - Go to the `Settings` tab
+   - Copy all the following values to the indicated fields:
+     - Allowed Callback URLs: http://localhost:3000/api/auth/callback
+     - Allowed Logout URLs: http://localhost:3000/
+     - Allowed Web Origins: http://localhost:3000/
+     - Allowed Origins (CORS): http://localhost:3000/
+   - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
+   - Save the application.
 
 3. Create a TakeShape project using the pattern in this repo.
 
    - <a href="https://app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/takeshape-starter-auth0/tree/main/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://camo.githubusercontent.com/1b580e3ce353d235bde0f376ca35b0fb26d685f3750a3013ae4b225dd3aaf344/68747470733a2f2f696d616765732e74616b6573686170652e696f2f32636363633832352d373062652d343331632d396261302d3130616233386563643361372f6465762f38653266376264612d306530382d346564652d613534362d3664663539626536613862622f4465706c6f79253230746f25323054616b65536861706525343032782e706e673f6175746f3d666f726d6174253243636f6d7072657373" width="205" height="38" data-canonical-src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" style="max-width:100%;"></a>
 
 4. Create an Auth0 service in your new TakeShape project.
-
-   - Use your Auth0 `domain` from the previous step.
-   - Copy the `audience` from the TakeShape config screen.
+   
+   - Go to `Schema`, then click `Connect Service`.
+   - Use your Auth0 `domain` from the earlier step.
+   - Take note of the `audience` from the TakeShape config screen, you'll need it later.
    - Save the service.
 
 5. Set up your TakeShape roles.
 
-   - Go to Settings > Roles
+   - Go to `Settings` > `Roles`
    - Create a new custom role named `auth0` and give it the following permissions:
      - `Admin.Workflow.*`
      - `Admin.WorkFlowStep.*`
-     - `API.Queries.getMyProfile`
-     - `API.Mutations.upsertMyProfile`
-     - `API.Shapes.TSRelationship`
-     - `API.Shapes.Asset`
-     - `API.Shapes.GetMyProfileInput`
-     - `API.Shapes.UpsertMyProfileInput`
-     - `API.Shapes.Profile`
+     - `API.Queries.getMyProfile.*`
+     - `API.Mutations.upsertMyProfile.*`
+     - `API.Shapes.TSRelationship.*`
+     - `API.Shapes.Asset.*`
+     - `API.Shapes.GetMyProfileInput.*`
+     - `API.Shapes.UpsertMyProfileInput.*`
+     - `API.Shapes.Profile.*`
+   - Click `Save`.
 
 6. Set up your TakeShape API Key
 
    - Go to API > API Keys
    - Create a new API Key
    - Give it `Read` permissions
-   - Copy the key
+   - Copy the key and save it somewhere. This is the only time you'll see it.
 
-7. Create an Auth0 API (Applications > APIs).
+7. Now go back to your Auth0 account and create an API (`Applications` > `APIs`).
 
-   - Set the `audience` you copied from the TakeShape UI earlier as the `identifier`.
+   - Set the `identifier` to the `audience` you encountered earlier on the TakeShape Auth0 Service page.
+   - Leave the signing algorithm as `RS256`.
    - Create the API.
-   - Got to the `Permissions` tab, add a `takeshape:auth0` scope.
+   - Got to the `Permissions` tab, add a `takeshape:auth0` scope and description.
 
-8. Clone this repo and set up the project.
+8. Head over to your trusty terminal or tool of choice and clone this repo.
+
+9. Set up the project from the repo you just cloned.
 
    - Create a copy of the file `.env.local-example`, name it `.env.local`
-   - Fill in the values as instructed in the `.env.local` file.
+   - Fill in the values as instructed in the `.env.local` file. Most of the values will come from your **Auth0 Application**, some you will generate, and some will come from TakeShape.
 
 9. Run `npm install`
 
