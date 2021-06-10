@@ -14,7 +14,7 @@ and TakeShape to store custom user profile information.
    - Allowed Logout URLs: http://localhost:3000/
    - Allowed Web Origins: http://localhost:3000/
    - Allowed Origins (CORS): http://localhost:3000/
-   - Copy your `domain`
+   - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
 
 3. Create a TakeShape project using the pattern in this repo.
 
