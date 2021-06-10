@@ -24,7 +24,7 @@ and TakeShape to store custom user profile information.
    - <a href="https://app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/takeshape-starter-auth0/tree/main/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://camo.githubusercontent.com/1b580e3ce353d235bde0f376ca35b0fb26d685f3750a3013ae4b225dd3aaf344/68747470733a2f2f696d616765732e74616b6573686170652e696f2f32636363633832352d373062652d343331632d396261302d3130616233386563643361372f6465762f38653266376264612d306530382d346564652d613534362d3664663539626536613862622f4465706c6f79253230746f25323054616b65536861706525343032782e706e673f6175746f3d666f726d6174253243636f6d7072657373" width="205" height="38" data-canonical-src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" style="max-width:100%;"></a>
 
 4. Create an Auth0 service in your new TakeShape project.
-   
+
    - Go to `Schema`, then click `Connect Service`.
    - Use your Auth0 `domain` from the earlier step.
    - Take note of the `audience` from the TakeShape config screen, you'll need it later.
@@ -33,7 +33,8 @@ and TakeShape to store custom user profile information.
 5. Set up your TakeShape roles.
 
    - Go to `Settings` > `Roles`
-   - Create a new custom role named `auth0` and give it the following permissions:
+   - Create a new custom role named `auth0`. Roles are case-sensitive, so be sure it is all lowercase.
+   - Give your role the following permissions:
      - `Admin.Workflow.*`
      - `Admin.WorkFlowStep.*`
      - `API.Queries.getMyProfile.*`
@@ -66,11 +67,11 @@ and TakeShape to store custom user profile information.
    - Create a copy of the file `.env.local-example`, name it `.env.local`
    - Fill in the values as instructed in the `.env.local` file. Most of the values will come from your **Auth0 Application**, some you will generate, and some will come from TakeShape.
 
-9. Run `npm install`
+10. Run `npm install`
 
-10. Run `npm run dev` to start the application.
+11. Run `npm run dev` to start the application.
 
-11. Open [http://localhost:3000](http://localhost:3000) with your browser and play around!
+12. Open [http://localhost:3000](http://localhost:3000) with your browser and play around!
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
