@@ -10,7 +10,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 1. Create an Auth0 account.
 
-2. Create an Auth0 application (Applications > Applications).
+2. Create an Auth0 application (`Applications` > `Applications`).
 
    - Choose `Regular Web Application`
    - Go to the `Settings` tab
