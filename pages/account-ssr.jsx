@@ -31,10 +31,10 @@ export default function Account({ user }) {
       {data && (
         <div>
           <h4>TakeShape Profile</h4>
-          <pre>{JSON.stringify(data.profile, null, 2)}</pre>
+          {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <pre>No profile created yet.</pre>}
 
           <h4>TakeShape Profile</h4>
-          <ProfileForm profile={data.profile} />
+          <ProfileForm profile={data} />
         </div>
       )}
 

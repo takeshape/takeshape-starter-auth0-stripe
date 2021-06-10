@@ -27,21 +27,26 @@ export default function Everybody({ data: initialData }) {
       {data && (
         <div>
           <h2>Profiles</h2>
-          <ul>
-            {data.profileList.items.map((profile) => {
-              return (
-                <li key={profile._id}>
-                  <div>{profile.avatar && <img src={buildImageUrl(profile.avatar, { h: 100, w: 100 })} />}</div>
-                  <div>
-                    <strong>
-                      {profile.firstName} {profile.lastName}
-                    </strong>
-                    <div>{profile.bio}</div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+
+          {data.length ? (
+            <ul>
+              {data.map((profile) => {
+                return (
+                  <li key={profile._id}>
+                    <div>{profile.avatar && <img src={buildImageUrl(profile.avatar, { h: 100, w: 100 })} />}</div>
+                    <div>
+                      <strong>
+                        {profile.firstName} {profile.lastName}
+                      </strong>
+                      <div>{profile.bio}</div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <span>No profiles to display!</span>
+          )}
         </div>
       )}
 

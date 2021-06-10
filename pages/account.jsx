@@ -38,11 +38,11 @@ export default withPageAuthRequired(function Account() {
 
       {data && (
         <div>
+          {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <pre>No profile created yet.</pre>}
           <h4>TakeShape Profile</h4>
-          <pre>{JSON.stringify(data.profile, null, 2)}</pre>
 
           <h4>Update TakeShape Profile</h4>
-          <ProfileForm profile={data.profile} />
+          <ProfileForm profile={data} />
         </div>
       )}
 

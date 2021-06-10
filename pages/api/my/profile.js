@@ -51,7 +51,7 @@ export default withApiAuthRequired(async function profile(req, res) {
       data = await client.request(getMyProfileQuery);
     }
 
-    res.status(200).json(data);
+    res.status(200).json(data?.profile || {});
   } catch (error) {
     console.error(error);
     res.status(error.status || 500).json({
