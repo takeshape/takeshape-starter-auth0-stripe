@@ -30,13 +30,13 @@ function ProfileAvatarUploadForm({ profile }) {
         <h3>
           <label htmlFor="avatar">Upload Avatar</label>
         </h3>
-        <input onChange={updateAvatar} type="file" />
         {progress === null ? null : (
           <div>
             <strong>Uploading</strong>
             <span>{progress}%</span>
           </div>
         )}
+        <input onChange={updateAvatar} type="file" />
       </form>
     </div>
   );

@@ -1,9 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
+import useSWR from 'swr';
 import { useUser } from '@auth0/nextjs-auth0';
+import { get } from '../lib/fetcher';
+import { buildImageUrl } from '../lib/images';
 
 const Header = () => {
   const { user } = useUser();
+  const { data: profile } = useSWR('/api/my/profile', get);
 
   return (
     <header>
@@ -36,6 +40,9 @@ const Header = () => {
               </li>{' '}
               <li>
                 <a href="/api/auth/logout" data-testid="logout">
+                  {profile?.avatar?.path && (
+                    <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
+                  )}{' '}
                   Logout
                 </a>
               </li>
