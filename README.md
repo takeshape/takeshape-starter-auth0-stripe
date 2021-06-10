@@ -17,6 +17,7 @@ and TakeShape to store custom user profile information.
      - Allowed Web Origins: http://localhost:3000/
      - Allowed Origins (CORS): http://localhost:3000/
    - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
+   - Save the application.
 
 3. Create a TakeShape project using the pattern in this repo.
 
