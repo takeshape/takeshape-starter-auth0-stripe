@@ -1,0 +1,9 @@
+- name: auth0
+  conditions:
+    "ForAllValues:StringEquals":
+      "claims:provider": "auth0"
+  permissions:
+    Statement:
+      - Resource: ["ts:workflow-step:4a0614fc-9519-4dbe-976a-99622dc4fe37:*"]
+        Effect: "Allow"
+        Action: ["workflow-step:*"]
