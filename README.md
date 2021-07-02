@@ -13,7 +13,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - Choose to create a `Regular Web Application`.
    - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
-   - Go to the `Settings` tab and scroll down to the fill in the following fields:
+   - Go to the `Settings` tab, scroll down, and fill in the following fields:
      - Allowed Callback URLs: http://localhost:3000/api/auth/callback
      - Allowed Logout URLs: http://localhost:3000/
      - Allowed Web Origins: http://localhost:3000/
