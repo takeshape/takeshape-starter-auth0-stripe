@@ -35,7 +35,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - Go to `Settings` > `Roles`
    - Create a new custom role named `auth0`. Roles are case-sensitive, so be sure it is all lowercase.
-   - Check the following permissions:
+   - Use the checkboxes to enable the following permissions:
      - `Admin.Workflow.*`
      - `Admin.WorkFlowStep.*`
      - `API.Queries.getMyProfile.*`
