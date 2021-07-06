@@ -43,10 +43,7 @@ const Header = () => {
                   Logout
                 </a>
                 {profile?.avatar?.path && (
-                  <img
-                    class="avatar"
-                    src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })}
-                  />
+                  <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
                 )}
               </li>
             </>
