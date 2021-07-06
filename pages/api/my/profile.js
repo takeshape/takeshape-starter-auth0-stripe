@@ -3,9 +3,7 @@ import { upsertMyProfile, getMyProfile } from '../../../data/takeshape';
 
 export default withApiAuthRequired(async function profileHandler(req, res) {
   try {
-    const { accessToken } = await getAccessToken(req, res, {
-      scopes: [process.env.TAKESHAPE_ROLE_SCOPE]
-    });
+    const { accessToken } = await getAccessToken(req, res);
 
     let data;
 

@@ -1,6 +1,7 @@
 # TakeShape Starter Auth0
 
-The following is a guide to launch a Next.JS project that uses Auth0 for authentication and TakeShape to store custom user profile information.
+The following is a guide to launch a Next.JS project that uses Auth0 for authentication and TakeShape to store custom
+user profile information.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with
 [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
@@ -31,45 +32,32 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    - Take note of the `audience` from the TakeShape config screen, you'll need it later.
    - Save the service.
 
-5. Set up your TakeShape roles.
-
-   - Go to `Settings` > `Roles`
-   - Create a new custom role named `auth0`. Roles are case-sensitive, so be sure it is all lowercase.
-   - Use the checkboxes to enable the following permissions:
-     - `Admin.Workflow.*`
-     - `Admin.WorkFlowStep.*`
-     - `API.Queries.getMyProfile.*`
-     - `API.Mutations.upsertMyProfile.*`
-     - `API.Shapes.TSRelationship.*`
-     - `API.Shapes.Asset.*`
-     - `API.Shapes.GetMyProfileInput.*`
-     - `API.Shapes.UpsertMyProfileInput.*`
-     - `API.Shapes.Profile.*`
-   - Click `Save`.
-
-6. Set up your TakeShape API Key.
+5. Set up your TakeShape API Key.
 
    - Go to the API tab, then to API Keys.
    - Create a new API Key.
    - Give it `Read` permissions.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
-7. Now go back to your Auth0 account and create an API (it's on the `APIs` page under the `Applications` tab on the left).
+6. Now go back to your Auth0 account and create an API (it's on the `APIs` page under the `Applications` tab on the
+   left).
 
    - Set the `identifier` to the `audience` you encountered earlier on the TakeShape Auth0 Service page.
    - Leave the signing algorithm as `RS256`.
    - Create the API.
-   - Go to the `Permissions` tab and add a `takeshape:auth0` scope.
 
-8. Head over to your trusty terminal or tool of choice.
+7. Head over to your trusty terminal or tool of choice.
+
    - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0.git`.
    - `cd` into the folder that the cloning created.
    - Run `mv .env.local-example .env.local` to rename the environment variables file.
    - Run `npm install`.
 
-9. Follow the instructions in `.env.local`. Some of the data you enter will be from Auth0; some of it will be from TakeShape.
+8. Follow the instructions in `.env.local`. Some of the data you enter will be from Auth0; some of it will be from
+   TakeShape.
 
-10. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser to play around!
+9. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser
+   to play around!
 
 ## Learn More
 

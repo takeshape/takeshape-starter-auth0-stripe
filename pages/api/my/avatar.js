@@ -7,9 +7,7 @@ export default withApiAuthRequired(async function avatarHandler(req, res) {
       throw new Error('Invalid request');
     }
 
-    const { accessToken } = await getAccessToken(req, res, {
-      scopes: [process.env.TAKESHAPE_ROLE_SCOPE]
-    });
+    const { accessToken } = await getAccessToken(req, res);
 
     const assetUpload = await uploadAssets(accessToken, { files: [req.body] });
 

@@ -18,8 +18,7 @@
           "where.id.eq": [["get", { "path": "claims.sub" }]]
         }
       },
-      "description": "Get my Profile",
-      "args": "GetMyProfileInput"
+      "description": "Get my Profile"
     },
     "getProfile": {
       "shape": "Profile",
@@ -144,15 +143,6 @@
     }
   },
   "shapes": {
-    "GetMyProfileInput": {
-      "id": "GetMyProfileInput",
-      "name": "GetMyProfileInput",
-      "title": "GetMyProfileInput",
-      "schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
     "UpsertMyProfileInput": {
       "id": "UpsertMyProfileInput",
       "name": "UpsertMyProfileInput",
