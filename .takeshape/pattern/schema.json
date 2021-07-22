@@ -1,12 +1,13 @@
 {
+  "dataKey": "",
   "apiVersion": "2",
   "projectId": "05dac105-60f5-4b2f-baa9-040ac0f6400e",
-  "version": 4,
+  "version": 1,
   "created": "2021-06-08T13:12:26.923Z",
   "updated": "2021-06-08T13:28:23.093Z",
   "defaultLocale": "en-us",
   "locales": ["en-us"],
-  "schemaVersion": "3.2.0",
+  "schemaVersion": "3.3.0",
   "queries": {
     "getMyProfile": {
       "shape": "Profile",
