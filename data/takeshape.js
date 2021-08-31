@@ -13,11 +13,16 @@ const ProfileFieldsFragment = gql`
     avatar {
       path
     }
+    stripeCustomer {
+      description
+      name
+      id
+    }
   }
 `;
 
 const getProfileListQuery = gql`
-  query getProfileListQuery {
+  query GetProfileListQuery {
     profileList: getProfileList {
       items {
         _id
@@ -89,4 +94,143 @@ export async function uploadAssets(accessToken, payload) {
   client.setHeader('Authorization', `Bearer ${accessToken}`);
   const data = await client.request(uploadAssetsMutation, payload);
   return data?.uploadAssets?.[0];
+}
+
+const getMyCustomerQuery = gql`
+  query GetMyCustomer {
+    profile: getMyProfile {
+      stripeCustomer {
+        id
+        name
+        description
+      }
+    }
+  }
+`;
+
+export async function getMyCustomer(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(getMyCustomerQuery, payload);
+  return data?.profile?.stripeCustomer;
+}
+
+const upsertMyCustomerQuery = gql`
+  mutation UpsertMyCustomer($name: String, $description: String) {
+    customer: upsertMyCustomer(name: $name, description: $description) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+export async function upsertMyCustomer(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(upsertMyCustomerQuery, payload);
+  return data?.customer;
+}
+
+const getMySubscriptionsQuery = gql`
+  query GetMySubscriptionsQuery {
+    subscriptions: getMySubscriptions {
+      id
+      latest_invoice {
+        ... on WrappedString {
+          value
+        }
+      }
+      items {
+        data {
+          id
+          price {
+            currency
+            unit_amount
+            product {
+              id
+              name
+              description
+            }
+            recurring {
+              interval
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export async function getMySubscriptions(accessToken) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(getMySubscriptionsQuery);
+  return data?.subscriptions;
+}
+
+const createMySubscriptionQuery = gql`
+  mutation CreateMySubscription($price: String!) {
+    subscription: createMySubscription(price: $price) {
+      id
+      latest_invoice {
+        ... on Stripe_Invoice {
+          id
+          payment_intent {
+            id
+            ... on Stripe_PaymentIntent {
+              client_secret
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export async function createMySubscription(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(createMySubscriptionQuery, payload);
+  return data?.subscription;
+}
+
+const createMyCheckoutSessionQuery = gql`
+  mutation CreateMyCheckoutSession($lineItems: [Stripe_CheckoutSessionLineItemsPropertyInput!]!) {
+    session: createMyCheckoutSession(lineItems: $lineItems) {
+      id
+    }
+  }
+`;
+
+export async function createMyCheckoutSession(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(createMyCheckoutSessionQuery, payload);
+  return data?.session;
+}
+
+const getStripeProductQuery = gql`
+  query GetStripeProductsQuery {
+    products: getStripeProducts {
+      id
+      name
+      description
+      prices {
+        id
+        unit_amount
+        currency
+        recurring {
+          interval
+        }
+      }
+    }
+  }
+`;
+
+export async function getStripeProductList() {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${apiKey}`);
+  const data = await client.request(getStripeProductQuery);
+  return data?.products;
 }

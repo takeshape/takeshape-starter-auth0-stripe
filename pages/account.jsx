@@ -7,7 +7,7 @@ import { get } from '../lib/fetcher';
 
 export default withPageAuthRequired(function AccountPage() {
   const { user } = useUser();
-  const { data, error } = useSWR('/api/my/profile', get);
+  const { data: profile, error: profileError } = useSWR('/api/my/profile', get);
 
   return (
     <Layout>
@@ -40,24 +40,24 @@ export default withPageAuthRequired(function AccountPage() {
         <pre data-testid="profile">{JSON.stringify(user, null, 2)}</pre>
       </div>
 
-      {!data && <p>Loading TakeShape profile...</p>}
+      {!profile && <p>Loading TakeShape profile...</p>}
 
-      {data && (
+      {profile && (
         <div>
           <h2>TakeShape Profile</h2>
           <hr />
-          {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <pre>No profile created yet.</pre>}
+          {profile ? <pre>{JSON.stringify(profile, null, 2)}</pre> : <pre>No profile created yet.</pre>}
 
           <h2>Update TakeShape Profile</h2>
           <hr />
-          <ProfileForm profile={data} />
+          <ProfileForm profile={profile} />
         </div>
       )}
 
-      {error && (
+      {profileError && (
         <>
           <p>Error loading TakeShape profile</p>
-          <pre style={{ color: 'red' }}>{JSON.stringify(error, null, 2)}</pre>
+          <pre style={{ color: 'red' }}>{JSON.stringify(profileError, null, 2)}</pre>
         </>
       )}
     </Layout>

@@ -7,6 +7,9 @@ const afterCallback = async (req, res, session) => {
     return session;
   } catch (error) {
     console.error(error);
+    if (error.response && error.response.status === 200) {
+      return session;
+    }
     res.status(error.status || 500).json({
       code: error.code,
       error: error.message

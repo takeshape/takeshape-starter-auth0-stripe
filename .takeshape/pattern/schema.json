@@ -1,13 +1,13 @@
 {
-  "dataKey": "",
   "apiVersion": "2",
-  "projectId": "05dac105-60f5-4b2f-baa9-040ac0f6400e",
-  "version": 1,
+  "dataKey": "AQIDAHi9nATJb1LYgj5u7ShOGp43y2H6TuckRKGDlwTU4b6ryQHpD1ExP5EeUSOHKV9LG+ofAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUCghZNs1AGoyxZ8MAgEQgDuRWxn8sl1YiM0CkUifGRkgeXzEU0/2IDozZfB4uuketCRxaEqcxBzh6l7lrIJAKkPOQGTYQD32doiYog==",
+  "projectId": "79b5254d-5bc3-4034-8b05-e9c2f097de5a",
+  "version": 76,
   "created": "2021-06-08T13:12:26.923Z",
-  "updated": "2021-06-08T13:28:23.093Z",
+  "updated": "2021-08-26T14:57:20.967Z",
   "defaultLocale": "en-us",
   "locales": ["en-us"],
-  "schemaVersion": "3.3.0",
+  "schemaVersion": "3.5.0",
   "queries": {
     "getMyProfile": {
       "shape": "Profile",
@@ -15,11 +15,96 @@
         "name": "takeshape:find",
         "service": "takeshape:local",
         "options": { "model": "Profile" },
-        "argsMapping": {
-          "where.id.eq": [["get", { "path": "claims.sub" }]]
-        }
+        "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] }
       },
       "description": "Get my Profile"
+    },
+    "getMySubscriptions": {
+      "shape": { "type": "array", "items": { "@ref": "stripe:Subscription" } },
+      "resolver": {
+        "resultsMapping": [["get", { "path": "steps.subscriptions.data" }]],
+        "compose": [
+          {
+            "if": "!isEmpty(claims.sub)",
+            "id": "profile",
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "options": { "model": "Profile" },
+            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] }
+          },
+          {
+            "if": "!isEmpty(steps.profile.stripeCustomerId)",
+            "id": "subscriptions",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/subscriptions" },
+            "searchParamsMapping": [
+              ["expand[]", [["set", { "value": "data.items" }]]],
+              ["expand[]", [["set", { "value": "data.plan.product" }]]],
+              ["expand[]", [["set", { "value": "data.latest_invoice.payment_intent" }]]],
+              ["customer", [["get", { "path": "steps.profile.stripeCustomerId" }]]]
+            ]
+          }
+        ]
+      },
+      "description": "Get my subscriptions"
+    },
+    "getSubscriptions": {
+      "shape": { "type": "array", "items": { "@ref": "stripe:Subscription" } },
+      "resolver": {
+        "resultsMapping": [["get", { "path": "steps.subscriptions.data" }]],
+        "compose": [
+          {
+            "id": "subscriptions",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/subscriptions" },
+            "searchParamsMapping": [
+              ["expand[]", [["set", { "value": "data.items" }]]],
+              ["customer", [["get", { "path": "args.customer" }]]]
+            ]
+          }
+        ]
+      },
+      "description": "Get my subscriptions",
+      "args": "GetSubscriptionsInput"
+    },
+    "getStripeProducts": {
+      "shape": { "type": "array", "items": { "@ref": "takeshape:local:StripeProductWithPrices" } },
+      "resolver": {
+        "resultsMapping": [
+          [
+            "expressionEval",
+            {
+              "expression": "map(compose(set('prices', placeholder, newObject()), get(placeholder, groupBy('product', steps.prices.data)), get('id')), steps.products.data)"
+            }
+          ],
+          [
+            "getMultiple",
+            {
+              "paths": ["previousStep", "steps.products.data"]
+            }
+          ],
+          ["zipAndMerge", {}]
+        ],
+        "compose": [
+          {
+            "id": "products",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/products" },
+            "searchParamsMapping": [["active", [["set", { "value": "true" }]]]]
+          },
+          {
+            "id": "prices",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/prices" },
+            "searchParamsMapping": [["active", [["set", { "value": "true" }]]]]
+          }
+        ]
+      },
+      "description": "Get Stripe products"
     },
     "getProfile": {
       "shape": "Profile",
@@ -54,14 +139,10 @@
           {
             "if": "!isEmpty(claims.sub)",
             "id": "existingProfile",
-            "argsMapping": {
-              "where.id.eq": [["get", { "path": "claims.sub" }]]
-            },
+            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": {
-              "model": "Profile"
-            }
+            "options": { "model": "Profile" }
           },
           {
             "if": "isEmpty(steps.existingProfile)",
@@ -76,9 +157,7 @@
             },
             "name": "takeshape:create",
             "service": "takeshape:local",
-            "options": {
-              "model": "Profile"
-            }
+            "options": { "model": "Profile" }
           },
           {
             "if": "!isEmpty(steps.existingProfile)",
@@ -93,14 +172,143 @@
             },
             "name": "takeshape:update",
             "service": "takeshape:local",
-            "options": {
-              "model": "Profile"
-            }
+            "options": { "model": "Profile" }
           }
         ]
       },
       "description": "Upsert My Profile",
       "args": "UpsertMyProfileInput"
+    },
+    "upsertMyCustomer": {
+      "shape": "stripe:Customer",
+      "resolver": {
+        "resultsMapping": [["get", { "path": "steps.updatedCustomer" }]],
+        "compose": [
+          {
+            "if": "!isEmpty(claims.sub)",
+            "id": "existingProfile",
+            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "options": { "model": "Profile" }
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email) && isEmpty(steps.existingProfile.stripeCustomerId)",
+            "id": "existingCustomerByEmail",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/customers" },
+            "searchParamsMapping": [["email", [["get", { "path": "claims.email" }]]]]
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email) && !isEmpty(steps.existingProfile.stripeCustomerId)",
+            "id": "existingCustomerById",
+            "name": "rest:get",
+            "service": "stripe",
+            "options": { "path": "/v1/customers/{customer}" },
+            "argsMapping": {
+              "pathParams.customer": [["get", { "path": "steps.existingProfile.stripeCustomerId" }]]
+            }
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email)",
+            "id": "updatedCustomer",
+            "argsMapping": {
+              "form.email": [["get", { "path": "claims.email" }]],
+              "form.name": [["get", { "path": "args.name" }]],
+              "form.description": [["get", { "path": "args.description" }]],
+              "pathParams.customer": [
+                ["get", { "path": "steps.existingCustomerByEmail.data[0].id" }],
+                ["get", { "path": "steps.existingCustomerById.id" }]
+              ]
+            },
+            "name": "rest:post",
+            "service": "stripe",
+            "options": { "path": "/v1/customers/{customer}" }
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile) && isEmpty(steps.existingProfile.stripeCustomerId)",
+            "id": "updatedProfile",
+            "argsMapping": {
+              "input._id": [["get", { "path": "steps.existingProfile._id" }]],
+              "input.stripeCustomerId": [["get", { "path": "steps.updatedCustomer.id" }]]
+            },
+            "name": "takeshape:update",
+            "service": "takeshape:local",
+            "options": { "model": "Profile" }
+          }
+        ]
+      },
+      "description": "Upsert My Stripe Customer",
+      "args": "UpsertMyCustomerInput"
+    },
+    "createMySubscription": {
+      "shape": "stripe:Subscription",
+      "resolver": {
+        "compose": [
+          {
+            "if": "!isEmpty(claims.sub)",
+            "id": "existingProfile",
+            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "options": { "model": "Profile" }
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile.stripeCustomerId)",
+            "id": "createSubscription",
+            "name": "rest:post",
+            "service": "stripe",
+            "options": { "path": "/v1/subscriptions" },
+            "argsMapping": {
+              "form": [
+                [
+                  "expressionEval",
+                  {
+                    "expression": "([['customer', steps.existingProfile.stripeCustomerId], ['items[0][price]', args.price], ['payment_behavior', 'default_incomplete'], ['expand[]', 'latest_invoice.payment_intent']])"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "description": "Create a Stripe Subscription",
+      "args": "CreateMySubscriptionInput"
+    },
+    "createMyCheckoutSession": {
+      "shape": "stripe:CheckoutSession",
+      "resolver": {
+        "compose": [
+          {
+            "if": "!isEmpty(claims.sub)",
+            "id": "existingProfile",
+            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "options": { "model": "Profile" }
+          },
+          {
+            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile.stripeCustomerId)",
+            "id": "createSubscription",
+            "name": "rest:post",
+            "service": "stripe",
+            "options": { "path": "/v1/checkout/sessions" },
+            "argsMapping": {
+              "form": [
+                [
+                  "expressionEval",
+                  {
+                    "expression": "([['customer', steps.existingProfile.stripeCustomerId], ['line_items[0][price]', args.lineItems[0].price], ['line_items[0][quantity]', args.lineItems[0].quantity], ['payment_method_types[0]', 'card'], ['cancel_url', 'http://localhost:3000/stripe?stripe_session_id={CHECKOUT_SESSION_ID}'], ['success_url', 'http://localhost:3000/stripe?stripe_session_id={CHECKOUT_SESSION_ID}'], ['mode', 'subscription']])"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "description": "Create a Stripe Checkout Session",
+      "args": "CreateMyCheckoutSessionInput"
     },
     "updateProfile": {
       "shape": "UpdateResult<Profile>",
@@ -151,17 +359,109 @@
       "schema": {
         "type": "object",
         "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "bio": {
-            "type": "string"
-          },
-          "avatarId": {
-            "type": "string"
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "bio": { "type": "string" },
+          "avatarId": { "type": "string" }
+        }
+      }
+    },
+    "UpsertMyCustomerInput": {
+      "id": "UpsertMyCustomerInput",
+      "name": "UpsertMyCustomerInput",
+      "title": "UpsertMyCustomerInput",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "CreateMySubscriptionInput": {
+      "id": "CreateMySubscriptionInput",
+      "name": "CreateMySubscriptionInput",
+      "title": "CreateMySubscriptionInput",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "price": { "type": "string" }
+        },
+        "required": ["price"]
+      }
+    },
+    "CreateMyCheckoutSessionInput": {
+      "id": "CreateMyCheckoutSessionInput",
+      "name": "CreateMyCheckoutSessionInput",
+      "title": "CreateMyCheckoutSessionInput",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "price": { "type": "string" },
+                "quantity": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "required": ["lineItems"]
+      }
+    },
+    "GetSubscriptionsInput": {
+      "id": "GetSubscriptionsInput",
+      "name": "GetSubscriptionsInput",
+      "title": "GetSubscriptionsInput",
+      "schema": {
+        "type": "object",
+        "properties": { "customer": { "type": "string" } }
+      }
+    },
+    "StripeProductWithPrices": {
+      "id": "StripeProductWithPrices",
+      "name": "StripeProductWithPrices",
+      "title": "StripeProductWithPrices",
+      "schema": {
+        "allOf": [
+          { "@ref": "stripe:Product" },
+          {
+            "type": "object",
+            "properties": { "prices": { "type": "array", "items": { "@ref": "stripe:Price" } } }
+          }
+        ]
+      }
+    },
+    "Stripe_Price": {
+      "id": "Stripe_Price",
+      "name": "Stripe_Price",
+      "title": "Stripe_Price",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "active": { "type": "boolean" },
+          "billing_scheme": { "type": "string" },
+          "created": { "type": "number" },
+          "livemode": { "type": "boolean" },
+          "currency": { "type": "string" },
+          "type": { "type": "string" },
+          "unit_amount": { "type": "number" },
+          "recurring": { "@ref": "stripe:Recurring" },
+          "product": {
+            "description": "The Stripe product associated with this subscription.",
+            "title": "Stripe Product",
+            "@ref": "stripe:Product",
+            "@resolver": {
+              "name": "rest:get",
+              "service": "stripe",
+              "options": { "path": "/v1/products/{product}" },
+              "argsMapping": {
+                "pathParams.product": [["get", { "path": "source.product" }]]
+              }
+            }
           }
         }
       }
@@ -176,8 +476,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
             "minLength": 0,
+            "type": "string",
             "description": "",
             "title": "ID",
             "@mapping": "takeshape:local:Profile.zCUrxUP8h"
@@ -197,8 +497,8 @@
             "@mapping": "takeshape:local:Profile.02oCExZgT"
           },
           "email": {
-            "type": "string",
             "minLength": 0,
+            "type": "string",
             "description": "",
             "title": "Email",
             "@mapping": "takeshape:local:Profile.H8n0k9-ew"
@@ -216,6 +516,26 @@
             "@relationship": { "shapeIds": ["ASSET"] },
             "title": "Avatar",
             "@mapping": "takeshape:local:Profile.k0Ha4O7oV"
+          },
+          "stripeCustomerId": {
+            "type": "string",
+            "minLength": 0,
+            "description": "",
+            "title": "Stripe Customer ID",
+            "@mapping": "takeshape:local:Profile.Z8JJPxO0B"
+          },
+          "stripeCustomer": {
+            "title": "Stripe Customer",
+            "description": "",
+            "@ref": "stripe:Customer",
+            "@resolver": {
+              "name": "rest:get",
+              "service": "stripe",
+              "options": { "path": "/v1/customers/{customer}" },
+              "argsMapping": {
+                "pathParams.customer": [["get", { "path": "source.stripeCustomerId" }]]
+              }
+            }
           }
         }
       }
@@ -231,9 +551,36 @@
           "lastName": { "widget": "singleLineText" },
           "email": { "widget": "singleLineText" },
           "bio": { "widget": "paragraphText" },
-          "avatar": { "widget": "image" }
+          "avatar": { "widget": "image" },
+          "stripeCustomerId": { "widget": "singleLineText" }
         },
-        "order": ["id", "firstName", "lastName", "email", "bio", "avatar"]
+        "order": ["id", "firstName", "lastName", "email", "bio", "avatar", "stripeCustomerId"]
+      }
+    }
+  },
+  "services": {
+    "auth-0": {
+      "id": "auth-0",
+      "provider": "auth0",
+      "title": "auth0",
+      "serviceType": "authentication",
+      "authenticationType": "none",
+      "options": {
+        "domain": "dev-by9w1mxg.us.auth0.com",
+        "audience": "https://api.takeshape.io/project/79b5254d-5bc3-4034-8b05-e9c2f097de5a/auth-0"
+      }
+    },
+    "stripe": {
+      "id": "stripe",
+      "provider": "stripe",
+      "title": "Stripe",
+      "namespace": "Stripe",
+      "serviceType": "openapi",
+      "authenticationType": "bearer",
+      "authentication": "p9DgOOYDpr8i3/35NMZ7wgci2HQj0uQyQVugZ22+kqWUl1sIusqmpPzJCsrXTN6FxreMcWCn3BFTuHXv9epMjzQROnM8PNvAsih6PUkiuGHeHvoKiXfNyvjrvZwuXMxWuyVPrm/ONuKQclds2cNrBdyzMeLwi9T3iJhY+nWm6tJC5XfLiVMJ+rlFr9UoT4uWRceXI2bzz3TvfYSB8Abryr2V/g9G+5uCaSgsFrqVP67v8g==",
+      "options": {
+        "endpoint": "https://api.stripe.com/",
+        "spec": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
       }
     }
   }

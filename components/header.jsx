@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { useUser } from '@auth0/nextjs-auth0';
-import { get } from '../lib/fetcher';
-import { buildImageUrl } from '../lib/images';
+import { get } from '../lib/utils/fetcher';
+import { buildImageUrl } from '../lib/utils/images';
+import { CartStateContext, CartDispatchContext, toggleCartPopup } from '../lib/contexts/cart';
+import CartPreview from './cart-preview';
 
 const Header = () => {
   const { user } = useUser();
   const { data: profile } = useSWR('/api/my/profile', get);
+
+  const { items: cartItems, isCartOpen } = useContext(CartStateContext);
+  const cartDispatch = useContext(CartDispatchContext);
+  const cartQuantity = cartItems.length;
+  const cartTotal = cartItems.map((item) => item.price.unit_amount).reduce((prev, current) => prev + current, 0);
+
+  const handleCartButton = (event) => {
+    event.preventDefault();
+    return toggleCartPopup(cartDispatch);
+  };
 
   return (
     <header>
@@ -36,7 +48,9 @@ const Header = () => {
                 </Link>
               </li>{' '}
               <li>
-                <a href="/account-ssr">Account (SSR)</a>
+                <Link href="/stripe">
+                  <a>Stripe</a>
+                </Link>
               </li>{' '}
               <li>
                 <a href="/api/auth/logout" data-testid="logout">
@@ -56,6 +70,33 @@ const Header = () => {
               </li>
             </>
           )}
+          <li className="cart">
+            <div className="cart-info">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>No. of items</td>
+                    <td>:</td>
+                    <td>
+                      <strong>{cartQuantity}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sub Total</td>
+                    <td>:</td>
+                    <td>
+                      <strong>{cartTotal}</strong>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <a className="cart-icon" href="#" onClick={handleCartButton}>
+              <img src="https://res.cloudinary.com/sivadass/image/upload/v1493548928/icons/bag.png" alt="Cart" />
+              {cartQuantity ? <span className="cart-count">{cartQuantity}</span> : ''}
+            </a>
+            <CartPreview />
+          </li>
         </ul>
       </nav>
 
