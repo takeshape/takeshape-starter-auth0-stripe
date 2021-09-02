@@ -8,6 +8,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 ## Instructions
 
+### Auth0
+
 1. Create an Auth0 account, if you haven't already at [auth0.com](https://auth0.com/).
 
 2. Create an Auth0 application by going to the `Applications` page under the `Applications` tab on the left.
@@ -56,7 +58,19 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 8. Follow the instructions in `.env.local`. Some of the data you enter will be from Auth0; some of it will be from
    TakeShape.
 
-9. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser
+### Stripe
+
+1. Create a Stripe service. Use the Secret API key from the Stripe Dashboard.
+
+2. Add the Public Stripe API Key to your .env file.
+
+3. Create some Stripe products. Create at least one price for each product.
+
+4. Give your Stripe store a name.
+
+### Developing
+
+1. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser
    to play around!
 
 ## Learn More
