@@ -1,19 +1,22 @@
 import React from 'react';
+import { Divider, Heading, Paragraph, Themed } from 'theme-ui';
 
 import Layout from '../components/layout';
 
 export default function AboutPage() {
   return (
     <Layout>
-      <h1>About</h1>
-      <p>
+      <Themed.h1>About</Themed.h1>
+      <Divider />
+      <Paragraph>
         This project is based on the{' '}
         <a href="https://github.com/auth0/nextjs-auth0/tree/main/examples/kitchen-sink-example">
           Auth0 examples for Next.js
         </a>
         .
-      </p>
-      <h2>Key Dependencies</h2>
+      </Paragraph>
+
+      <Heading>Key Dependencies</Heading>
       <ul>
         <li>
           <p>

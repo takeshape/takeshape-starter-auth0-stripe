@@ -1,7 +1,8 @@
-import React, { useReducer, createContext, useEffect } from 'react';
+import React, { useState, useReducer, createContext, useEffect } from 'react';
 import useLocalStorage from '../hooks/use-local-storage';
 
 const initialState = {
+  isCartReady: false,
   isCartOpen: false,
   items: []
 };
@@ -11,6 +12,11 @@ export const CartDispatchContext = createContext();
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'CART_IS_READY':
+      return {
+        ...state,
+        isCartReady: true
+      };
     case 'TOGGLE_CART_POPUP':
       return {
         ...state,
@@ -85,14 +91,20 @@ export const clearCart = (dispatch) => {
 
 const CartProvider = ({ children }) => {
   const [persistedCartItems, setPersistedCartItems] = useLocalStorage('cartItems', []);
+
   const persistedCartState = {
+    isCartReady: false,
     isCartOpen: false,
     items: persistedCartItems || []
   };
+
   const [state, dispatch] = useReducer(reducer, persistedCartState);
+
   useEffect(() => {
     setPersistedCartItems(state.items);
+    dispatch({ type: 'CART_IS_READY' });
   }, [JSON.stringify(state.items)]);
+
   return (
     <CartDispatchContext.Provider value={dispatch}>
       <CartStateContext.Provider value={state}>{children}</CartStateContext.Provider>

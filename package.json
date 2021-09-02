@@ -10,10 +10,10 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.5.0",
     "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
     "@serverless-jwt/next": "^0.2.1",
     "@stripe/react-stripe-js": "^1.4.1",
     "@stripe/stripe-js": "^1.17.1",
+    "@theme-ui/presets": "^0.11.1",
     "classnames": "^2.3.1",
     "graphql": "^15.5.1",
     "graphql-request": "^3.5.0",
@@ -21,8 +21,10 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.13.0",
+    "react-icons": "^4.2.0",
     "stripe": "^8.171.0",
-    "swr": "^0.5.6"
+    "swr": "^0.5.6",
+    "theme-ui": "^0.11.1"
   },
   "prettier": {
     "requirePragma": false,
@@ -44,8 +46,5 @@
         }
       }
     ]
-  },
-  "devDependencies": {
-    "@emotion/babel-plugin": "^11.3.0"
   }
 }

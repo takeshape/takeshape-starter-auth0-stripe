@@ -1,6 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
+import { Themed, Paragraph, Heading, Link, Divider } from 'theme-ui';
 import Layout from '../components/layout';
 
 export default function HomePage() {
@@ -8,46 +9,51 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <h1>TakeShape Starter for Auth0</h1>
+      <Themed.h1>TakeShape Starter for Auth0</Themed.h1>
+      <Divider />
 
-      {isLoading && <p>Loading login...</p>}
+      {isLoading && <Heading>Loading login...</Heading>}
 
       {error && (
         <>
-          <h4>Error</h4>
+          <Heading>Error</Heading>
           <pre>{error.message}</pre>
         </>
       )}
 
       {user && (
-        <div>
-          <h2>Congratulations {user.name || user.email}! You've logged in. 🎉</h2>
-          <p>
+        <>
+          <Heading>Congratulations {user.name || user.email}! You've logged in. 🎉</Heading>
+          <Paragraph>
             When you signed in a TakeShape profile was automatically created for you using identifying details from your
             Auth0 user token.
-          </p>
-          <p>
-            Now head over to the <Link href="/account">account</Link> page and update your profile.
-          </p>
-        </div>
+          </Paragraph>
+          <Paragraph>
+            Now head over to the{' '}
+            <NextLink href="/account" passHref>
+              <Link>account</Link>
+            </NextLink>{' '}
+            page and update your profile.
+          </Paragraph>
+        </>
       )}
 
       {!isLoading && !error && !user && (
         <>
-          <h4>
+          <Heading>
             Before you proceed follow the instructions in the{' '}
-            <a target="_blank" href="https://github.com/takeshape/takeshape-starter-auth0/">
+            <Link target="_blank" href="https://github.com/takeshape/takeshape-starter-auth0/">
               README
-            </a>
+            </Link>
             .
-          </h4>
+          </Heading>
 
-          <p>
+          <Paragraph>
             To test the login click <a href="/api/auth/login">Login</a> here or in the header.
-          </p>
-          <p>
+          </Paragraph>
+          <Paragraph>
             Once you are logged in you will be able to view protected account URLs and update your profile in TakeShape.
-          </p>
+          </Paragraph>
         </>
       )}
     </Layout>

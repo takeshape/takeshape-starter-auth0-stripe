@@ -196,8 +196,11 @@ export async function createMySubscription(accessToken, payload) {
 }
 
 const createMyCheckoutSessionQuery = gql`
-  mutation CreateMyCheckoutSession($lineItems: [Stripe_CheckoutSessionLineItemsPropertyInput!]!) {
-    session: createMyCheckoutSession(lineItems: $lineItems) {
+  mutation CreateMyCheckoutSession(
+    $redirectUrl: String!
+    $lineItems: [Stripe_CheckoutSessionLineItemsPropertyInput!]!
+  ) {
+    session: createMyCheckoutSession(lineItems: $lineItems, redirectUrl: $redirectUrl) {
       id
     }
   }
@@ -216,6 +219,7 @@ const getStripeProductQuery = gql`
       id
       name
       description
+      images
       prices {
         id
         unit_amount

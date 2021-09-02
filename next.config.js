@@ -1,4 +1,7 @@
 module.exports = {
   poweredByHeader: false,
-  target: 'serverless'
+  target: 'serverless',
+  images: {
+    domains: ['files.stripe.com']
+  }
 };

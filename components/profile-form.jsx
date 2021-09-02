@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
-import { post, upload } from '../lib/fetcher';
-import { buildImageUrl } from '../lib/images';
+import { post, upload } from '../lib/utils/fetcher';
+import { buildImageUrl } from '../lib/utils/images';
 
 const updateProfile = async (data) => {
   await post('/api/my/profile', data);

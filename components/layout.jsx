@@ -1,27 +1,38 @@
 import React from 'react';
+import { Flex, Container } from 'theme-ui';
 import Head from 'next/head';
-
 import Header from './header';
+import Footer from './footer';
+import CartPreview from './cart-preview';
+import useCheckout from '../lib/hooks/use-checkout';
 
-const Layout = ({ children }) => (
-  <>
-    <Head>
-      <title>TakeShape Starter for Auth0</title>
-    </Head>
+const Layout = ({ children }) => {
+  useCheckout();
+  return (
+    <Flex variant="layout.page">
+      <Head>
+        <title>TakeShape Starter for Auth0 &amp; Stripe</title>
+      </Head>
 
-    <Header />
+      <Header />
 
-    <main>
-      <div className="container">{children}</div>
-    </main>
+      <Container as="main" variant="layout.main">
+        {children}
+      </Container>
 
-    <style jsx>{`
-      .container {
-        max-width: 42rem;
-        margin: 1.5rem auto;
-      }
-    `}</style>
-  </>
-);
+      <CartPreview />
+
+      <Footer />
+
+      <style jsx global>{`
+        body {
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        }
+      `}</style>
+    </Flex>
+  );
+};
 
 export default Layout;
