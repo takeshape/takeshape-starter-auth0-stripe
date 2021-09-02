@@ -19,6 +19,12 @@
       - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.upsertMyProfile']
         Effect: 'Allow'
         Action: ['graphql:execute']
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.upsertMyCustomer']
+        Effect: 'Allow'
+        Action: ['graphql:execute']
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.createMyCheckoutSession']
+        Effect: 'Allow'
+        Action: ['graphql:execute']
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:TSRelationship.*']
         Effect: 'Allow'
         Action: ['shape:query']
@@ -31,6 +37,6 @@
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Profile.*']
         Effect: 'Allow'
         Action: ['shape:query']
-      - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Stripe_*']
+      - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Stripe*']
         Effect: 'Allow'
         Action: ['shape:query']

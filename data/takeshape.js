@@ -169,32 +169,6 @@ export async function getMySubscriptions(accessToken) {
   return data?.subscriptions;
 }
 
-const createMySubscriptionQuery = gql`
-  mutation CreateMySubscription($price: String!) {
-    subscription: createMySubscription(price: $price) {
-      id
-      latest_invoice {
-        ... on Stripe_Invoice {
-          id
-          payment_intent {
-            id
-            ... on Stripe_PaymentIntent {
-              client_secret
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export async function createMySubscription(accessToken, payload) {
-  const client = new GraphQLClient(apiUrl);
-  client.setHeader('Authorization', `Bearer ${accessToken}`);
-  const data = await client.request(createMySubscriptionQuery, payload);
-  return data?.subscription;
-}
-
 const createMyCheckoutSessionQuery = gql`
   mutation CreateMyCheckoutSession(
     $redirectUrl: String!
