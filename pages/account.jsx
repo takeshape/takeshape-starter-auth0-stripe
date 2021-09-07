@@ -7,22 +7,12 @@ import Layout from '../components/layout';
 import ProfileForm from '../components/profile-form';
 import CustomerForm from '../components/customer-form';
 
-function getCheckoutResultAction() {
-  if (typeof window !== 'undefined') {
-    const query = new URLSearchParams(window.location.search);
-    return query.get('action');
-  }
-}
-
 export default withPageAuthRequired(function AccountPage() {
   const { user } = useUser();
 
   const { data: profile, error: profileError } = useSWR('/api/my/profile', get);
   const { data: subscriptions, error: subscriptionsError } = useSWR('/api/my/subscriptions', get);
   const { data: customer, error: customerError } = useSWR('/api/my/customer', get);
-
-  const action = getCheckoutResultAction();
-  console.log(action);
 
   return (
     <Layout>

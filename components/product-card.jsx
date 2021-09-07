@@ -38,25 +38,6 @@ const ProductCard = ({ product }) => {
       ))}
     </Card>
   );
-  // return (
-  //   <div>
-  //     {images?.[0] ? <Image src={images[0]} width={200} height={200} /> : ''}
-  //     <div>{name}</div>
-  //     <div>{description}</div>
-  //     {prices.map((price, priceIndex) => (
-  //       <div key={price.id}>
-  //         <div>
-  //           {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring.interval}
-  //         </div>
-  //         <div>
-  //           <button className={!isAdded ? '' : 'added'} type="button" value={priceIndex} onClick={handleAddToCart}>
-  //             {!isAdded ? 'ADD TO CART' : '✔ ADDED'}
-  //           </button>
-  //         </div>
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
 };
 
 export default ProductCard;

@@ -4,10 +4,9 @@ import Head from 'next/head';
 import Header from './header';
 import Footer from './footer';
 import CartPreview from './cart-preview';
-import useCheckout from '../lib/hooks/use-checkout';
+import Snackbar from './snackbar';
 
 const Layout = ({ children }) => {
-  useCheckout();
   return (
     <Flex variant="layout.page">
       <Head>
@@ -21,6 +20,7 @@ const Layout = ({ children }) => {
       </Container>
 
       <CartPreview />
+      <Snackbar />
 
       <Footer />
 

@@ -136,11 +136,6 @@ const getMySubscriptionsQuery = gql`
   query GetMySubscriptionsQuery {
     subscriptions: getMySubscriptions {
       id
-      latest_invoice {
-        ... on WrappedString {
-          value
-        }
-      }
       items {
         data {
           id
@@ -166,6 +161,7 @@ export async function getMySubscriptions(accessToken) {
   const client = new GraphQLClient(apiUrl);
   client.setHeader('Authorization', `Bearer ${accessToken}`);
   const data = await client.request(getMySubscriptionsQuery);
+  console.log(data?.subscriptions);
   return data?.subscriptions;
 }
 

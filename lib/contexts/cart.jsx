@@ -1,11 +1,16 @@
-import React, { useState, useReducer, createContext, useEffect } from 'react';
+import React, { useReducer, createContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import useLocalStorage from '../hooks/use-local-storage';
 
 const initialState = {
   isCartReady: false,
   isCartOpen: false,
+  checkoutResult: null,
   items: []
 };
+
+export const CHECKOUT_SUCCESS = 'success';
+export const CHECKOUT_CANCELED = 'canceled';
 
 export const CartStateContext = createContext();
 export const CartDispatchContext = createContext();
@@ -52,8 +57,19 @@ const reducer = (state, action) => {
     case 'CLEAR_CART':
       return {
         ...state,
-        ...initialState
+        items: [...initialState.items]
       };
+    case 'SET_CHECKOUT_RESULT':
+      return {
+        ...state,
+        checkoutResult: action.payload.checkoutResult
+      };
+    case 'CLEAR_CHECKOUT_RESULT':
+      return {
+        ...state,
+        checkoutResult: initialState.checkoutResult
+      };
+
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }
@@ -69,7 +85,7 @@ export const addToCart = (dispatch, cartItem) => {
   return dispatch({
     type: 'ADD_TO_CART',
     payload: {
-      cartItem: cartItem
+      cartItem
     }
   });
 };
@@ -78,7 +94,7 @@ export const removeFromCart = (dispatch, cartItemId) => {
   return dispatch({
     type: 'REMOVE_FROM_CART',
     payload: {
-      cartItemId: cartItemId
+      cartItemId
     }
   });
 };
@@ -89,21 +105,58 @@ export const clearCart = (dispatch) => {
   });
 };
 
+export const setCartIsReady = (dispatch) => {
+  return dispatch({
+    type: 'CART_IS_READY'
+  });
+};
+
+export const setCheckoutResult = (dispatch, checkoutResult) => {
+  return dispatch({
+    type: 'SET_CHECKOUT_RESULT',
+    payload: {
+      checkoutResult
+    }
+  });
+};
+
+export const clearCheckoutResult = (dispatch) => {
+  return dispatch({
+    type: 'CLEAR_CHECKOUT_RESULT'
+  });
+};
+
 const CartProvider = ({ children }) => {
   const [persistedCartItems, setPersistedCartItems] = useLocalStorage('cartItems', []);
 
+  const {
+    replace,
+    pathname,
+    query: { stripe_checkout_action: action, ...query }
+  } = useRouter();
+
   const persistedCartState = {
-    isCartReady: false,
-    isCartOpen: false,
-    items: persistedCartItems || []
+    ...initialState,
+    items: persistedCartItems || initialState.items
   };
 
   const [state, dispatch] = useReducer(reducer, persistedCartState);
 
   useEffect(() => {
     setPersistedCartItems(state.items);
-    dispatch({ type: 'CART_IS_READY' });
+    setCartIsReady(dispatch);
   }, [JSON.stringify(state.items)]);
+
+  useEffect(() => {
+    if (action) {
+      setCheckoutResult(dispatch, action);
+      replace(pathname, query, { shallow: true });
+    }
+
+    if (action === CHECKOUT_SUCCESS) {
+      clearCart(dispatch);
+    }
+  }, [action]);
 
   return (
     <CartDispatchContext.Provider value={dispatch}>

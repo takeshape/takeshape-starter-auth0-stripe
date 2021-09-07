@@ -6,13 +6,10 @@ export default withApiAuthRequired(async function checkoutHandler(req, res) {
     if (req.method !== 'POST') {
       throw new Error('Bad request');
     }
-
-    console.log(JSON.stringify(request, null, 2));
-
     const { accessToken } = await getAccessToken(req, res);
     const data = await createMyCheckoutSession(accessToken, {
       ...req.body,
-      redirectUrl: `http://${req.headers.host}/checkout`
+      redirectUrl: req.headers.referer
     });
     res.status(200).json(data || {});
   } catch (error) {

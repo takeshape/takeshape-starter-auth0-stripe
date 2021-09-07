@@ -8,7 +8,6 @@ import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } fr
 import { CartStateContext, CartDispatchContext, removeFromCart, toggleCartPopup } from '../lib/contexts/cart';
 import { post } from '../lib/utils/fetcher';
 import getStripe from '../lib/utils/stripe';
-import theme from '../lib/styles/theme';
 
 const CartPreview = () => {
   const { items, isCartOpen, isCartReady } = useContext(CartStateContext);
