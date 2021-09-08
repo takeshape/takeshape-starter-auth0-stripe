@@ -50,8 +50,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    - Go to `Applications → APIs` and click **Create API**.
    - Set the `identifier` to the `audience` you encountered earlier on the TakeShape Auth0 Service page.
    - Leave the signing algorithm as `RS256`.
-   - From the `Settings` tab, scroll down to **Access Settings** and turn on `Allow Offline Access` — this will allow
-     your project to generate refresh tokens and then refresh user tokens when they expire.
+   - From the **Settings** tab, scroll down to **Access Settings** and turn on **Allow Offline Access** — this will
+     allow your project to generate refresh tokens and then refresh user tokens when they expire.
    - **Save** the API.
 
 ### Stripe
@@ -64,27 +64,26 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 2. Take note of your Stripe API keys.
 
    - Go to [Developers → API Keys](https://dashboard.stripe.com/test/apikeys)
-   - You are going to need your `Publishable key` and your `Secret key`.
+   - You are going to need your **publishable key** and your **secret key**.
 
 3. In TakeShape, set up your Stripe service.
 
    - Select **Stripe** from the list of services on the Schema page.
-   - Enter the Stripe secret key into the `Authentication → API Key` field.
+   - Enter the Stripe secret key into the **Authentication → API Key** field.
    - **Save** the service.
 
 4. Create your business model in Stripe.
 
    - Go to [Products → Add Product](https://dashboard.stripe.com/test/products/create).
    - Provide a name, description and image for your product.
-   - Use the `Standard pricing` pricing model, provide a recurring price, then save the product.
+   - Use the **Standard pricing** pricing model, provide a **recurring** price, then **save** the product.
    - Do this a few time to add several products. You can experiment with multiple / different pricing options, but
-     please stick to the `Standard pricing` model.
+     please stick to the **Standard pricing** model.
 
 5. Give your Stripe account a name. This is required for Stripe Checkout.
 
    - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account).
    - Enter an Account Name where indicated.
-   -
 
 ### Running the Starter
 
