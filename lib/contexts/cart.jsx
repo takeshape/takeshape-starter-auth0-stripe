@@ -155,6 +155,7 @@ const CartProvider = ({ children }) => {
 
     if (action === CHECKOUT_SUCCESS) {
       clearCart(dispatch);
+      replace('/account#subscriptions', undefined, { shallow: true });
     }
   }, [action]);
 

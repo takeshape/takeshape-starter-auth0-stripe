@@ -2,7 +2,7 @@ import React from 'react';
 import useSWR from 'swr';
 import { Themed, Divider, Heading } from 'theme-ui';
 import Layout from '../components/layout';
-import ProductList from '../components/product-list';
+import { ProductList } from '../components/products';
 import { get } from '../lib/utils/fetcher';
 
 export default function ProductsPage() {

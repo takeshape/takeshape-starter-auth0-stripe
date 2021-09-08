@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Container, Flex, NavLink, Box } from 'theme-ui';
-import Cart from './cart';
+import { CartIcon } from './cart';
 
 const Header = () => {
   const { user } = useUser();
@@ -24,20 +24,21 @@ const Header = () => {
             <Link href="/account" passHref>
               <NavLink p={2}>Account</NavLink>
             </Link>
-            <Link href="/api/auth/logout" passHref>
-              <NavLink p={2}>Logout</NavLink>
-            </Link>
-            {/* {profile?.avatar?.path && (
-                  <img src={buildImageUrl(profile.avatar, { h: 50, w: 50, mask: 'ellipse', 'mask-bg': '28214a' })} />
-                )} */}
+            <Box variant="links.nav">
+              <NavLink href="/api/auth/logout" p={2}>
+                Logout
+              </NavLink>
+            </Box>
           </>
         ) : (
-          <Link href="/api/auth/login" passHref>
-            <NavLink p={2}>Login</NavLink>
-          </Link>
+          <Box variant="links.nav">
+            <NavLink href="/api/auth/login" p={2}>
+              Login
+            </NavLink>
+          </Box>
         )}
-        <Box variant="styles.navbox">
-          <Cart />
+        <Box variant="links.nav">
+          <CartIcon />
         </Box>
       </Flex>
     </Container>

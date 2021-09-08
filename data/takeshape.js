@@ -136,6 +136,7 @@ const getMySubscriptionsQuery = gql`
   query GetMySubscriptionsQuery {
     subscriptions: getMySubscriptions {
       id
+      current_period_end
       items {
         data {
           id
@@ -146,6 +147,7 @@ const getMySubscriptionsQuery = gql`
               id
               name
               description
+              images
             }
             recurring {
               interval
@@ -161,7 +163,6 @@ export async function getMySubscriptions(accessToken) {
   const client = new GraphQLClient(apiUrl);
   client.setHeader('Authorization', `Bearer ${accessToken}`);
   const data = await client.request(getMySubscriptionsQuery);
-  console.log(data?.subscriptions);
   return data?.subscriptions;
 }
 
@@ -207,4 +208,21 @@ export async function getStripeProductList() {
   client.setHeader('Authorization', `Bearer ${apiKey}`);
   const data = await client.request(getStripeProductQuery);
   return data?.products;
+}
+
+const deleteMySubscriptionQuery = gql`
+  mutation DeleteMySubscription($subscriptionId: String!) {
+    subscription: deleteMySubscription(subscriptionId: $subscriptionId) {
+      id
+      status
+    }
+  }
+`;
+
+export async function deleteMySubscription(accessToken, payload) {
+  const client = new GraphQLClient(apiUrl);
+  client.setHeader('Authorization', `Bearer ${accessToken}`);
+  const data = await client.request(deleteMySubscriptionQuery, payload);
+  console.log(data.subscription);
+  return data?.subscription;
 }

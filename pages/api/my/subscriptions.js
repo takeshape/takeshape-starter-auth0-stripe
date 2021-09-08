@@ -1,5 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { getMySubscriptions, createMySubscription } from '../../../data/takeshape';
+import { getMySubscriptions, deleteMySubscription } from '../../../data/takeshape';
 
 export default withApiAuthRequired(async function subscriptionsHandler(req, res) {
   try {
@@ -7,8 +7,8 @@ export default withApiAuthRequired(async function subscriptionsHandler(req, res)
 
     let data;
 
-    if (req.method === 'POST') {
-      data = await createMySubscription(accessToken, req.body);
+    if (req.method === 'DELETE') {
+      data = await deleteMySubscription(accessToken, req.body);
     } else {
       data = await getMySubscriptions(accessToken);
     }

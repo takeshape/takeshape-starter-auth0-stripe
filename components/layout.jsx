@@ -3,7 +3,7 @@ import { Flex, Container } from 'theme-ui';
 import Head from 'next/head';
 import Header from './header';
 import Footer from './footer';
-import CartPreview from './cart-preview';
+import { CartSidebar } from './cart';
 import Snackbar from './snackbar';
 
 const Layout = ({ children }) => {
@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
         {children}
       </Container>
 
-      <CartPreview />
+      <CartSidebar />
       <Snackbar />
 
       <Footer />

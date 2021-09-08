@@ -25,6 +25,9 @@
       - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.createMyCheckoutSession']
         Effect: 'Allow'
         Action: ['graphql:execute']
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.deleteMySubscription']
+        Effect: 'Allow'
+        Action: ['graphql:execute']
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:TSRelationship.*']
         Effect: 'Allow'
         Action: ['shape:query']

@@ -1,8 +1,8 @@
 {
   "apiVersion": "2",
-  "dataKey": "AQIDAHi9nATJb1LYgj5u7ShOGp43y2H6TuckRKGDlwTU4b6ryQHpD1ExP5EeUSOHKV9LG+ofAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUCghZNs1AGoyxZ8MAgEQgDuRWxn8sl1YiM0CkUifGRkgeXzEU0/2IDozZfB4uuketCRxaEqcxBzh6l7lrIJAKkPOQGTYQD32doiYog==",
+  "dataKey": "",
   "projectId": "79b5254d-5bc3-4034-8b05-e9c2f097de5a",
-  "version": 76,
+  "version": 1,
   "created": "2021-06-08T13:12:26.923Z",
   "updated": "2021-08-26T14:57:20.967Z",
   "defaultLocale": "en-us",
@@ -48,26 +48,6 @@
         ]
       },
       "description": "Get my subscriptions"
-    },
-    "getSubscriptions": {
-      "shape": { "type": "array", "items": { "@ref": "stripe:Subscription" } },
-      "resolver": {
-        "resultsMapping": [["get", { "path": "steps.subscriptions.data" }]],
-        "compose": [
-          {
-            "id": "subscriptions",
-            "name": "rest:get",
-            "service": "stripe",
-            "options": { "path": "/v1/subscriptions" },
-            "searchParamsMapping": [
-              ["expand[]", [["set", { "value": "data.items" }]]],
-              ["customer", [["get", { "path": "args.customer" }]]]
-            ]
-          }
-        ]
-      },
-      "description": "Get my subscriptions",
-      "args": "GetSubscriptionsInput"
     },
     "getStripeProducts": {
       "shape": { "type": "array", "items": { "@ref": "takeshape:local:StripeProductWithPrices" } },
@@ -177,7 +157,15 @@
         ]
       },
       "description": "Upsert My Profile",
-      "args": "UpsertMyProfileInput"
+      "args": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "bio": { "type": "string" },
+          "avatarId": { "type": "string" }
+        }
+      }
     },
     "upsertMyCustomer": {
       "shape": "stripe:Customer",
@@ -240,9 +228,15 @@
         ]
       },
       "description": "Upsert My Stripe Customer",
-      "args": "UpsertMyCustomerInput"
+      "args": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
     },
-    "createMySubscription": {
+    "deleteMySubscription": {
       "shape": "stripe:Subscription",
       "resolver": {
         "compose": [
@@ -256,25 +250,27 @@
           },
           {
             "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile.stripeCustomerId)",
-            "id": "createSubscription",
-            "name": "rest:post",
+            "id": "deleteSubscription",
+            "name": "rest:delete",
             "service": "stripe",
-            "options": { "path": "/v1/subscriptions" },
+            "options": { "path": "/v1/subscriptions/{subscriptionId}" },
             "argsMapping": {
-              "form": [
-                [
-                  "expressionEval",
-                  {
-                    "expression": "([['customer', steps.existingProfile.stripeCustomerId], ['items[0][price]', args.price], ['payment_behavior', 'default_incomplete'], ['expand[]', 'latest_invoice.payment_intent']])"
-                  }
-                ]
-              ]
+              "form.invoice_now": [["set", { "value": "true" }]],
+              "pathParams.subscriptionId": [["get", { "path": "args.subscriptionId" }]]
             }
           }
         ]
       },
-      "description": "Create a Stripe Subscription",
-      "args": "CreateMySubscriptionInput"
+      "description": "Delete a Stripe Subscription",
+      "args": {
+        "type": "object",
+        "properties": {
+          "subscriptionId": {
+            "type": "string"
+          }
+        },
+        "required": ["subscriptionId"]
+      }
     },
     "createMyCheckoutSession": {
       "shape": "stripe:CheckoutSession",
@@ -308,7 +304,25 @@
         ]
       },
       "description": "Create a Stripe Checkout Session",
-      "args": "CreateMyCheckoutSessionInput"
+      "args": {
+        "type": "object",
+        "properties": {
+          "redirectUrl": {
+            "type": "string"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "price": { "type": "string" },
+                "quantity": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "required": ["lineItems", "redirectUrl"]
+      }
     },
     "updateProfile": {
       "shape": "UpdateResult<Profile>",
@@ -352,77 +366,6 @@
     }
   },
   "shapes": {
-    "UpsertMyProfileInput": {
-      "id": "UpsertMyProfileInput",
-      "name": "UpsertMyProfileInput",
-      "title": "UpsertMyProfileInput",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "firstName": { "type": "string" },
-          "lastName": { "type": "string" },
-          "bio": { "type": "string" },
-          "avatarId": { "type": "string" }
-        }
-      }
-    },
-    "UpsertMyCustomerInput": {
-      "id": "UpsertMyCustomerInput",
-      "name": "UpsertMyCustomerInput",
-      "title": "UpsertMyCustomerInput",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      }
-    },
-    "CreateMySubscriptionInput": {
-      "id": "CreateMySubscriptionInput",
-      "name": "CreateMySubscriptionInput",
-      "title": "CreateMySubscriptionInput",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "price": { "type": "string" }
-        },
-        "required": ["price"]
-      }
-    },
-    "CreateMyCheckoutSessionInput": {
-      "id": "CreateMyCheckoutSessionInput",
-      "name": "CreateMyCheckoutSessionInput",
-      "title": "CreateMyCheckoutSessionInput",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "redirectUrl": {
-            "type": "string"
-          },
-          "lineItems": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "price": { "type": "string" },
-                "quantity": { "type": "integer" }
-              }
-            }
-          }
-        },
-        "required": ["lineItems", "redirectUrl"]
-      }
-    },
-    "GetSubscriptionsInput": {
-      "id": "GetSubscriptionsInput",
-      "name": "GetSubscriptionsInput",
-      "title": "GetSubscriptionsInput",
-      "schema": {
-        "type": "object",
-        "properties": { "customer": { "type": "string" } }
-      }
-    },
     "StripeProductWithPrices": {
       "id": "StripeProductWithPrices",
       "name": "StripeProductWithPrices",
