@@ -30,28 +30,29 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - <a href="https://app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/takeshape-starter-auth0-stripe/tree/main/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://camo.githubusercontent.com/1b580e3ce353d235bde0f376ca35b0fb26d685f3750a3013ae4b225dd3aaf344/68747470733a2f2f696d616765732e74616b6573686170652e696f2f32636363633832352d373062652d343331632d396261302d3130616233386563643361372f6465762f38653266376264612d306530382d346564652d613534362d3664663539626536613862622f4465706c6f79253230746f25323054616b65536861706525343032782e706e673f6175746f3d666f726d6174253243636f6d7072657373" width="205" height="38" data-canonical-src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" style="max-width:100%;"></a>
 
-4. With your project imported, you should see an Auth0 service on the dashboard.
+4. With your project imported, you should see an Auth0 and a Stripe service on the dashboard.
 
    - Click on the Auth0 service.
    - Type in your Auth0 `domain` from the earlier step.
    - Take note of the `audience` from the TakeShape config screen, you'll need it later.
    - Save the service.
 
-5. Set up your TakeShape API Key.
+5. Set up your TakeShape API Key for making public queries. You'll need to use this for getting a list of products
+   available to purchase.
 
    - Go to the API tab, then to API Keys.
    - Create a new API Key.
    - Give it `Read` permissions.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
-6. Now go back to your Auth0 account and create an API (it's on the `APIs` page under the `Applications` tab on the
-   left).
+6. Now go back to your Auth0 account where you'll create an API for your application.
 
+   - Go to `Applications → APIs` and click **Create API**.
    - Set the `identifier` to the `audience` you encountered earlier on the TakeShape Auth0 Service page.
    - Leave the signing algorithm as `RS256`.
-   - Scroll down to Access Settings and turn on `Allow Offline Access` — this will allow your project to generate
-     refresh tokens and then refresh user tokens when they expire.
-   - Create the API.
+   - From the `Settings` tab, scroll down to **Access Settings** and turn on `Allow Offline Access` — this will allow
+     your project to generate refresh tokens and then refresh user tokens when they expire.
+   - **Save** the API.
 
 7. Head over to your trusty terminal or tool of choice.
 
@@ -65,10 +66,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 ### Stripe
 
-::: tip  
-For the purposes of this starter it's assumed you are using Stripe in Test Mode, and using appropriately scoped API
-keys. Please do not run the demo on a live account as you may incur unexpected charges from Stripe.  
-:::
+> For the purposes of this starter it's assumed you are using Stripe in Test Mode, and using appropriately scoped API
+> keys. Please do not run the demo on a live account as you may incur unexpected charges from Stripe.
 
 1. In TakeShape, create a Stripe service.
 
