@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { mutate } from 'swr';
 import { Grid, Box, Card, Heading, Paragraph, Text } from 'theme-ui';
 import { destroy } from '../lib/utils/fetcher';
-import SubmitButton from './submit-button';
+import { SubmitButton } from './buttons';
 
 const cancelSubscription = async (data) => {
   await destroy('/api/my/subscriptions', data);

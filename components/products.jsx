@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Image from 'next/image';
-import { Grid, Box, Card, Heading, Paragraph, Text, Button } from 'theme-ui';
+import { Grid, Box, Card, Heading, Paragraph, Button } from 'theme-ui';
 import { CartStateContext, CartDispatchContext, addToCart } from '../lib/contexts/cart';
 
 export const ProductCard = ({ product }) => {

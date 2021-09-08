@@ -1,4 +1,3 @@
-import React from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import useSWR from 'swr';
 import { Themed, Heading, Divider, Alert } from 'theme-ui';

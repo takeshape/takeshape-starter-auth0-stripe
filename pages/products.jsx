@@ -1,4 +1,3 @@
-import React from 'react';
 import useSWR from 'swr';
 import { Themed, Divider, Heading } from 'theme-ui';
 import Layout from '../components/layout';

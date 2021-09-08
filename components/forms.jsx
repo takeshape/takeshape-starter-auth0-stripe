@@ -5,7 +5,7 @@ import { mutate } from 'swr';
 import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex } from 'theme-ui';
 import { post, upload } from '../lib/utils/fetcher';
 import { buildImageUrl } from '../lib/utils/images';
-import SubmitButton from './submit-button';
+import { SubmitButton } from './buttons';
 
 const updateCustomer = async (data) => {
   await post('/api/my/customer', data);

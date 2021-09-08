@@ -1,4 +1,3 @@
-import React from 'react';
 import { Flex, Container } from 'theme-ui';
 import Head from 'next/head';
 import Header from './header';

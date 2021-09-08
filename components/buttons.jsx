@@ -1,6 +1,6 @@
 import { Button, Flex, Text, Spinner } from 'theme-ui';
 
-const SubmitButton = ({ isSubmitting, text, ...props }) => {
+export const SubmitButton = ({ isSubmitting, text, ...props }) => {
   return (
     <Button disabled={isSubmitting} {...props}>
       <Flex sx={{ alignItems: 'center' }}>
@@ -9,5 +9,3 @@ const SubmitButton = ({ isSubmitting, text, ...props }) => {
     </Button>
   );
 };
-
-export default SubmitButton;

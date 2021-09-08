@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, useEffect } from 'react';
+import { useReducer, createContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useLocalStorage from '../hooks/use-local-storage';
 

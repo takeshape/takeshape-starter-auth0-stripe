@@ -1,4 +1,3 @@
-import React from 'react';
 import NextLink from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Themed, Paragraph, Heading, Link, Divider } from 'theme-ui';
@@ -10,7 +9,7 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <Themed.h1>TakeShape Starter for Auth0</Themed.h1>
+      <Themed.h1>TakeShape Starter for Auth0 + Stripe</Themed.h1>
       <Divider />
 
       <Section>
