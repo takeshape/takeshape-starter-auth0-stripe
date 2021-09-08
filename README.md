@@ -41,7 +41,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    available to purchase.
 
    - Go to the API tab, then to API Keys.
-   - Create a new API Key.
+   - Create a new API Key, name it whatever you like, `starter` would be fine.
    - Give it `Read` permissions.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
@@ -54,29 +54,25 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
      your project to generate refresh tokens and then refresh user tokens when they expire.
    - **Save** the API.
 
-7. Head over to your trusty terminal or tool of choice.
-
-   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0.git`.
-   - `cd` into the folder that the cloning created.
-   - Run `mv .env.local-example .env.local` to rename the environment variables file.
-   - Run `npm install`.
-
-8. Follow the instructions in `.env.local`. Some of the data you enter will be from Auth0; some of it will be from
-   TakeShape.
-
 ### Stripe
 
 > For the purposes of this starter it's assumed you are using Stripe in Test Mode, and using appropriately scoped API
 > keys. Please do not run the demo on a live account as you may incur unexpected charges from Stripe.
 
-1. In TakeShape, create a Stripe service.
+1. Create a Stripe account.
 
-   - Select **Stripe** from the service selection screen.
-   - Copy the Stripe API Secret Key from the Stripe Developer Dashboard and use that for the Authentication field.
+2. Take note of your Stripe API keys.
 
-2. Copy the Stripe API Public Key to your `.env.local` file where indicated.
+   - Go to [Developers → API Keys](https://dashboard.stripe.com/test/apikeys)
+   - You are going to need your `Publishable key` and your `Secret key`.
 
-3. Create your business model in Stripe.
+3. In TakeShape, set up your Stripe service.
+
+   - Select **Stripe** from the list of services on the Schema page.
+   - Enter the Stripe secret key into the `Authentication → API Key` field.
+   - **Save** the service.
+
+4. Create your business model in Stripe.
 
    - Go to [Products → Add Product](https://dashboard.stripe.com/test/products/create).
    - Provide a name, description and image for your product.
@@ -84,29 +80,42 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    - Do this a few time to add several products. You can experiment with multiple / different pricing options, but
      please stick to the `Standard pricing` model.
 
-4. Give your Stripe account a name. This is required for Stripe Checkout.
+5. Give your Stripe account a name. This is required for Stripe Checkout.
 
    - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account).
    - Enter an Account Name where indicated.
+   -
 
 ### Running the Starter
 
-1. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser
+1. Head over to your trusty terminal or tool of choice.
+
+   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0.git`.
+   - `cd` into the folder that the cloning created.
+   - Run `mv .env.local-example .env.local` to rename the environment variables file.
+   - Run `npm install`.
+
+2. Follow the instructions in `.env.local`.
+
+   - Some of the data you enter will be from Auth0, some will be from your TakeShape project
+   - You'll use your Stripe API publishable key as well
+
+3. Run `npm run dev` to start the application and open [http://localhost:3000](http://localhost:3000) with your browser
    to play around!
 
-2. First, login using a valid Auth0 or third-party account. You can also sign up for a new account.
+4. First, login using a valid Auth0 or third-party account. You can also sign up for a new account.
 
-3. Go to the `Products` page from the top nav, add an item to your cart.
+5. Go to the `Products` page from the top nav, add an item to your cart.
 
-4. Click the Cart icon in the top nav. Review your cart, then click `Checkout Now`.
+6. Click the Cart icon in the top nav. Review your cart, then click `Checkout Now`.
 
-5. On the Stripe Checkout page, use one of the [Stripe test credit card numbers](https://stripe.com/docs/testing).
+7. On the Stripe Checkout page, use one of the [Stripe test credit card numbers](https://stripe.com/docs/testing).
    `4242 4242 4242 4242` is commonly used, and will allow you to complete a successful purchase with no secondary
    authentication.
 
-6. Upon a successful purchase you should be directed back to your dev site, and the snackbar will pop up.
+8. Upon a successful purchase you should be directed back to your dev site, and the snackbar will pop up.
 
-7. Play around, update your profile, create more users, more purchases. Try products with multiple prices...
+9. Play around, update your profile, create more users, more purchases. Try products with multiple prices...
 
 ## Learn More
 
