@@ -34,9 +34,6 @@
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Asset.*']
         Effect: 'Allow'
         Action: ['shape:query']
-      - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:UpsertMyProfileInput.*']
-        Effect: 'Allow'
-        Action: ['shape:query']
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Profile.*']
         Effect: 'Allow'
         Action: ['shape:query']

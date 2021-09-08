@@ -1,7 +1,9 @@
-name: Auth0 Starter
-description: 'This project pattern shows how to use TakeShape with auth0 as an authentication provider.'
-icon: lock
+name: Auth0 + Stripe Starter
+description: 'This project pattern demonstrates how to use TakeShape with Auth0 and Stripe to provide user accounts for managing and purchasing Stripe subscriptions.'
+icon: dollar-sign
 color: '#95bf46'
 categories:
   - authentication
+  - subscriptions
+  - ecommerce
   - services
