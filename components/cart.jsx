@@ -93,7 +93,7 @@ export const CartSidebar = () => {
                         </div>
                         <Text>
                           {(product.price.unit_amount / 100).toFixed(2)} {product.price.currency.toUpperCase()} /{' '}
-                          {product.price.recurring.interval}
+                          {product.price.recurring?.interval || ''}
                         </Text>
                       </Box>
                       <IconButton onClick={() => handleRemove(product.id)}>

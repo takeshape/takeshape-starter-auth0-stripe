@@ -33,7 +33,7 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
       <Heading>{product.name}</Heading>
       <Paragraph>
         <Text>
-          {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring.interval}
+          {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring?.interval || ''}
         </Text>
       </Paragraph>
       <Paragraph>

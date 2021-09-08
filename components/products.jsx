@@ -29,7 +29,7 @@ export const ProductCard = ({ product }) => {
       {prices.map((price, priceIndex) => (
         <div key={price.id}>
           <Paragraph>
-            {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring.interval}
+            {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring?.interval || ''}
           </Paragraph>
           <Button className={!isAdded ? '' : 'added'} type="button" value={priceIndex} onClick={handleAddToCart}>
             {!isAdded ? 'ADD TO CART' : '✔ ADDED'}
