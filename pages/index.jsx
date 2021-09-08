@@ -1,14 +1,13 @@
 import NextLink from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Themed, Paragraph, Heading, Link, Divider } from 'theme-ui';
-import Layout from '../components/layout';
-import Section from '../components/section';
+import { Page, Section } from '../components/layout';
 
 export default function HomePage() {
   const { user, error, isLoading } = useUser();
 
   return (
-    <Layout>
+    <Page>
       <Themed.h1>TakeShape Starter for Auth0 + Stripe</Themed.h1>
       <Divider />
 
@@ -59,6 +58,6 @@ export default function HomePage() {
           </>
         )}
       </Section>
-    </Layout>
+    </Page>
   );
 }

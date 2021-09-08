@@ -1,4 +1,4 @@
-- name: auth0
+- name: authenticated
   conditions:
     'ForAllValues:StringEquals':
       'claims:provider': 'auth0'
@@ -37,6 +37,15 @@
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Profile.*']
         Effect: 'Allow'
         Action: ['shape:query']
+      - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Stripe*']
+        Effect: 'Allow'
+        Action: ['shape:query']
+- name: anonymous
+  permissions:
+    Statement:
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getStripeProducts']
+        Effect: 'Allow'
+        Action: ['graphql:execute']
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Stripe*']
         Effect: 'Allow'
         Action: ['shape:query']

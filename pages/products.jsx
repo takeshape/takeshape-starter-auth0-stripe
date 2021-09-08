@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { Themed, Divider, Heading } from 'theme-ui';
-import Layout from '../components/layout';
+import { Page } from '../components/layout';
 import { ProductList } from '../components/products';
 import { get } from '../lib/utils/fetcher';
 
@@ -8,7 +8,7 @@ export default function ProductsPage() {
   const { data: products, error: productsError } = useSWR('/api/products', get);
 
   return (
-    <Layout>
+    <Page>
       <Themed.h1>Products</Themed.h1>
       <Divider />
 
@@ -22,6 +22,6 @@ export default function ProductsPage() {
           <pre style={{ color: 'red' }}>{JSON.stringify(productsError, null, 2)}</pre>
         </>
       )}
-    </Layout>
+    </Page>
   );
 }

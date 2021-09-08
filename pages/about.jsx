@@ -1,7 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { Divider, Heading, Paragraph, Themed, Link } from 'theme-ui';
-import Layout from '../components/layout';
-import Section from '../components/section';
+import { Page, Section } from '../components/layout';
 
 const dependencies = [
   {
@@ -38,7 +37,7 @@ const dependencies = [
 
 export default function AboutPage() {
   return (
-    <Layout>
+    <Page>
       <Themed.h1>About</Themed.h1>
       <Divider />
 
@@ -95,6 +94,6 @@ export default function AboutPage() {
           ))}
         </ul>
       </Section>
-    </Layout>
+    </Page>
   );
 }

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Box, Alert, Close } from 'theme-ui';
 import { CartDispatchContext, CartStateContext, clearCheckoutResult } from '../lib/contexts/cart';
 
-const Snackbar = () => {
+const Notifications = () => {
   const [state, setState] = useState({ visible: false, fade: true });
 
   const dispatch = useContext(CartDispatchContext);
@@ -57,4 +57,4 @@ const Snackbar = () => {
   );
 };
 
-export default Snackbar;
+export default Notifications;

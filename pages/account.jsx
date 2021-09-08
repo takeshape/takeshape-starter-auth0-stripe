@@ -2,8 +2,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import useSWR from 'swr';
 import { Themed, Heading, Divider, Alert } from 'theme-ui';
 import { get } from '../lib/utils/fetcher';
-import Layout from '../components/layout';
-import Section from '../components/section';
+import { Page, Section } from '../components/layout';
 import { ProfileForm, CustomerForm } from '../components/forms';
 import { SubscriptionList } from '../components/subscriptions';
 
@@ -13,7 +12,7 @@ export default withPageAuthRequired(function AccountPage() {
   const { data: customer, error: customerError } = useSWR('/api/my/customer', get);
 
   return (
-    <Layout>
+    <Page>
       <Themed.h1>Account</Themed.h1>
       <Divider />
 
@@ -64,6 +63,6 @@ export default withPageAuthRequired(function AccountPage() {
           </>
         )}
       </Section>
-    </Layout>
+    </Page>
   );
 });
