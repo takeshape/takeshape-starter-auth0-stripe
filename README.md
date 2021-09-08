@@ -16,7 +16,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 2. Create an Auth0 application by going to the `Applications` page under the `Applications` tab on the left.
 
    - Choose to create a `Regular Web Application`.
-   - Skip the `Quick Start` tab, and click the `Settings` tab.
+   - Skip the `Quick Start`, and go directly to the `Settings`.
    - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
    - Scroll down, and fill in the following fields:
      - Allowed Callback URLs: http://localhost:3000/api/auth/callback
