@@ -115,7 +115,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 8. Upon a successful purchase you should be directed back to your dev site, and the snackbar will pop up.
 
-9. Play around, update your profile, create more users, more purchases. Try products with multiple prices...
+9. Try canceling a subscription from your Account page.
+
+10. Play around, update your profile, create more users, more purchases. Try products with multiple prices...
 
 ## Learn More
 
