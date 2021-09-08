@@ -84,6 +84,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account).
    - Enter an Account Name where indicated.
+   - **Save** the settings.
 
 ### Running the Starter
 
