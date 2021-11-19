@@ -53,7 +53,13 @@
           "ops": [{ "path": "$", "mapping": "$resolvers.subscriptions.data" }]
         }
       },
-      "description": "Get my subscriptions"
+      "description": "Get my subscriptions",
+      "args": {
+        "type": "object",
+        "properties": {
+          "expand": { "type": "array", "items": { "type": "string" } }
+        }
+      }
     },
     "getStripeProducts": {
       "shape": {
@@ -301,7 +307,7 @@
             "name": "rest:delete",
             "service": "stripe",
             "path": {
-              "ops": [{ "path": "subsciptionId", "mapping": "$args.subscriptionId" }],
+              "ops": [{ "path": "subscriptionId", "mapping": "$args.subscriptionId" }],
               "serialize": { "template": "/v1/subscriptions/{subscriptionId}" }
             },
             "form": { "ops": [{ "path": "invoice_now", "value": "true" }] }

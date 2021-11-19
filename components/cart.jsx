@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { useContext } from 'react';
 import { mutate } from 'swr';
 import Image from 'next/image';
@@ -50,7 +49,12 @@ export const CartSidebar = () => {
   };
 
   const handleProceedCheckout = async () => {
-    const session = await post('/api/my/checkout', { lineItems: [{ price: items[0].price.id, quantity: 1 }] });
+    const session = await post('/api/my/checkout', {
+      lineItems: items.map((i) => ({
+        price: i.price.id,
+        quantity: 1
+      }))
+    });
     const stripe = await getStripe();
     await stripe.redirectToCheckout({
       sessionId: session.id

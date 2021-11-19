@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { Themed, Heading, Divider, Alert } from 'theme-ui';
 import { get } from 'lib/utils/fetcher';
 import { Page, Section } from 'components/layout';
-import { ProfileForm, CustomerForm } from '.components/forms';
+import { ProfileForm, CustomerForm } from 'components/forms';
 import { SubscriptionList } from 'components/subscriptions';
 
 export default withPageAuthRequired(function AccountPage() {

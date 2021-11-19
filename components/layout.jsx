@@ -51,7 +51,7 @@ export const Footer = () => {
   return (
     <Container as="footer" variant="layout.footer">
       <Text variant="smallHeading">
-        Made by <Link href="">TakeShape</Link>
+        Made by <Link href="https://www.takeshape.io">TakeShape</Link>
       </Text>
     </Container>
   );

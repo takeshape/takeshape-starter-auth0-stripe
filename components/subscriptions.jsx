@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { useState } from 'react';
 import Image from 'next/image';
 import { mutate } from 'swr';
@@ -23,8 +22,7 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
 
   const handleCancelSubscription = async (event) => {
     setCanceling(true);
-    await cancelSubscription({ subscriptionId: subscription.id });
-    setCanceling(false);
+    cancelSubscription({ subscriptionId: subscription.id });
   };
 
   return (
