@@ -1,7 +1,7 @@
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { ThemeProvider } from 'theme-ui';
-import theme from '../lib/styles/theme';
-import CartProvider from '../lib/contexts/cart';
+import theme from 'lib/styles/theme';
+import CartProvider from 'lib/contexts/cart';
 
 export default function App({ Component, pageProps }) {
   const { user } = pageProps;

@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Themed, Paragraph, Heading, Link, Divider } from 'theme-ui';
-import { Page, Section } from '../components/layout';
+import { Page, Section } from 'components/layout';
 
 export default function HomePage() {
   const { user, error, isLoading } = useUser();

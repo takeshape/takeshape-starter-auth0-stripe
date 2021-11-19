@@ -28,8 +28,8 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
   };
 
   return (
-    <Card width={256}>
-      {product.images?.[0] ? <Image src={product.images[0]} width={200} height={200} /> : ''}
+    <Card>
+      {product.images?.[0] ? <Image src={product.images[0]} width={200} height={200} objectFit="fill" /> : ''}
       <Heading>{product.name}</Heading>
       <Paragraph>
         <Text>

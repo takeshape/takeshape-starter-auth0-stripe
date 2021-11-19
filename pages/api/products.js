@@ -1,4 +1,4 @@
-import { getStripeProductList } from '../../data/takeshape';
+import { getStripeProductList } from 'lib/data/takeshape';
 
 export default async function productsHandler(req, res) {
   try {

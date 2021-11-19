@@ -1,5 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { createMyCheckoutSession } from '../../../data/takeshape';
+import { createMyCheckoutSession } from 'lib/data/takeshape';
 
 export default withApiAuthRequired(async function checkoutHandler(req, res) {
   try {

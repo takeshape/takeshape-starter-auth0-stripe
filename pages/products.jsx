@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 import { Themed, Divider, Heading } from 'theme-ui';
-import { Page } from '../components/layout';
-import { ProductList } from '../components/products';
-import { get } from '../lib/utils/fetcher';
+import { Page } from 'components/layout';
+import { ProductList } from 'components/products';
+import { get } from 'lib/utils/fetcher';
 
 export default function ProductsPage() {
   const { data: products, error: productsError } = useSWR('/api/products', get);

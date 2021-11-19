@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { Divider, Heading, Paragraph, Themed, Link } from 'theme-ui';
-import { Page, Section } from '../components/layout';
+import { Page, Section } from 'components/layout';
 
 const dependencies = [
   {

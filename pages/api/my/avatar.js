@@ -1,5 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { uploadAssets } from '../../../data/takeshape';
+import { uploadAssets } from 'lib/data/takeshape';
 
 export default withApiAuthRequired(async function avatarHandler(req, res) {
   try {

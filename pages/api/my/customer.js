@@ -1,5 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { upsertMyCustomer, getMyCustomer } from '../../../data/takeshape';
+import { upsertMyCustomer, getMyCustomer } from 'lib/data/takeshape';
 
 export default withApiAuthRequired(async function profileHandler(req, res) {
   try {

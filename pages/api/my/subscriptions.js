@@ -1,5 +1,5 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
-import { getMySubscriptions, deleteMySubscription } from '../../../data/takeshape';
+import { getMySubscriptions, deleteMySubscription } from 'lib/data/takeshape';
 
 export default withApiAuthRequired(async function subscriptionsHandler(req, res) {
   try {

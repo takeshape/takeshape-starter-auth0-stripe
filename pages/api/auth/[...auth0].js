@@ -1,5 +1,5 @@
 import { handleAuth, handleCallback } from '@auth0/nextjs-auth0';
-import { upsertMyProfile, upsertMyCustomer } from '../../../data/takeshape';
+import { upsertMyProfile, upsertMyCustomer } from 'lib/data/takeshape';
 
 const afterCallback = async (req, res, session) => {
   try {

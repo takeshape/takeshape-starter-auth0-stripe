@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex } from 'theme-ui';
-import { post, upload } from '../lib/utils/fetcher';
-import { buildImageUrl } from '../lib/utils/images';
+import { post, upload } from 'lib/utils/fetcher';
+import { buildImageUrl } from 'lib/utils/images';
 import { SubmitButton } from './buttons';
 
 const updateCustomer = async (data) => {
@@ -69,7 +69,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
       <Themed.h4>Avatar</Themed.h4>
       <Box sx={{ textAlign: 'center' }}>
         {profile?.avatar ? (
-          <Avatar src={buildImageUrl(profile.avatar, { h: 400, w: 400 })} />
+          <Avatar src={buildImageUrl(profile.avatar, { h: 400, w: 400 })} sx={{ objectFit: 'cover' }} />
         ) : (
           <Box variant="images.avatar"></Box>
         )}

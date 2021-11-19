@@ -1,99 +1,110 @@
 {
   "apiVersion": "2",
-  "dataKey": "",
+  "dataKey": "AQIDAHi9nATJb1LYgj5u7ShOGp43y2H6TuckRKGDlwTU4b6ryQHpD1ExP5EeUSOHKV9LG+ofAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUCghZNs1AGoyxZ8MAgEQgDuRWxn8sl1YiM0CkUifGRkgeXzEU0/2IDozZfB4uuketCRxaEqcxBzh6l7lrIJAKkPOQGTYQD32doiYog==",
   "projectId": "79b5254d-5bc3-4034-8b05-e9c2f097de5a",
-  "version": 1,
+  "version": 149,
   "created": "2021-06-08T13:12:26.923Z",
-  "updated": "2021-08-26T14:57:20.967Z",
+  "updated": "2021-11-18T22:28:23.105Z",
   "defaultLocale": "en-us",
   "locales": ["en-us"],
-  "schemaVersion": "3.5.0",
+  "schemaVersion": "3.9.0",
   "queries": {
     "getMyProfile": {
       "shape": "Profile",
       "resolver": {
         "name": "takeshape:find",
         "service": "takeshape:local",
-        "options": { "model": "Profile" },
-        "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] }
+        "shapeName": "Profile",
+        "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
       },
-      "description": "Get my Profile"
+      "description": "Get my profile"
     },
     "getMySubscriptions": {
       "shape": { "type": "array", "items": { "@ref": "stripe:Subscription" } },
       "resolver": {
-        "resultsMapping": [["get", { "path": "steps.subscriptions.data" }]],
         "compose": [
           {
-            "if": "!isEmpty(claims.sub)",
+            "if": "!isEmpty($claims.sub)",
             "id": "profile",
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": { "model": "Profile" },
-            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] }
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
-            "if": "!isEmpty(steps.profile.stripeCustomerId)",
+            "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
             "id": "subscriptions",
             "name": "rest:get",
             "service": "stripe",
-            "options": { "path": "/v1/subscriptions" },
-            "searchParamsMapping": [
-              ["expand[]", [["set", { "value": "data.items" }]]],
-              ["expand[]", [["set", { "value": "data.plan.product" }]]],
-              ["expand[]", [["set", { "value": "data.latest_invoice.payment_intent" }]]],
-              ["customer", [["get", { "path": "steps.profile.stripeCustomerId" }]]]
-            ]
+            "path": "/v1/subscriptions",
+            "searchParams": {
+              "ops": [
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.profile.stripeCustomerId"
+                },
+                { "path": "expand", "mapping": "$args.expand" }
+              ],
+              "serialize": { "paths": { "expand": { "style": "deepObject" } } }
+            }
           }
-        ]
+        ],
+        "results": {
+          "ops": [{ "path": "$", "mapping": "$resolvers.subscriptions.data" }]
+        }
       },
       "description": "Get my subscriptions"
     },
     "getStripeProducts": {
-      "shape": { "type": "array", "items": { "@ref": "takeshape:local:StripeProductWithPrices" } },
+      "shape": {
+        "type": "array",
+        "items": { "@ref": "takeshape:local:StripeProductWithPrices" }
+      },
       "resolver": {
-        "resultsMapping": [
-          [
-            "expressionEval",
+        "results": {
+          "ops": [
             {
-              "expression": "map(compose(set('prices', placeholder, newObject()), get(placeholder, groupBy('product', steps.prices.data)), get('id')), steps.products.data)"
+              "path": "$",
+              "mapping": [
+                [
+                  "expressionEval",
+                  {
+                    "expression": "map(compose(set('prices', placeholder, newObject()), get(placeholder, groupBy('product', $resolvers.prices.data)), get('id')), $resolvers.products.data)"
+                  }
+                ],
+                ["getMultiple", { "paths": ["$previousDirective", "$resolvers.products.data"] }],
+                ["zipAndMerge", {}]
+              ]
             }
-          ],
-          [
-            "getMultiple",
-            {
-              "paths": ["previousStep", "steps.products.data"]
-            }
-          ],
-          ["zipAndMerge", {}]
-        ],
+          ]
+        },
         "compose": [
           {
             "id": "products",
             "name": "rest:get",
             "service": "stripe",
-            "options": { "path": "/v1/products" },
-            "searchParamsMapping": [["active", [["set", { "value": "true" }]]]]
+            "path": "/v1/products",
+            "searchParams": { "ops": [{ "path": "active", "value": "true" }] }
           },
           {
             "id": "prices",
             "name": "rest:get",
             "service": "stripe",
-            "options": { "path": "/v1/prices" },
-            "searchParamsMapping": [["active", [["set", { "value": "true" }]]]]
+            "path": "/v1/prices",
+            "searchParams": { "ops": [{ "path": "active", "value": "true" }] }
           }
         ]
       },
-      "description": "Get Stripe products"
+      "description": "Get Stripe products."
     },
     "getProfile": {
       "shape": "Profile",
       "resolver": {
         "name": "takeshape:get",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
-      "description": "Get a Profile by ID",
+      "description": "Get a profile by ID",
       "args": "TSGetArgs<Profile>"
     },
     "getProfileList": {
@@ -101,9 +112,9 @@
       "resolver": {
         "name": "takeshape:list",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
-      "description": "Returns a list Profile in natural order.",
+      "description": "Returns a list of profiles in natural order.",
       "args": "TSListArgs<Profile>"
     }
   },
@@ -111,52 +122,61 @@
     "upsertMyProfile": {
       "shape": "Profile",
       "resolver": {
-        "resultsMapping": [
-          ["get", { "path": "steps.createProfile.result" }],
-          ["get", { "path": "steps.updateProfile.result" }]
-        ],
+        "results": {
+          "ops": [
+            { "path": "$", "mapping": "$resolvers.createProfile.result" },
+            { "path": "$", "mapping": "$resolvers.updateProfile.result" }
+          ]
+        },
         "compose": [
           {
-            "if": "!isEmpty(claims.sub)",
+            "if": "!isEmpty($claims.sub)",
             "id": "existingProfile",
-            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
-            "if": "isEmpty(steps.existingProfile)",
+            "if": "isEmpty($resolvers.existingProfile)",
             "id": "createProfile",
-            "argsMapping": {
-              "input.id": [["get", { "path": "claims.sub" }]],
-              "input.email": [["get", { "path": "claims.email" }]],
-              "input.firstName": [["get", { "path": "args.firstName" }]],
-              "input.lastName": [["get", { "path": "args.lastName" }]],
-              "input.bio": [["get", { "path": "args.bio" }]],
-              "input.avatar.id": [["get", { "path": "args.avatarId" }]]
-            },
             "name": "takeshape:create",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": {
+              "ops": [
+                { "path": "input.id", "mapping": "$claims.sub" },
+                { "path": "input.email", "mapping": "$claims.email" },
+                { "path": "input.firstName", "mapping": "$args.firstName" },
+                { "path": "input.lastName", "mapping": "$args.lastName" },
+                { "path": "input.bio", "mapping": "$args.bio" },
+                { "path": "input.avatar.id", "mapping": "$args.avatarId" }
+              ]
+            }
           },
           {
-            "if": "!isEmpty(steps.existingProfile)",
+            "if": "!isEmpty($resolvers.existingProfile)",
             "id": "updateProfile",
-            "argsMapping": {
-              "input._id": [["get", { "path": "steps.existingProfile._id" }]],
-              "input.email": [["get", { "path": "claims.email" }]],
-              "input.firstName": [["get", { "path": "args.firstName" }]],
-              "input.lastName": [["get", { "path": "args.lastName" }]],
-              "input.bio": [["get", { "path": "args.bio" }]],
-              "input.avatar.id": [["get", { "path": "args.avatarId" }]]
-            },
             "name": "takeshape:update",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": {
+              "ops": [
+                {
+                  "path": "input._id",
+                  "mapping": "$resolvers.existingProfile._id"
+                },
+                { "path": "input.email", "mapping": "$claims.email" },
+                { "path": "input.firstName", "mapping": "$args.firstName" },
+                { "path": "input.lastName", "mapping": "$args.lastName" },
+                { "path": "input.bio", "mapping": "$args.bio" },
+                { "path": "input.avatar.id", "mapping": "$args.avatarId" }
+              ]
+            }
           }
         ]
       },
-      "description": "Upsert My Profile",
+      "description": "Upsert my profile.",
       "args": {
         "type": "object",
         "properties": {
@@ -170,64 +190,91 @@
     "upsertMyCustomer": {
       "shape": "stripe:Customer",
       "resolver": {
-        "resultsMapping": [["get", { "path": "steps.updatedCustomer" }]],
+        "results": {
+          "ops": [{ "path": "$", "mapping": "$steps.updatedCustomer" }]
+        },
         "compose": [
           {
-            "if": "!isEmpty(claims.sub)",
+            "if": "!isEmpty($claims.sub)",
             "id": "existingProfile",
-            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
-            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email) && isEmpty(steps.existingProfile.stripeCustomerId)",
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId)",
             "id": "existingCustomerByEmail",
             "name": "rest:get",
             "service": "stripe",
-            "options": { "path": "/v1/customers" },
-            "searchParamsMapping": [["email", [["get", { "path": "claims.email" }]]]]
-          },
-          {
-            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email) && !isEmpty(steps.existingProfile.stripeCustomerId)",
-            "id": "existingCustomerById",
-            "name": "rest:get",
-            "service": "stripe",
-            "options": { "path": "/v1/customers/{customer}" },
-            "argsMapping": {
-              "pathParams.customer": [["get", { "path": "steps.existingProfile.stripeCustomerId" }]]
+            "path": "/v1/customers",
+            "searchParams": {
+              "ops": [{ "path": "email", "mapping": "$claims.email" }]
             }
           },
           {
-            "if": "!isEmpty(claims.sub) && !isEmpty(claims.email)",
-            "id": "updatedCustomer",
-            "argsMapping": {
-              "form.email": [["get", { "path": "claims.email" }]],
-              "form.name": [["get", { "path": "args.name" }]],
-              "form.description": [["get", { "path": "args.description" }]],
-              "pathParams.customer": [
-                ["get", { "path": "steps.existingCustomerByEmail.data[0].id" }],
-                ["get", { "path": "steps.existingCustomerById.id" }]
-              ]
-            },
-            "name": "rest:post",
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && !isEmpty($resolvers.existingProfile.stripeCustomerId)",
+            "id": "existingCustomerById",
+            "name": "rest:get",
             "service": "stripe",
-            "options": { "path": "/v1/customers/{customer}" }
+            "path": {
+              "ops": [
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.existingProfile.stripeCustomerId"
+                }
+              ],
+              "serialize": { "template": "/v1/customers/{customer}" }
+            }
           },
           {
-            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile) && isEmpty(steps.existingProfile.stripeCustomerId)",
-            "id": "updatedProfile",
-            "argsMapping": {
-              "input._id": [["get", { "path": "steps.existingProfile._id" }]],
-              "input.stripeCustomerId": [["get", { "path": "steps.updatedCustomer.id" }]]
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email)",
+            "id": "updatedCustomer",
+            "name": "rest:post",
+            "service": "stripe",
+            "path": {
+              "ops": [
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.existingCustomerByEmail.data[0].id"
+                },
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.existingCustomerById.id"
+                }
+              ],
+              "serialize": { "template": "/v1/customers/{customer}" }
             },
+            "form": {
+              "ops": [
+                { "path": "email", "mapping": "$claims.email" },
+                { "path": "name", "mapping": "$args.name" },
+                { "path": "description", "mapping": "$args.description" }
+              ]
+            }
+          },
+          {
+            "if": "!isEmpty($claims.sub) && !isEmpty($resolvers.existingProfile) && isEmpty($resolvers.existingProfile.stripeCustomerId)",
+            "id": "updatedProfile",
             "name": "takeshape:update",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": {
+              "ops": [
+                {
+                  "path": "input._id",
+                  "mapping": "$resolvers.existingProfile._id"
+                },
+                {
+                  "path": "input.stripeCustomerId",
+                  "mapping": "$resolvers.updatedCustomer.id"
+                }
+              ]
+            }
           }
         ]
       },
-      "description": "Upsert My Stripe Customer",
+      "description": "Upsert my Stripe customer.",
       "args": {
         "type": "object",
         "properties": {
@@ -241,34 +288,30 @@
       "resolver": {
         "compose": [
           {
-            "if": "!isEmpty(claims.sub)",
+            "if": "!isEmpty($claims.sub)",
             "id": "existingProfile",
-            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
-            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile.stripeCustomerId)",
+            "if": "!isEmpty($claims.sub) && !isEmpty($resolvers.existingProfile.stripeCustomerId)",
             "id": "deleteSubscription",
             "name": "rest:delete",
             "service": "stripe",
-            "options": { "path": "/v1/subscriptions/{subscriptionId}" },
-            "argsMapping": {
-              "form.invoice_now": [["set", { "value": "true" }]],
-              "pathParams.subscriptionId": [["get", { "path": "args.subscriptionId" }]]
-            }
+            "path": {
+              "ops": [{ "path": "subsciptionId", "mapping": "$args.subscriptionId" }],
+              "serialize": { "template": "/v1/subscriptions/{subscriptionId}" }
+            },
+            "form": { "ops": [{ "path": "invoice_now", "value": "true" }] }
           }
         ]
       },
-      "description": "Delete a Stripe Subscription",
+      "description": "Delete a Stripe subscription",
       "args": {
         "type": "object",
-        "properties": {
-          "subscriptionId": {
-            "type": "string"
-          }
-        },
+        "properties": { "subscriptionId": { "type": "string" } },
         "required": ["subscriptionId"]
       }
     },
@@ -277,39 +320,63 @@
       "resolver": {
         "compose": [
           {
-            "if": "!isEmpty(claims.sub)",
+            "if": "!isEmpty($claims.sub)",
             "id": "existingProfile",
-            "argsMapping": { "where.id.eq": [["get", { "path": "claims.sub" }]] },
             "name": "takeshape:find",
             "service": "takeshape:local",
-            "options": { "model": "Profile" }
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
-            "if": "!isEmpty(claims.sub) && !isEmpty(steps.existingProfile.stripeCustomerId)",
+            "if": "!isEmpty($claims.sub) && !isEmpty($resolvers.existingProfile.stripeCustomerId)",
             "id": "createSubscription",
             "name": "rest:post",
             "service": "stripe",
-            "options": { "path": "/v1/checkout/sessions" },
-            "argsMapping": {
-              "form": [
-                [
-                  "expressionEval",
-                  {
-                    "expression": "([['customer', steps.existingProfile.stripeCustomerId], ['line_items[0][price]', args.lineItems[0].price], ['line_items[0][quantity]', args.lineItems[0].quantity], ['payment_method_types[0]', 'card'], ['cancel_url', format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=canceled', args.redirectUrl)], ['success_url', format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=success', args.redirectUrl)], ['mode', 'subscription']])"
-                  }
-                ]
-              ]
+            "path": "/v1/checkout/sessions",
+            "form": {
+              "ops": [
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.existingProfile.stripeCustomerId"
+                },
+                { "path": "line_items", "mapping": "$args.lineItems" },
+                {
+                  "path": "cancel_url",
+                  "mapping": [
+                    [
+                      "expressionEval",
+                      {
+                        "expression": "format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=canceled', $args.redirectUrl)"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "path": "success_url",
+                  "mapping": [
+                    [
+                      "expressionEval",
+                      {
+                        "expression": "format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=success', $args.redirectUrl)"
+                      }
+                    ]
+                  ]
+                },
+                { "path": "payment_method_types[0]", "value": "card" },
+                { "path": "mode", "value": "subscription" }
+              ],
+              "serialize": {
+                "defaults": { "style": "deepObject", "explode": true }
+              }
             }
           }
         ]
       },
-      "description": "Create a Stripe Checkout Session",
+      "description": "Create a Stripe checkout session.",
       "args": {
         "type": "object",
         "properties": {
-          "redirectUrl": {
-            "type": "string"
-          },
+          "redirectUrl": { "type": "string" },
           "lineItems": {
             "type": "array",
             "items": {
@@ -329,7 +396,7 @@
       "resolver": {
         "name": "takeshape:update",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
       "description": "Update Profile",
       "args": "UpdateArgs<Profile>"
@@ -339,7 +406,7 @@
       "resolver": {
         "name": "takeshape:create",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
       "description": "Create Profile",
       "args": "CreateArgs<Profile>"
@@ -349,7 +416,7 @@
       "resolver": {
         "name": "takeshape:duplicate",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
       "description": "Duplicate Profile",
       "args": "DuplicateArgs<Profile>"
@@ -359,7 +426,7 @@
       "resolver": {
         "name": "takeshape:delete",
         "service": "takeshape:local",
-        "options": { "model": "Profile" }
+        "shapeName": "Profile"
       },
       "description": "Delete Profile",
       "args": "DeleteArgs<Profile>"
@@ -375,7 +442,9 @@
           { "@ref": "stripe:Product" },
           {
             "type": "object",
-            "properties": { "prices": { "type": "array", "items": { "@ref": "stripe:Price" } } }
+            "properties": {
+              "prices": { "type": "array", "items": { "@ref": "stripe:Price" } }
+            }
           }
         ]
       }
@@ -403,9 +472,10 @@
             "@resolver": {
               "name": "rest:get",
               "service": "stripe",
-              "options": { "path": "/v1/products/{product}" },
-              "argsMapping": {
-                "pathParams.product": [["get", { "path": "source.product" }]]
+              "options": { "ignoreErrors": true },
+              "path": {
+                "ops": [{ "path": "product", "mapping": "$source.product" }],
+                "serialize": { "template": "/v1/products/{product}" }
               }
             }
           }
@@ -477,9 +547,19 @@
             "@resolver": {
               "name": "rest:get",
               "service": "stripe",
-              "options": { "path": "/v1/customers/{customer}" },
-              "argsMapping": {
-                "pathParams.customer": [["get", { "path": "source.stripeCustomerId" }]]
+              "options": {
+                "ignoreErrors": true
+              },
+              "path": {
+                "ops": [
+                  {
+                    "path": "customer",
+                    "mapping": "$source.stripeCustomerId"
+                  }
+                ],
+                "serialize": {
+                  "template": "/v1/customers/{customer}"
+                }
               }
             }
           }
@@ -508,9 +588,13 @@
     "auth-0": {
       "id": "auth-0",
       "provider": "auth0",
-      "title": "Auth0",
+      "title": "auth0",
       "serviceType": "authentication",
-      "authenticationType": "none"
+      "authenticationType": "none",
+      "options": {
+        "domain": "dev-by9w1mxg.us.auth0.com",
+        "audience": "https://api.takeshape.io/project/79b5254d-5bc3-4034-8b05-e9c2f097de5a/auth-0"
+      }
     },
     "stripe": {
       "id": "stripe",

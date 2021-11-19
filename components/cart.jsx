@@ -4,9 +4,9 @@ import { mutate } from 'swr';
 import Image from 'next/image';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } from 'theme-ui';
-import { CartStateContext, CartDispatchContext, removeFromCart, toggleCartPopup } from '../lib/contexts/cart';
-import { post } from '../lib/utils/fetcher';
-import getStripe from '../lib/utils/stripe';
+import { CartStateContext, CartDispatchContext, removeFromCart, toggleCartPopup } from 'lib/contexts/cart';
+import { post } from 'lib/utils/fetcher';
+import getStripe from 'lib/utils/stripe';
 
 export const CartIcon = () => {
   const { items: cartItems, isCartReady } = useContext(CartStateContext);
@@ -85,7 +85,11 @@ export const CartSidebar = () => {
                   <Box key={product.name}>
                     <Grid gap={2} columns={[3, '1fr 2fr 0.5fr']} sx={{ alignItems: 'center' }}>
                       <Box>
-                        {product.images?.[0] ? <Image src={product.images?.[0]} width={100} height={100} /> : ''}
+                        {product.images?.[0] ? (
+                          <Image src={product.images?.[0]} width={100} height={100} objectFit="fill" />
+                        ) : (
+                          ''
+                        )}
                       </Box>
                       <Box>
                         <div>
