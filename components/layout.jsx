@@ -26,6 +26,9 @@ export const Header = () => {
             <Link href="/account" passHref>
               <NavLink p={2}>Account</NavLink>
             </Link>
+            <Link href="/purchases" passHref>
+              <NavLink p={2}>Purchases</NavLink>
+            </Link>
             <Box variant="links.nav">
               <NavLink href="/api/auth/logout" p={2}>
                 Logout

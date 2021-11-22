@@ -47,22 +47,6 @@ export default withPageAuthRequired(function AccountPage() {
           </>
         )}
       </Section>
-
-      <Section>
-        <Heading id="subscriptions">Stripe Subscriptions</Heading>
-        <Divider />
-
-        {!subscriptions && <p>Loading Stripe subscriptions...</p>}
-
-        {subscriptions && <SubscriptionList subscriptions={subscriptions} />}
-
-        {subscriptionsError && (
-          <>
-            <Alert>Error loading Stripe subscriptions</Alert>
-            <pre style={{ color: 'red' }}>{JSON.stringify(subscriptionsError, null, 2)}</pre>
-          </>
-        )}
-      </Section>
     </Page>
   );
 });

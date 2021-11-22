@@ -3,9 +3,12 @@ import { mutate } from 'swr';
 import Image from 'next/image';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } from 'theme-ui';
-import { CartStateContext, CartDispatchContext, removeFromCart, toggleCartPopup } from 'lib/contexts/cart';
+import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/contexts/cart';
 import { post } from 'lib/utils/fetcher';
 import getStripe from 'lib/utils/stripe';
+import { ProductPrice } from './products';
+import { ProductQuantitySelect } from './products';
+import { formatPrice } from 'lib/utils/text';
 
 export const CartIcon = () => {
   const { items: cartItems, isCartReady } = useContext(CartStateContext);
@@ -14,7 +17,7 @@ export const CartIcon = () => {
 
   const handleCartButton = (event) => {
     event.preventDefault();
-    return toggleCartPopup(cartDispatch);
+    return toggleCart(cartDispatch);
   };
 
   return (
@@ -37,22 +40,30 @@ export const CartIcon = () => {
 
 export const CartSidebar = () => {
   const { items, isCartOpen, isCartReady } = useContext(CartStateContext);
+
+  console.log(items);
+
   const dispatch = useContext(CartDispatchContext);
 
-  const cartCurrent = items?.[0]?.price?.currency ?? '';
-  const cartInterval = items?.[0]?.price?.recurring?.interval ?? '';
+  const cartCurrency = items?.[0]?.price?.currency ?? '';
 
-  const cartTotal = items.map((item) => item.price.unit_amount).reduce((prev, current) => prev + current, 0);
+  const cartTotal = items
+    .map((item) => item.price.unitAmount * item.quantity)
+    .reduce((prev, current) => prev + current, 0);
 
-  const handleRemove = (productId) => {
-    return removeFromCart(dispatch, productId);
+  const handleRemove = (itemIndex) => {
+    return removeFromCart(dispatch, itemIndex);
+  };
+
+  const handleUpdate = (itemIndex, itemPatch) => {
+    return updateCartItem(dispatch, itemIndex, itemPatch);
   };
 
   const handleProceedCheckout = async () => {
     const session = await post('/api/my/checkout', {
       lineItems: items.map((i) => ({
         price: i.price.id,
-        quantity: 1
+        quantity: i.quantity
       }))
     });
     const stripe = await getStripe();
@@ -60,12 +71,12 @@ export const CartSidebar = () => {
       sessionId: session.id
     });
     mutate('/api/my/subscriptions');
-    toggleCartPopup(dispatch);
+    toggleCart(dispatch);
   };
 
   const handleCloseButton = (event) => {
     event.preventDefault();
-    return toggleCartPopup(dispatch);
+    return toggleCart(dispatch);
   };
 
   return (
@@ -84,10 +95,10 @@ export const CartSidebar = () => {
             <Heading sx={{ textAlign: 'center' }}>Your Cart</Heading>
             <Divider />
             <Box>
-              <Flex sx={{ flexDirection: 'column' }}>
-                {items.map((product) => (
-                  <Box key={product.name}>
-                    <Grid gap={2} columns={[3, '1fr 2fr 0.5fr']} sx={{ alignItems: 'center' }}>
+              <Flex variant="cart.itemList">
+                {items.map((product, index) => (
+                  <Box variant="cart.item" key={`${product.id}_${index}`}>
+                    <Grid variant="cart.itemGrid" gap={2} columns={[3, '0.5fr 2fr 0.5fr']}>
                       <Box>
                         {product.images?.[0] ? (
                           <Image src={product.images?.[0]} width={100} height={100} objectFit="fill" />
@@ -99,12 +110,16 @@ export const CartSidebar = () => {
                         <div>
                           <strong>{product.name}</strong>
                         </div>
-                        <Text>
-                          {(product.price.unit_amount / 100).toFixed(2)} {product.price.currency.toUpperCase()} /{' '}
-                          {product.price.recurring?.interval || ''}
-                        </Text>
+                        <Grid gap={2} columns={3}>
+                          <ProductPrice price={product.price} />
+                          <ProductQuantitySelect
+                            defaultValue={product.quantity}
+                            onChange={(event) => handleUpdate(index, { quantity: Number(event.target.value) })}
+                          />
+                          <ProductPrice price={product.price} quantity={product.quantity} />
+                        </Grid>
                       </Box>
-                      <IconButton onClick={() => handleRemove(product.id)}>
+                      <IconButton onClick={() => handleRemove(index)}>
                         <FiTrash2 size={50} />
                       </IconButton>
                     </Grid>
@@ -113,20 +128,14 @@ export const CartSidebar = () => {
               </Flex>
             </Box>
             <Divider />
-            <Box sx={{ textAlign: 'center' }}>
-              <strong>Subtotal</strong>{' '}
-              <span>
-                {Math.floor(cartTotal / 100).toFixed(2)} {cartCurrent.toUpperCase()} / {cartInterval}
-              </span>
-            </Box>
+            {cartTotal ? (
+              <Box sx={{ textAlign: 'center' }}>
+                <strong>Subtotal</strong> <span>{formatPrice(cartCurrency, cartTotal)}</span>
+              </Box>
+            ) : null}
             <Divider />
             <Box>
-              <Button
-                variant={items && items.length === 0 ? 'disabled' : ''}
-                disabled={items && items.length === 0}
-                onClick={handleProceedCheckout}
-                sx={{ width: '100%' }}
-              >
+              <Button disabled={items && items.length === 0} onClick={handleProceedCheckout} sx={{ width: '100%' }}>
                 Checkout Now
               </Button>
             </Box>

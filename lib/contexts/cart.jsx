@@ -22,38 +22,42 @@ const reducer = (state, action) => {
         ...state,
         isCartReady: true
       };
-    case 'TOGGLE_CART_POPUP':
+    case 'OPEN_CART':
+      return {
+        ...state,
+        isCartOpen: true
+      };
+    case 'TOGGLE_CART':
       return {
         ...state,
         isCartOpen: !state.isCartOpen
       };
     case 'ADD_TO_CART':
-      const id = action.payload.cartItem.id;
-      const isOld = state.items.map((item) => item.id).includes(id);
-      let cartItems = null;
-      if (isOld) {
-        const items = state.items.map((item) => {
-          if (item.id === id) {
-            return {
-              ...item,
-              quantity: item.quantity + 1
-            };
-          }
-          return item;
-        });
-        cartItems = [...items];
-      } else {
-        cartItems = [...state.items, action.payload.cartItem];
+      return {
+        ...state,
+        items: [...state.items, action.payload.cartItem]
+      };
+    case 'REMOVE_FROM_CART': {
+      const { cartItemIndex } = action.payload;
+      state.items.splice(cartItemIndex, 1);
+      return {
+        ...state,
+        items: state.items
+      };
+    }
+    case 'UPDATE_CART_ITEM': {
+      const { cartItemIndex } = action.payload;
+      if (state.items[cartItemIndex]) {
+        state.items[cartItemIndex] = {
+          ...state.items[cartItemIndex],
+          ...action.payload.cartItem
+        };
       }
       return {
         ...state,
-        items: cartItems
+        items: state.items
       };
-    case 'REMOVE_FROM_CART':
-      return {
-        ...state,
-        items: state.items.filter((item) => item.id !== action.payload.cartItemId)
-      };
+    }
     case 'CLEAR_CART':
       return {
         ...state,
@@ -75,9 +79,15 @@ const reducer = (state, action) => {
   }
 };
 
-export const toggleCartPopup = (dispatch) => {
+export const toggleCart = (dispatch) => {
   return dispatch({
-    type: 'TOGGLE_CART_POPUP'
+    type: 'TOGGLE_CART'
+  });
+};
+
+export const openCart = (dispatch) => {
+  return dispatch({
+    type: 'OPEN_CART'
   });
 };
 
@@ -90,11 +100,21 @@ export const addToCart = (dispatch, cartItem) => {
   });
 };
 
-export const removeFromCart = (dispatch, cartItemId) => {
+export const removeFromCart = (dispatch, cartItemIndex) => {
   return dispatch({
     type: 'REMOVE_FROM_CART',
     payload: {
-      cartItemId
+      cartItemIndex
+    }
+  });
+};
+
+export const updateCartItem = (dispatch, cartItemIndex, cartItem) => {
+  return dispatch({
+    type: 'UPDATE_CART_ITEM',
+    payload: {
+      cartItemIndex,
+      cartItem
     }
   });
 };

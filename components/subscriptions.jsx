@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { mutate } from 'swr';
 import { Grid, Box, Card, Heading, Paragraph, Text } from 'theme-ui';
-import { destroy } from '../lib/utils/fetcher';
+import { destroy } from 'lib/utils/fetcher';
+import { formatPrice } from 'lib/utils/text';
+import { locale } from 'lib/config';
 import { SubmitButton } from './buttons';
 
 const cancelSubscription = async (data) => {
@@ -31,12 +33,12 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
       <Heading>{product.name}</Heading>
       <Paragraph>
         <Text>
-          {(price.unit_amount / 100).toFixed(2)} {price.currency.toUpperCase()} / {price.recurring?.interval || ''}
+          {formatPrice(price.currency, price.unitAmount)} / {price.recurring?.interval || ''}
         </Text>
       </Paragraph>
       <Paragraph>
         <strong>Next Bill:</strong>{' '}
-        <Text>{nextBillDate.toLocaleString('en-US', { month: 'long', year: 'numeric', day: 'numeric' })}</Text>
+        <Text>{nextBillDate.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric' })}</Text>
       </Paragraph>
 
       <SubmitButton text="Cancel" onClick={handleCancelSubscription} isSubmitting={canceling} />
