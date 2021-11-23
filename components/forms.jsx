@@ -74,24 +74,23 @@ export const CustomerForm = ({ customer }) => {
             </Box>
             <Box>
               <Label htmlFor="address.state">State</Label>
-              {/* <Input {...register('address.state')} mb={3} /> */}
-              {countries && watchCountry ? (
-                <Select {...register('address.state')} mb={3}>
-                  {countries
-                    .find((c) => c.iso2 === watchCountry)
-                    .states.map(({ name, state_code }) => (
-                      <option key={state_code} value={state_code}>
-                        {name}
-                      </option>
-                    ))}
-                </Select>
-              ) : null}
+              <Select {...register('address.state')} mb={3}>
+                {countries && watchCountry
+                  ? countries
+                      .find((c) => c.iso2 === watchCountry)
+                      .states.map(({ name, state_code }) => (
+                        <option key={state_code} value={state_code}>
+                          {name}
+                        </option>
+                      ))
+                  : null}
+              </Select>
             </Box>
           </Grid>
 
           <Box>
             <Label htmlFor="address.postal_code">Postal Code</Label>
-            <Input {...register('address.postal_code')} mb={3} />
+            <Input {...register('address.postal_code')} mb={3} sx={{ width: '50%' }} />
           </Box>
         </Box>
 
