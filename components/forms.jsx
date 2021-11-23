@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
-import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex } from 'theme-ui';
+import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex, Select } from 'theme-ui';
 import { post, upload } from 'lib/utils/fetcher';
 import { buildImageUrl } from 'lib/utils/images';
+import useCountries from 'lib/hooks/use-countries';
 import { SubmitButton } from './buttons';
 
 const updateCustomer = async (data) => {
@@ -20,14 +21,26 @@ export const CustomerForm = ({ customer }) => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting }
+    formState: { isSubmitting },
+    watch
   } = useForm({
     defaultValues: {
-      id: customer?.id || '',
-      name: customer?.name || '',
-      description: customer?.description || ''
+      id: customer?.id ?? '',
+      name: customer?.name ?? '',
+      description: customer?.description ?? '',
+      address: {
+        line1: customer?.address?.line1 ?? '',
+        line2: customer?.address?.line2 ?? '',
+        city: customer?.address?.city ?? '',
+        state: customer?.address?.state ?? '',
+        postal_code: customer?.address?.postal_code ?? '',
+        country: customer?.address?.country ?? ''
+      }
     }
   });
+
+  const countries = useCountries();
+  const watchCountry = watch('address.country');
 
   return (
     <>
@@ -39,6 +52,49 @@ export const CustomerForm = ({ customer }) => {
           <Input {...register('id')} mb={3} readOnly />
           <Label htmlFor="name">Name</Label>
           <Input {...register('name')} mb={3} />
+          <Label htmlFor="address.country">Country</Label>
+
+          {countries?.length ? (
+            <Select {...register('address.country')} mb={3} sx={{ width: '50%' }}>
+              {countries.map(({ name, iso2, iso3 }) => (
+                <option key={iso3} value={iso2}>
+                  {name}
+                </option>
+              ))}
+            </Select>
+          ) : null}
+
+          <Label htmlFor="address.line1">Address Line 1</Label>
+          <Input {...register('address.line1')} mb={3} />
+          <Label htmlFor="address.line2">Address Line 2</Label>
+          <Input {...register('address.line2')} mb={3} />
+          <Grid gap={2} columns={[1, 2]}>
+            <Box>
+              <Label htmlFor="address.city">City</Label>
+              <Input {...register('address.city')} mb={3} />
+            </Box>
+            <Box>
+              <Label htmlFor="address.state">State</Label>
+              {/* <Input {...register('address.state')} mb={3} /> */}
+              {countries && watchCountry ? (
+                <Select {...register('address.state')} mb={3}>
+                  {countries
+                    .find((c) => c.iso2 === watchCountry)
+                    .states.map(({ name, state_code }) => (
+                      <option key={state_code} value={state_code}>
+                        {name}
+                      </option>
+                    ))}
+                </Select>
+              ) : null}
+            </Box>
+          </Grid>
+
+          <Box>
+            <Label htmlFor="address.postal_code">Postal Code</Label>
+            <Input {...register('address.postal_code')} mb={3} />
+          </Box>
+
           <Label htmlFor="description">Description</Label>
           <Textarea {...register('description')} rows="4" cols="50"></Textarea>
         </Box>

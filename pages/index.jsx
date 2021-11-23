@@ -1,63 +1,27 @@
-import NextLink from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
-import { Themed, Paragraph, Heading, Link, Divider } from 'theme-ui';
-import { Page, Section } from 'components/layout';
+import useSWR from 'swr';
+import { Themed, Divider, Heading } from 'theme-ui';
+import { Page } from 'components/layout';
+import { ProductList } from 'components/products';
+import { get } from 'lib/utils/fetcher';
 
 export default function HomePage() {
-  const { user, error, isLoading } = useUser();
+  const { data: products, error: productsError } = useSWR('/api/products', get);
 
   return (
     <Page>
-      <Themed.h1>TakeShape Starter for Auth0 + Stripe</Themed.h1>
+      <Themed.h1>Products</Themed.h1>
       <Divider />
 
-      <Section>
-        {isLoading && <Heading>Loading login...</Heading>}
+      {!products && <Heading>Loading products...</Heading>}
 
-        {error && (
-          <>
-            <Heading>Error</Heading>
-            <pre>{error.message}</pre>
-          </>
-        )}
+      {products && <ProductList products={products} />}
 
-        {user && (
-          <>
-            <Heading>Congratulations {user.name || user.email}! You've logged in. 🎉</Heading>
-            <Paragraph>
-              When you signed in a TakeShape profile was automatically created for you using identifying details from
-              your Auth0 user token.
-            </Paragraph>
-            <Paragraph>
-              Now head over to the{' '}
-              <NextLink href="/account" passHref>
-                <Link>account</Link>
-              </NextLink>{' '}
-              page and update your profile.
-            </Paragraph>
-          </>
-        )}
-
-        {!isLoading && !error && !user && (
-          <>
-            <Heading>
-              Before you proceed follow the instructions in the{' '}
-              <Link target="_blank" href="https://github.com/takeshape/takeshape-starter-auth0/">
-                README
-              </Link>
-              .
-            </Heading>
-
-            <Paragraph>
-              To test the login click <a href="/api/auth/login">Login</a> here or in the header.
-            </Paragraph>
-            <Paragraph>
-              Once you are logged in you will be able to view protected account URLs and update your profile in
-              TakeShape.
-            </Paragraph>
-          </>
-        )}
-      </Section>
+      {productsError && (
+        <>
+          <Heading>Error loading products</Heading>
+          <pre style={{ color: 'red' }}>{JSON.stringify(productsError, null, 2)}</pre>
+        </>
+      )}
     </Page>
   );
 }

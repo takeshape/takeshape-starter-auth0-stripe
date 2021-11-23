@@ -17,9 +17,6 @@ export const Header = () => {
         <Link href="/about" passHref>
           <NavLink p={2}>About</NavLink>
         </Link>
-        <Link href="/products" passHref>
-          <NavLink p={2}>Products</NavLink>
-        </Link>
         <Box variant="styles.flexspace" />
         {user ? (
           <>

@@ -10,13 +10,7 @@
       - Resource: ['ts:workflow:4a0614fc-9519-4dbe-976a-99622dc4fe37:*']
         Effect: 'Allow'
         Action: ['workflow:*']
-      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getMyProfile']
-        Effect: 'Allow'
-        Action: ['graphql:execute']
-      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getMySubscriptions']
-        Effect: 'Allow'
-        Action: ['graphql:execute']
-      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getMyInvoices']
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getMy*']
         Effect: 'Allow'
         Action: ['graphql:execute']        
       - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.upsertMyProfile']

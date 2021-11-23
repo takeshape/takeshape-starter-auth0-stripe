@@ -86,7 +86,7 @@ export const CartSidebar = () => {
       location.href = '/api/auth/login?returnTo=/_checkout';
       return;
     }
-    await checkout(items);
+    await checkout(items, '/purchases');
   };
 
   const handleCloseButton = (event) => {

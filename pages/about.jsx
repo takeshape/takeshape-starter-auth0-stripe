@@ -48,11 +48,13 @@ export default function AboutPage() {
 
       <Section>
         <Paragraph>
-          This project is based on the{' '}
-          <Link to="https://github.com/auth0/nextjs-auth0/tree/main/examples/kitchen-sink-example">
-            Auth0 examples for Next.js
-          </Link>
-          .
+          This project demonstrates using <Link to="https://auth0.com">Auth0</Link> to manage a user's account and make
+          purchases through <Link to="https://stripe.com">Stripe</Link>.
+        </Paragraph>
+
+        <Paragraph>
+          This user account provides users with the ability to review their past purchases, and manage any subscriptions
+          they have.
         </Paragraph>
       </Section>
 

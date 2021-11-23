@@ -107,6 +107,61 @@
         }
       }
     },
+    "getMyPayments": {
+      "shape": { "type": "array", "items": { "@ref": "stripe:PaymentIntent" } },
+      "resolver": {
+        "compose": [
+          {
+            "if": "!isEmpty($claims.sub)",
+            "id": "profile",
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+          },
+          {
+            "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
+            "id": "payments",
+            "name": "rest:get",
+            "service": "stripe",
+            "path": "/v1/payment_intents",
+            "searchParams": {
+              "ops": [
+                { "path": "$", "mapping": "$args" },
+                { "path": "starting_after", "mapping": "$args.startingAfter" },
+                { "path": "ending_before", "mapping": "$args.endingBefore" },
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.profile.stripeCustomerId"
+                }
+              ],
+              "serialize": { "defaults": { "style": "deepObject", "explode": true } }
+            }
+          }
+        ],
+        "results": {
+          "ops": [
+            {
+              "path": "$",
+              "mapping": [
+                ["expressionEval", { "expression": "filter(['status', 'succeeded'], $resolvers.payments.data)" }]
+              ]
+            }
+          ]
+        }
+      },
+      "description": "Get my payments",
+      "args": {
+        "type": "object",
+        "properties": {
+          "expand": { "type": "array", "items": { "type": "string" } },
+          "limit": { "type": "number" },
+          "created": {},
+          "startingAfter": { "type": "string" },
+          "endingBefore": { "type": "string" }
+        }
+      }
+    },
     "getStripeProducts": {
       "shape": {
         "type": "array",
@@ -301,8 +356,15 @@
               "ops": [
                 { "path": "email", "mapping": "$claims.email" },
                 { "path": "name", "mapping": "$args.name" },
-                { "path": "description", "mapping": "$args.description" }
-              ]
+                { "path": "description", "mapping": "$args.description" },
+                { "path": "address", "mapping": "$args.address" }
+              ],
+              "serialize": {
+                "defaults": {
+                  "style": "deepObject",
+                  "explode": true
+                }
+              }
             }
           },
           {
@@ -331,7 +393,18 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "address": {
+            "type": "object",
+            "properties": {
+              "line1": { "type": "string" },
+              "line2": { "type": "string" },
+              "city": { "type": "string" },
+              "country": { "type": "string" },
+              "postal_code": { "type": "string" },
+              "state": { "type": "string" }
+            }
+          }
         }
       }
     },

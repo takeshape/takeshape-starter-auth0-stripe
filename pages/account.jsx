@@ -18,7 +18,7 @@ export default withPageAuthRequired(function AccountPage() {
         <Heading>TakeShape Profile</Heading>
         <Divider />
 
-        {!profile && <Heading>Loading TakeShape profile...</Heading>}
+        {!profile && <p>Loading TakeShape profile...</p>}
 
         {profile && <ProfileForm profile={profile} />}
 

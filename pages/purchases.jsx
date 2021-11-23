@@ -4,11 +4,11 @@ import { Themed, Heading, Divider, Alert } from 'theme-ui';
 import { get } from 'lib/utils/fetcher';
 import { Page, Section } from 'components/layout';
 import { SubscriptionList } from 'components/subscriptions';
-import { InvoiceList } from 'components/invoices';
+import { PaymentList } from 'components/payments';
 
 export default withPageAuthRequired(function PurchasesPage() {
   const { data: subscriptions, error: subscriptionsError } = useSWR('/api/my/subscriptions', get);
-  const { data: invoices, error: invoicesError } = useSWR('/api/my/invoices', get);
+  const { data: payments, error: paymentsError } = useSWR('/api/my/payments', get);
 
   return (
     <Page>
@@ -32,17 +32,17 @@ export default withPageAuthRequired(function PurchasesPage() {
       </Section>
 
       <Section>
-        <Heading id="invoices">Past Invoices</Heading>
+        <Heading id="payments">Past Payments</Heading>
         <Divider />
 
-        {!invoices && <p>Loading invoices...</p>}
+        {!payments && <p>Loading payments...</p>}
 
-        {invoices && <InvoiceList invoices={invoices} />}
+        {payments && <PaymentList payments={payments} />}
 
-        {invoicesError && (
+        {paymentsError && (
           <>
-            <Alert>Error loading invoices</Alert>
-            <pre style={{ color: 'red' }}>{JSON.stringify(invoicesError, null, 2)}</pre>
+            <Alert>Error loading payments</Alert>
+            <pre style={{ color: 'red' }}>{JSON.stringify(paymentsError, null, 2)}</pre>
           </>
         )}
       </Section>
