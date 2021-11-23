@@ -14,6 +14,11 @@ const dependencies = [
     description: 'Auth0 bindings for Next.js.'
   },
   {
+    title: 'Stripe.js',
+    link: 'https://github.com/stripe/stripe-js',
+    description: 'Stripe’s Javscript library.'
+  },
+  {
     title: 'graphql-request',
     link: 'https://github.com/prisma-labs/graphql-request',
     description: 'A minimal GraphQL client.'

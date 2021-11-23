@@ -1,6 +1,16 @@
 import { withApiAuthRequired, getAccessToken } from '@auth0/nextjs-auth0';
 import { createMyCheckoutSession } from 'lib/data/takeshape';
 
+const getRedirectUrl = (req) => {
+  const redirectUrl = req.body.redirectUrl ?? req.headers.referer;
+
+  if (redirectUrl.startsWith('http')) {
+    return redirectUrl;
+  }
+
+  return new URL(redirectUrl, req.headers.referer).href;
+};
+
 export default withApiAuthRequired(async function checkoutHandler(req, res) {
   try {
     if (req.method !== 'POST') {
@@ -8,9 +18,10 @@ export default withApiAuthRequired(async function checkoutHandler(req, res) {
     }
 
     const { accessToken } = await getAccessToken(req, res);
+
     const data = await createMyCheckoutSession(accessToken, {
       ...req.body,
-      redirectUrl: req.headers.referer
+      redirectUrl: getRedirectUrl(req)
     });
 
     res.status(200).json(data || {});

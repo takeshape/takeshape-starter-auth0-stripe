@@ -1,19 +1,17 @@
 import { useContext } from 'react';
-import { mutate } from 'swr';
 import Image from 'next/image';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } from 'theme-ui';
+import { useUser } from '@auth0/nextjs-auth0';
 import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/contexts/cart';
-import { post } from 'lib/utils/fetcher';
-import getStripe from 'lib/utils/stripe';
-import { ProductPrice } from './products';
-import { ProductQuantitySelect } from './products';
 import { formatPrice } from 'lib/utils/text';
+import { checkout } from 'lib/utils/checkout';
+import { ProductPrice, ProductQuantitySelect } from './products';
 
 export const CartIcon = () => {
   const { items: cartItems, isCartReady } = useContext(CartStateContext);
   const cartDispatch = useContext(CartDispatchContext);
-  const cartQuantity = cartItems.length;
+  const cartQuantity = cartItems.reduce((q, i) => q + i.quantity, 0);
 
   const handleCartButton = (event) => {
     event.preventDefault();
@@ -38,10 +36,34 @@ export const CartIcon = () => {
   );
 };
 
+const CartItem = ({ product, onChangeQuantity, onClickRemove }) => {
+  return (
+    <Box variant="cart.item">
+      <Grid variant="cart.itemGrid" gap={2} columns={[3, '0.5fr 2fr 0.5fr']}>
+        <Box>
+          {product.images?.[0] ? <Image src={product.images?.[0]} width={100} height={100} objectFit="fill" /> : ''}
+        </Box>
+        <Box>
+          <div>
+            <strong>{product.name}</strong>
+          </div>
+          <Grid gap={2} columns={3}>
+            <ProductPrice price={product.price} />
+            <ProductQuantitySelect defaultValue={product.quantity} onChange={onChangeQuantity} />
+            <ProductPrice price={product.price} quantity={product.quantity} />
+          </Grid>
+        </Box>
+        <IconButton onClick={onClickRemove}>
+          <FiTrash2 size={50} />
+        </IconButton>
+      </Grid>
+    </Box>
+  );
+};
+
 export const CartSidebar = () => {
   const { items, isCartOpen, isCartReady } = useContext(CartStateContext);
-
-  console.log(items);
+  const { user } = useUser();
 
   const dispatch = useContext(CartDispatchContext);
 
@@ -59,19 +81,12 @@ export const CartSidebar = () => {
     return updateCartItem(dispatch, itemIndex, itemPatch);
   };
 
-  const handleProceedCheckout = async () => {
-    const session = await post('/api/my/checkout', {
-      lineItems: items.map((i) => ({
-        price: i.price.id,
-        quantity: i.quantity
-      }))
-    });
-    const stripe = await getStripe();
-    await stripe.redirectToCheckout({
-      sessionId: session.id
-    });
-    mutate('/api/my/subscriptions');
-    toggleCart(dispatch);
+  const handleCheckout = async () => {
+    if (!user) {
+      location.href = '/api/auth/login?returnTo=/_checkout';
+      return;
+    }
+    await checkout(items);
   };
 
   const handleCloseButton = (event) => {
@@ -97,33 +112,12 @@ export const CartSidebar = () => {
             <Box>
               <Flex variant="cart.itemList">
                 {items.map((product, index) => (
-                  <Box variant="cart.item" key={`${product.id}_${index}`}>
-                    <Grid variant="cart.itemGrid" gap={2} columns={[3, '0.5fr 2fr 0.5fr']}>
-                      <Box>
-                        {product.images?.[0] ? (
-                          <Image src={product.images?.[0]} width={100} height={100} objectFit="fill" />
-                        ) : (
-                          ''
-                        )}
-                      </Box>
-                      <Box>
-                        <div>
-                          <strong>{product.name}</strong>
-                        </div>
-                        <Grid gap={2} columns={3}>
-                          <ProductPrice price={product.price} />
-                          <ProductQuantitySelect
-                            defaultValue={product.quantity}
-                            onChange={(event) => handleUpdate(index, { quantity: Number(event.target.value) })}
-                          />
-                          <ProductPrice price={product.price} quantity={product.quantity} />
-                        </Grid>
-                      </Box>
-                      <IconButton onClick={() => handleRemove(index)}>
-                        <FiTrash2 size={50} />
-                      </IconButton>
-                    </Grid>
-                  </Box>
+                  <CartItem
+                    key={`${product.id}_${index}`}
+                    product={product}
+                    onChangeQuantity={(event) => handleUpdate(index, { quantity: Number(event.target.value) })}
+                    onClickRemove={() => handleRemove(index)}
+                  />
                 ))}
               </Flex>
             </Box>
@@ -135,7 +129,7 @@ export const CartSidebar = () => {
             ) : null}
             <Divider />
             <Box>
-              <Button disabled={items && items.length === 0} onClick={handleProceedCheckout} sx={{ width: '100%' }}>
+              <Button disabled={items && items.length === 0} onClick={handleCheckout} sx={{ width: '100%' }}>
                 Checkout Now
               </Button>
             </Box>

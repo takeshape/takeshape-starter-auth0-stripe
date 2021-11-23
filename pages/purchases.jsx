@@ -3,11 +3,12 @@ import useSWR from 'swr';
 import { Themed, Heading, Divider, Alert } from 'theme-ui';
 import { get } from 'lib/utils/fetcher';
 import { Page, Section } from 'components/layout';
-import { ProfileForm, CustomerForm } from 'components/forms';
 import { SubscriptionList } from 'components/subscriptions';
+import { InvoiceList } from 'components/invoices';
 
 export default withPageAuthRequired(function PurchasesPage() {
   const { data: subscriptions, error: subscriptionsError } = useSWR('/api/my/subscriptions', get);
+  const { data: invoices, error: invoicesError } = useSWR('/api/my/invoices', get);
 
   return (
     <Page>
@@ -15,33 +16,33 @@ export default withPageAuthRequired(function PurchasesPage() {
       <Divider />
 
       <Section>
-        <Heading id="subscriptions">Subscriptions</Heading>
+        <Heading id="subscriptions">Active Subscriptions</Heading>
         <Divider />
 
-        {!subscriptions && <p>Loading Stripe subscriptions...</p>}
+        {!subscriptions && <p>Loading subscriptions...</p>}
 
         {subscriptions && <SubscriptionList subscriptions={subscriptions} />}
 
         {subscriptionsError && (
           <>
-            <Alert>Error loading Stripe subscriptions</Alert>
+            <Alert>Error loading subscriptions</Alert>
             <pre style={{ color: 'red' }}>{JSON.stringify(subscriptionsError, null, 2)}</pre>
           </>
         )}
       </Section>
 
       <Section>
-        <Heading id="subscriptions">One-Time</Heading>
+        <Heading id="invoices">Past Invoices</Heading>
         <Divider />
 
-        {!subscriptions && <p>Loading Stripe subscriptions...</p>}
+        {!invoices && <p>Loading invoices...</p>}
 
-        {subscriptions && <SubscriptionList subscriptions={subscriptions} />}
+        {invoices && <InvoiceList invoices={invoices} />}
 
-        {subscriptionsError && (
+        {invoicesError && (
           <>
-            <Alert>Error loading Stripe subscriptions</Alert>
-            <pre style={{ color: 'red' }}>{JSON.stringify(subscriptionsError, null, 2)}</pre>
+            <Alert>Error loading invoices</Alert>
+            <pre style={{ color: 'red' }}>{JSON.stringify(invoicesError, null, 2)}</pre>
           </>
         )}
       </Section>

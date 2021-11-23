@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import Image from 'next/image';
 import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio } from 'theme-ui';
 import orderBy from 'lodash/orderBy';
-import { CartDispatchContext, addToCart, openCart, toggleCart } from 'lib/contexts/cart';
+import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/contexts/cart';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';
 
@@ -76,6 +76,7 @@ export const ProductQuantitySelect = ({ defaultValue, onChange }) => {
 export const ProductCard = ({ product }) => {
   const { name, prices, description, images } = product;
 
+  const { isCartOpen } = useContext(CartStateContext);
   const cartDispatch = useContext(CartDispatchContext);
 
   if (!prices.length) {
@@ -120,8 +121,11 @@ export const ProductCard = ({ product }) => {
 
   const handleAddToCart = () => {
     addToCart(cartDispatch, { ...product, price, quantity });
-    openCart(cartDispatch);
-    setTimeout(() => toggleCart(cartDispatch), showCartTimeout);
+
+    if (!isCartOpen) {
+      openCart(cartDispatch);
+      setTimeout(() => toggleCart(cartDispatch), showCartTimeout);
+    }
   };
 
   return (
@@ -133,17 +137,17 @@ export const ProductCard = ({ product }) => {
 
       <ProductPrice price={price} />
 
-      {oneTimePayment && recurringPayments.length && (
+      {oneTimePayment && recurringPayments.length ? (
         <ProductPaymentToggle purchaseType={purchaseType} onChange={handleUpdatePurchaseType} />
-      )}
+      ) : null}
 
-      {recurringPayments.length && (
+      {recurringPayments.length ? (
         <ProductRecurringSelect
           currentPrice={price}
           recurringPayments={recurringPayments}
           onChange={handleUpdateRecurring}
         />
-      )}
+      ) : null}
 
       <Box>Quantity</Box>
       <Grid columns={[2]}>

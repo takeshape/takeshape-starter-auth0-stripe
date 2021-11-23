@@ -4,11 +4,9 @@ import { Themed, Heading, Divider, Alert } from 'theme-ui';
 import { get } from 'lib/utils/fetcher';
 import { Page, Section } from 'components/layout';
 import { ProfileForm, CustomerForm } from 'components/forms';
-import { SubscriptionList } from 'components/subscriptions';
 
 export default withPageAuthRequired(function AccountPage() {
   const { data: profile, error: profileError } = useSWR('/api/my/profile', get);
-  const { data: subscriptions, error: subscriptionsError } = useSWR('/api/my/subscriptions', get);
   const { data: customer, error: customerError } = useSWR('/api/my/customer', get);
 
   return (

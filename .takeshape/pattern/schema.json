@@ -61,6 +61,52 @@
         }
       }
     },
+    "getMyInvoices": {
+      "shape": { "type": "array", "items": { "@ref": "stripe:Invoice" } },
+      "resolver": {
+        "compose": [
+          {
+            "if": "!isEmpty($claims.sub)",
+            "id": "profile",
+            "name": "takeshape:find",
+            "service": "takeshape:local",
+            "shapeName": "Profile",
+            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+          },
+          {
+            "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
+            "id": "invoices",
+            "name": "rest:get",
+            "service": "stripe",
+            "path": "/v1/invoices",
+            "searchParams": {
+              "ops": [
+                { "path": "$", "mapping": "$args" },
+                {
+                  "path": "customer",
+                  "mapping": "$resolvers.profile.stripeCustomerId"
+                }
+              ],
+              "serialize": { "defaults": { "style": "deepObject", "explode": true } }
+            }
+          }
+        ],
+        "results": {
+          "ops": [{ "path": "$", "mapping": "$resolvers.invoices.data" }]
+        }
+      },
+      "description": "Get my invoices",
+      "args": {
+        "type": "object",
+        "properties": {
+          "expand": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["draft", "open", "paid", "uncollectable", "void"] },
+          "limit": { "type": "number" },
+          "created": {},
+          "startingAfter": { "type": "string" }
+        }
+      }
+    },
     "getStripeProducts": {
       "shape": {
         "type": "array",
@@ -369,7 +415,8 @@
                   ]
                 },
                 { "path": "payment_method_types[0]", "value": "card" },
-                { "path": "mode", "value": "subscription" }
+                { "path": "mode", "value": "payment" },
+                { "path": "mode", "mapping": "$args.mode" }
               ],
               "serialize": {
                 "defaults": { "style": "deepObject", "explode": true }
@@ -383,6 +430,7 @@
         "type": "object",
         "properties": {
           "redirectUrl": { "type": "string" },
+          "mode": { "type": "string", "enum": ["payment", "subscription", "setup"] },
           "lineItems": {
             "type": "array",
             "items": {

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import { mutate } from 'swr';
 import { Grid, Box, Card, Heading, Paragraph, Text } from 'theme-ui';
 import { destroy } from 'lib/utils/fetcher';
 import { formatPrice } from 'lib/utils/text';
 import { locale } from 'lib/config';
 import { SubmitButton } from './buttons';
+import { ProductImage } from './products';
 
 const cancelSubscription = async (data) => {
   await destroy('/api/my/subscriptions', data);
@@ -29,7 +29,7 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
 
   return (
     <Card>
-      {product.images?.[0] ? <Image src={product.images[0]} width={200} height={200} objectFit="fill" /> : ''}
+      <ProductImage images={product.images} />
       <Heading>{product.name}</Heading>
       <Paragraph>
         <Text>
@@ -50,7 +50,7 @@ export const SubscriptionList = ({ subscriptions }) => {
   return (
     <>
       {subscriptions.length ? (
-        <Grid gap={2} columns={4}>
+        <Grid gap={2} columns={3}>
           {subscriptions.map((subscription) => (
             <Box key={subscription.id}>
               {subscription.items?.data?.[0] && (
