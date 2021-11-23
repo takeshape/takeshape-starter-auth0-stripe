@@ -27,7 +27,6 @@ export const CustomerForm = ({ customer }) => {
     defaultValues: {
       id: customer?.id ?? '',
       name: customer?.name ?? '',
-      description: customer?.description ?? '',
       address: {
         line1: customer?.address?.line1 ?? '',
         line2: customer?.address?.line2 ?? '',
@@ -94,9 +93,6 @@ export const CustomerForm = ({ customer }) => {
             <Label htmlFor="address.postal_code">Postal Code</Label>
             <Input {...register('address.postal_code')} mb={3} />
           </Box>
-
-          <Label htmlFor="description">Description</Label>
-          <Textarea {...register('description')} rows="4" cols="50"></Textarea>
         </Box>
 
         <SubmitButton text="Update" isSubmitting={isSubmitting} type="submit" />
