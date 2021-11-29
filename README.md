@@ -76,7 +76,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - Go to [Products → Add Product](https://dashboard.stripe.com/test/products/create).
    - Provide a name, description and image for your product.
-   - Use the **Standard pricing** pricing model, provide a **recurring** price, then **save** the product.
+   - Use the **standard pricing** pricing model, provide a **recurring** or **one time** price, then **save** the
+     product. _Note: this starter supports a single active one time price, and multiple recurring prices per product._
    - Do this a few time to add several products. You can experiment with multiple / different pricing options, but
      please stick to the **Standard pricing** model.
 
@@ -113,11 +114,19 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    `4242 4242 4242 4242` is commonly used, and will allow you to complete a successful purchase with no secondary
    authentication.
 
-8. Upon a successful purchase you should be directed back to your dev site, and the snackbar will pop up.
+8. Upon a successful purchase you should be directed back to your dev site, and a snackbar will pop up.
 
-9. Try canceling a subscription from your Account page.
+9. Try canceling a subscription from your **Purchases** page.
 
 10. Play around, update your profile, create more users, more purchases. Try products with multiple prices...
+
+### Known Limitations
+
+- Due to limitations in the official Stripe Checkout, you will encounter an error if you try to check out with a cart
+  containing items with different subscription periods. For example, if you have a month subscription option for Product
+  A and a year subscription option for Product B, and you have both of those in the cart at the same time, Stripe will
+  throw an error. A future version of this starter may shift to a custom checkout experience to work through this
+  limitation.
 
 ## Learn More
 

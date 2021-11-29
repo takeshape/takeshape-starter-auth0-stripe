@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.6.1",
-    "@emotion/react": "^11.6.0",
+    "@emotion/react": "^11.7.0",
     "@serverless-jwt/next": "^0.2.1",
     "@stripe/react-stripe-js": "^1.6.0",
     "@stripe/stripe-js": "^1.21.1",
     "@theme-ui/color": "^0.12.1",
-    "@theme-ui/presets": "^0.12.0",
+    "@theme-ui/presets": "^0.12.1",
     "date-fns": "^2.26.0",
     "graphql": "^16.0.1",
     "graphql-request": "^3.6.1",
@@ -26,7 +26,7 @@
     "react-icons": "^4.3.1",
     "stripe": "^8.190.0",
     "swr": "^1.0.1",
-    "theme-ui": "^0.12.0"
+    "theme-ui": "^0.12.1"
   },
   "prettier": {
     "requirePragma": false,
