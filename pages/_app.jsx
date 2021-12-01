@@ -1,6 +1,6 @@
 import { ThemeProvider } from 'theme-ui';
 import theme from 'lib/theme';
-import CartProvider from 'lib/cart';
+import CartProvider from 'lib/contexts/cart';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { clientId, domain, scope, audience, redirectUri } from 'lib/config';
 

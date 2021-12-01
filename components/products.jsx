@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio, Image } from 'theme-ui';
 import orderBy from 'lodash/orderBy';
-import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/cart';
+import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/contexts/cart';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';
 

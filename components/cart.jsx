@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid, Image } from 'theme-ui';
 import { useAuth0 } from '@auth0/auth0-react';
-import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/cart';
+import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/contexts/cart';
 import { formatPrice } from 'lib/utils/text';
 import { getCheckoutPayload } from 'lib/utils/checkout';
 import { ProductPrice, ProductQuantitySelect } from './products';
