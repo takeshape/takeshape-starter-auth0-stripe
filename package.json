@@ -8,9 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^1.6.1",
+    "@auth0/auth0-react": "^1.8.0",
     "@emotion/react": "^11.7.0",
-    "@serverless-jwt/next": "^0.2.1",
     "@stripe/react-stripe-js": "^1.6.0",
     "@stripe/stripe-js": "^1.21.1",
     "@theme-ui/color": "^0.12.1",

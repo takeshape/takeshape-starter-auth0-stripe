@@ -1,12 +1,14 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Image from 'next/image';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } from 'theme-ui';
-import { useUser } from '@auth0/nextjs-auth0';
-import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/contexts/cart';
+import { useAuth0 } from '@auth0/auth0-react';
+import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/cart';
 import { formatPrice } from 'lib/utils/text';
-import { checkout } from 'lib/utils/checkout';
+import { getCheckoutPayload } from 'lib/utils/checkout';
 import { ProductPrice, ProductQuantitySelect } from './products';
+import { useMutation } from 'lib/hooks/use-takeshape';
+import getStripe from 'lib/utils/stripe';
 
 export const CartIcon = () => {
   const { items: cartItems, isCartReady } = useContext(CartStateContext);
@@ -63,7 +65,8 @@ const CartItem = ({ product, onChangeQuantity, onClickRemove }) => {
 
 export const CartSidebar = () => {
   const { items, isCartOpen, isCartReady } = useContext(CartStateContext);
-  const { user } = useUser();
+  const { user, loginWithPopup } = useAuth0();
+  const [{ data: checkoutData }, setCheckoutPayload] = useMutation('CreateMyCheckoutSession');
 
   const dispatch = useContext(CartDispatchContext);
 
@@ -83,11 +86,22 @@ export const CartSidebar = () => {
 
   const handleCheckout = async () => {
     if (!user) {
-      location.href = '/api/auth/login?returnTo=/_checkout';
-      return;
+      await loginWithPopup();
     }
-    await checkout(items, '/purchases');
+    setCheckoutPayload(getCheckoutPayload(items, '/purchases'));
   };
+
+  useEffect(() => {
+    const doCheckout = async () => {
+      const stripe = await getStripe();
+      stripe.redirectToCheckout({
+        sessionId: checkoutData.session.id
+      });
+    };
+    if (checkoutData?.session) {
+      doCheckout();
+    }
+  }, [checkoutData]);
 
   const handleCloseButton = (event) => {
     event.preventDefault();

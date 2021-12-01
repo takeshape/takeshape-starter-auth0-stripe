@@ -1,27 +1,34 @@
-import useSWR from 'swr';
-import { Themed, Divider, Heading } from 'theme-ui';
+import { Themed, Divider, Alert, Spinner, Container } from 'theme-ui';
 import { Page } from 'components/layout';
 import { ProductList } from 'components/products';
-import { get } from 'lib/utils/fetcher';
+import useTakeshape from 'lib/hooks/use-takeshape';
 
-export default function HomePage() {
-  const { data: products, error: productsError } = useSWR('/api/products', get);
+function HomePage() {
+  const { data: productsData, error: productsError } = useTakeshape('GetStripeProducts', {
+    useApiKeyAuthentication: true
+  });
 
   return (
     <Page>
       <Themed.h1>Products</Themed.h1>
       <Divider />
 
-      {!products && <Heading>Loading products...</Heading>}
+      {!productsData && (
+        <Container variant="layout.loading">
+          <Spinner />
+        </Container>
+      )}
 
-      {products && <ProductList products={products} />}
+      {productsData && <ProductList products={productsData.products} />}
 
       {productsError && (
         <>
-          <Heading>Error loading products</Heading>
+          <Alert>Error loading products</Alert>
           <pre style={{ color: 'red' }}>{JSON.stringify(productsError, null, 2)}</pre>
         </>
       )}
     </Page>
   );
 }
+
+export default HomePage;

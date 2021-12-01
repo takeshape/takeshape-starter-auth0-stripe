@@ -1,29 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { mutate } from 'swr';
 import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex, Select } from 'theme-ui';
-import { post, upload } from 'lib/utils/fetcher';
 import { buildImageUrl } from 'lib/utils/images';
 import useCountries from 'lib/hooks/use-countries';
 import { SubmitButton } from './buttons';
-
-const updateCustomer = async (data) => {
-  await post('/api/my/customer', data);
-  await mutate('/api/my/customer');
-};
-
-const updateProfile = async (data) => {
-  await post('/api/my/profile', data);
-  await mutate('/api/my/profile');
-};
+import { useMutation, useUpload } from 'lib/hooks/use-takeshape';
 
 export const CustomerForm = ({ customer }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-    watch
-  } = useForm({
+  const [{ isLoading }, setCustomerPayload] = useMutation('UpsertMyCustomer', {
+    revalidateQueryName: 'GetMyCustomer'
+  });
+
+  const { register, handleSubmit, watch } = useForm({
     defaultValues: {
       id: customer?.id ?? '',
       name: customer?.name ?? '',
@@ -43,7 +31,7 @@ export const CustomerForm = ({ customer }) => {
 
   return (
     <>
-      <Box as="form" onSubmit={handleSubmit(updateCustomer)}>
+      <Box as="form" onSubmit={handleSubmit(setCustomerPayload)}>
         <Box mb={4}>
           <Label variant="disabledLabel" htmlFor="id">
             ID
@@ -94,24 +82,62 @@ export const CustomerForm = ({ customer }) => {
           </Box>
         </Box>
 
-        <SubmitButton text="Update" isSubmitting={isSubmitting} type="submit" />
+        <SubmitButton text="Update" isSubmitting={isLoading} type="submit" />
       </Box>
     </>
   );
 };
 
 const ProfileAvatarUploadForm = ({ profile }) => {
-  const [progress, setProgress] = useState(null);
+  const [{ data: assetsData }, setAssetsPayload] = useMutation('UploadAssets');
+  const [{ isLoading: isUpsertingProfile }, setProfilePayload] = useMutation('UpsertMyProfile', {
+    revalidateQueryName: 'GetMyProfile'
+  });
+  const [{ progress }, setUploadUrl, setUploadFile] = useUpload();
+
+  const [file, setFile] = useState(null);
+  const [totalProgress, setTotalProgress] = useState(null);
+  const [isHandlingFile, setIsHandlingFile] = useState(false);
+
+  useEffect(() => {
+    if (file && !isHandlingFile) {
+      setIsHandlingFile(true);
+      setTotalProgress(0);
+      setAssetsPayload({ files: [{ name: file.name, type: file.type }] });
+    }
+  }, [file, isHandlingFile]);
+
+  useEffect(() => {
+    if (file && assetsData?.uploadAssets?.[0]) {
+      setUploadUrl(assetsData.uploadAssets[0].uploadUrl);
+      setUploadFile(file);
+      setTotalProgress(0.25);
+    }
+  }, [file, assetsData]);
+
+  useEffect(() => {
+    if (progress !== null) {
+      setTotalProgress(Math.min(progress - 0.25, 0.25));
+    }
+  }, [progress]);
+
+  useEffect(() => {
+    if (progress === 1 && assetsData?.uploadAssets?.[0]) {
+      setProfilePayload({ avatarId: assetsData.uploadAssets[0].asset._id });
+      setTotalProgress(1);
+    }
+  }, [progress, assetsData]);
+
+  useEffect(() => {
+    if (isUpsertingProfile === false) {
+      setFile(null);
+      setIsHandlingFile(false);
+      setTotalProgress(null);
+    }
+  }, [isUpsertingProfile]);
 
   const updateAvatar = async (e) => {
-    const file = e.target.files[0];
-    setProgress(0);
-    const { uploadUrl, asset } = await post('/api/my/avatar', { name: file.name, type: file.type });
-    await upload(uploadUrl, file, ({ progress }) => {
-      setProgress(progress);
-    });
-    await updateProfile({ avatarId: asset._id });
-    setTimeout(() => setProgress(null), 1000);
+    setFile(e.target.files[0]);
   };
 
   return (
@@ -126,26 +152,23 @@ const ProfileAvatarUploadForm = ({ profile }) => {
       </Box>
       <form>
         <Label htmlFor="avatar">Upload Avatar</Label>
-        {progress === null ? null : (
-          <div>
-            <strong>Uploading</strong>
-            <Progress max={1} value={progress}>
-              {progress * 100}%
-            </Progress>
-          </div>
-        )}
-        <Input onChange={updateAvatar} type="file" />
+
+        <Input onChange={updateAvatar} type="file" disabled={isHandlingFile} />
+
+        <Progress max={1} value={totalProgress} mt={1}>
+          {totalProgress ? `${totalProgress * 100}%` : null}
+        </Progress>
       </form>
     </Flex>
   );
 };
 
 const ProfileTextForm = ({ profile }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting }
-  } = useForm({
+  const [{ isLoading }, setProfilePayload] = useMutation('UpsertMyProfile', {
+    revalidateQueryName: 'GetMyProfile'
+  });
+
+  const { register, handleSubmit } = useForm({
     defaultValues: {
       id: profile?.id || '',
       email: profile?.email || '',
@@ -156,7 +179,7 @@ const ProfileTextForm = ({ profile }) => {
   });
 
   return (
-    <Box as="form" onSubmit={handleSubmit(updateProfile)}>
+    <Box as="form" onSubmit={handleSubmit(setProfilePayload)}>
       <Box mb={4}>
         <Label variant="disabledLabel" htmlFor="id">
           Auth0 ID
@@ -174,7 +197,7 @@ const ProfileTextForm = ({ profile }) => {
         <Textarea {...register('bio')} rows="4" cols="50"></Textarea>
       </Box>
 
-      <SubmitButton type="submit" isSubmitting={isSubmitting} text="Update" />
+      <SubmitButton type="submit" isSubmitting={isLoading} text="Update" />
     </Box>
   );
 };

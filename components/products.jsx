@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import Image from 'next/image';
 import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio } from 'theme-ui';
 import orderBy from 'lodash/orderBy';
-import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/contexts/cart';
+import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/cart';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';
 

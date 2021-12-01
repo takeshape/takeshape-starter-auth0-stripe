@@ -1,19 +1,16 @@
 import { useState } from 'react';
-import { mutate } from 'swr';
 import { Grid, Box, Card, Heading, Paragraph, Text } from 'theme-ui';
-import { destroy } from 'lib/utils/fetcher';
 import { formatPrice } from 'lib/utils/text';
 import { locale } from 'lib/config';
 import { SubmitButton } from './buttons';
 import { ProductImage } from './products';
-
-const cancelSubscription = async (data) => {
-  await destroy('/api/my/subscriptions', data);
-  await mutate('/api/my/subscriptions');
-};
+import { useMutation } from 'lib/hooks/use-takeshape';
 
 export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
   const [canceling, setCanceling] = useState(false);
+  const [{ error: deleteError }, setDeletePayload] = useMutation('DeleteMySubscription', {
+    revalidateQueryName: 'GetMySubscriptions'
+  });
 
   const { current_period_end } = subscription;
   const nextBillDate = new Date(current_period_end * 1000);
@@ -22,10 +19,14 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
     price: { product, ...price }
   } = subscriptionItem;
 
-  const handleCancelSubscription = async (event) => {
+  const handleCancelSubscription = () => {
     setCanceling(true);
-    cancelSubscription({ subscriptionId: subscription.id });
+    setDeletePayload({ subscriptionId: subscription.id });
   };
+
+  if (deleteError) {
+    setCanceling(false);
+  }
 
   return (
     <Card>
@@ -41,6 +42,13 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
         <Text>{nextBillDate.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric' })}</Text>
       </Paragraph>
 
+      {deleteError && (
+        <>
+          <Alert>Error deleting Stripe subscription</Alert>
+          <pre style={{ color: 'red' }}>{JSON.stringify(deleteError, null, 2)}</pre>
+        </>
+      )}
+
       <SubmitButton text="Cancel" onClick={handleCancelSubscription} isSubmitting={canceling} />
     </Card>
   );
@@ -49,7 +57,7 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
 export const SubscriptionList = ({ subscriptions }) => {
   return (
     <>
-      {subscriptions.length ? (
+      {subscriptions && subscriptions.length ? (
         <Grid gap={2} columns={3}>
           {subscriptions.map((subscription) => (
             <Box key={subscription.id}>

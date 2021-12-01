@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { Divider, Heading, Paragraph, Themed, Link } from 'theme-ui';
 import { Page, Section } from 'components/layout';
 
@@ -40,7 +39,7 @@ const dependencies = [
   }
 ];
 
-export default function AboutPage() {
+function AboutPage() {
   return (
     <Page>
       <Themed.h1>About</Themed.h1>
@@ -104,3 +103,5 @@ export default function AboutPage() {
     </Page>
   );
 }
+
+export default AboutPage;

@@ -8,7 +8,7 @@ const ContentSecurityPolicy = `
   media-src 'none';
   connect-src *;
   font-src 'self';
-  frame-src https://js.stripe.com;
+  frame-src https://js.stripe.com https://*.auth0.com;
 `;
 
 const securityHeaders = [

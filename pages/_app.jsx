@@ -1,17 +1,17 @@
-import { UserProvider } from '@auth0/nextjs-auth0';
 import { ThemeProvider } from 'theme-ui';
 import theme from 'lib/theme';
-import CartProvider from 'lib/contexts/cart';
+import CartProvider from 'lib/cart';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { clientId, domain, scope, audience, redirectUrl } from 'lib/config';
 
 export default function App({ Component, pageProps }) {
-  const { user } = pageProps;
   return (
-    <UserProvider user={user}>
+    <Auth0Provider domain={domain} clientId={clientId} scope={scope} audience={audience} redirectUri={redirectUrl}>
       <CartProvider>
         <ThemeProvider theme={theme}>
           <Component {...pageProps} />
         </ThemeProvider>
       </CartProvider>
-    </UserProvider>
+    </Auth0Provider>
   );
 }

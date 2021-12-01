@@ -1,14 +1,13 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import useSWR from 'swr';
-import { Themed, Heading, Divider, Alert } from 'theme-ui';
-import { get } from 'lib/utils/fetcher';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { Themed, Heading, Divider, Alert, Spinner, Container } from 'theme-ui';
 import { Page, Section } from 'components/layout';
 import { SubscriptionList } from 'components/subscriptions';
 import { PaymentList } from 'components/payments';
+import useTakeshape from 'lib/hooks/use-takeshape';
 
-export default withPageAuthRequired(function PurchasesPage() {
-  const { data: subscriptions, error: subscriptionsError } = useSWR('/api/my/subscriptions', get);
-  const { data: payments, error: paymentsError } = useSWR('/api/my/payments', get);
+function PurchasesPage() {
+  const { data: subscriptionsData, error: subscriptionsError } = useTakeshape('GetMySubscriptions');
+  const { data: paymentsData, error: paymentsError } = useTakeshape('GetMyPayments');
 
   return (
     <Page>
@@ -19,9 +18,13 @@ export default withPageAuthRequired(function PurchasesPage() {
         <Heading id="subscriptions">Active Subscriptions</Heading>
         <Divider />
 
-        {!subscriptions && <p>Loading subscriptions...</p>}
+        {!subscriptionsData && (
+          <Container variant="layout.loading">
+            <Spinner />
+          </Container>
+        )}
 
-        {subscriptions && <SubscriptionList subscriptions={subscriptions} />}
+        {subscriptionsData && <SubscriptionList subscriptions={subscriptionsData.subscriptions} />}
 
         {subscriptionsError && (
           <>
@@ -35,9 +38,13 @@ export default withPageAuthRequired(function PurchasesPage() {
         <Heading id="payments">Past Payments</Heading>
         <Divider />
 
-        {!payments && <p>Loading payments...</p>}
+        {!paymentsData && (
+          <Container variant="layout.loading">
+            <Spinner />
+          </Container>
+        )}
 
-        {payments && <PaymentList payments={payments} />}
+        {paymentsData && <PaymentList payments={paymentsData.payments} />}
 
         {paymentsError && (
           <>
@@ -48,4 +55,12 @@ export default withPageAuthRequired(function PurchasesPage() {
       </Section>
     </Page>
   );
+}
+
+export default withAuthenticationRequired(PurchasesPage, {
+  onRedirecting: () => (
+    <Container variant="layout.loading">
+      <Spinner />
+    </Container>
+  )
 });
