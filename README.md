@@ -91,7 +91,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 1. Head over to your trusty terminal or tool of choice.
 
-   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0.git`.
+   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0-stripe.git`.
    - `cd` into the folder that the cloning created.
    - Run `mv .env.local-example .env.local` to rename the environment variables file.
    - Run `npm install`.
