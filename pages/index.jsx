@@ -1,34 +1,54 @@
 import { Themed, Divider, Alert, Spinner, Container } from 'theme-ui';
 import { Page } from 'components/layout';
 import { ProductList } from 'components/products';
-import useTakeshape from 'lib/hooks/use-takeshape';
+import { createGraphqlRequest } from 'lib/utils/graphql';
+import { takeshapeApiUrl, takeshapeApiKey } from 'lib/config';
+import { GetStripeProducts } from 'lib/queries';
 
-function HomePage() {
-  const { data: productsData, error: productsError } = useTakeshape('GetStripeProducts', {
-    useApiKeyAuthentication: true
-  });
-
+function HomePage({ products, error }) {
   return (
     <Page>
       <Themed.h1>Products</Themed.h1>
       <Divider />
 
-      {!productsData && (
+      {!products && (
         <Container variant="layout.loading">
           <Spinner />
         </Container>
       )}
 
-      {productsData && <ProductList products={productsData.products} />}
+      {products && <ProductList products={products} />}
 
-      {productsError && (
+      {error && (
         <>
           <Alert>Error loading products</Alert>
-          <pre style={{ color: 'red' }}>{JSON.stringify(productsError, null, 2)}</pre>
+          <pre style={{ color: 'red' }}>{JSON.stringify(error, null, 2)}</pre>
         </>
       )}
     </Page>
   );
+}
+
+export async function getStaticProps() {
+  const productsQuery = createGraphqlRequest(takeshapeApiUrl, () => takeshapeApiKey, GetStripeProducts);
+
+  let products = [];
+  let error = null;
+
+  try {
+    const data = await productsQuery();
+
+    if (data.errors) {
+      error = data.errors;
+    } else {
+      products = data.products;
+    }
+  } catch (err) {
+    console.error(err);
+    error = Array.isArray(err) ? err.map((e) => e.message).join() : err.message;
+  }
+
+  return { props: { products, error } };
 }
 
 export default HomePage;

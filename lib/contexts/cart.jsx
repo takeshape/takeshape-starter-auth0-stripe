@@ -1,6 +1,6 @@
 import { useReducer, createContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import useLocalStorage from '../hooks/use-local-storage';
+import useLocalStorage from 'lib/hooks/use-local-storage';
 
 const initialState = {
   isCartReady: false,
