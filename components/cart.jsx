@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react';
-import Image from 'next/image';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
-import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid } from 'theme-ui';
+import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid, Image } from 'theme-ui';
 import { useAuth0 } from '@auth0/auth0-react';
 import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/cart';
 import { formatPrice } from 'lib/utils/text';

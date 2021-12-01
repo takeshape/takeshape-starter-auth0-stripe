@@ -1,11 +1,12 @@
 {
-  "name": "takeshape-starter-auth0",
-  "version": "0.1.0",
+  "name": "takeshape-starter-auth0-stripe",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next build && next export"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.8.0",

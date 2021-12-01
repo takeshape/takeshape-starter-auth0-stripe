@@ -15,11 +15,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 2. Create an Auth0 application by going to the `Applications` page under the `Applications` tab on the left.
 
-   - Choose to create a `Regular Web Application`.
+   - Choose to create a `Single Page Application`.
    - Skip the `Quick Start`, and go directly to the `Settings`.
    - Take note of your `domain`, you'll need it later. It typically looks like this: `dev-by9w1mxg.us.auth0.com`.
    - Scroll down, and fill in the following fields:
-     - Allowed Callback URLs: http://localhost:3000/api/auth/callback
+     - Allowed Callback URLs: http://localhost:3000/
      - Allowed Logout URLs: http://localhost:3000/
      - Allowed Web Origins: http://localhost:3000/
      - Allowed Origins (CORS): http://localhost:3000/
@@ -106,7 +106,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 4. First, login using a valid Auth0 or third-party account. You can also sign up for a new account.
 
-5. Go to the `Products` page from the top nav, add an item to your cart.
+5. Go to the homepage, select a product and payment terms then add it to your cart.
 
 6. Click the Cart icon in the top nav. Review your cart, then click `Checkout Now`.
 

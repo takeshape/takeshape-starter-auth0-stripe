@@ -8,9 +8,9 @@ const dependencies = [
     description: 'A framework for building fast sites and simple API proxies'
   },
   {
-    title: '@auth0/nextjs-auth0',
-    link: 'https://github.com/auth0/nextjs-auth0',
-    description: 'Auth0 bindings for Next.js.'
+    title: '@auth0/auth0-react',
+    link: 'https://github.com/auth0/auth0-react',
+    description: 'Auth0 bindings for React.'
   },
   {
     title: 'Stripe.js',
@@ -54,6 +54,13 @@ function AboutPage() {
         <Paragraph>
           This user account provides users with the ability to review their past purchases, and manage any subscriptions
           they have.
+        </Paragraph>
+
+        <Paragraph>
+          We opted to use the Single Page App approach to Auth0 to make the project as simple as possible to deploy, and
+          to highlight that working with our GraphQL API removes the need for a dedicated backend. The official Auth0
+          Next.js library only makes access tokens available in API routes — we've avoided those entirely so that you
+          can run `npm run export` and host your bundle on any static file service.
         </Paragraph>
       </Section>
 
