@@ -1,22 +1,27 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid, Image } from 'theme-ui';
 import { useAuth0 } from '@auth0/auth0-react';
-import { CartStateContext, CartDispatchContext, removeFromCart, updateCartItem, toggleCart } from 'lib/contexts/cart';
+import { useMutation } from '@apollo/client';
 import { formatPrice } from 'lib/utils/text';
 import { getCheckoutPayload } from 'lib/utils/checkout';
-import { ProductPrice, ProductQuantitySelect } from './products';
-import { useMutation } from 'lib/hooks/use-takeshape';
+import { CreateMyCheckoutSession } from 'lib/queries';
+import { useCart } from 'lib/cart';
 import getStripe from 'lib/utils/stripe';
+import { ProductPrice, ProductQuantitySelect } from './products';
 
 export const CartIcon = () => {
-  const { items: cartItems, isCartReady } = useContext(CartStateContext);
-  const cartDispatch = useContext(CartDispatchContext);
-  const cartQuantity = cartItems.reduce((q, i) => q + i.quantity, 0);
+  const {
+    items,
+    isCartReady,
+    actions: { toggleCart }
+  } = useCart();
+
+  const cartQuantity = items.reduce((q, i) => q + i.quantity, 0);
 
   const handleCartButton = (event) => {
     event.preventDefault();
-    return toggleCart(cartDispatch);
+    toggleCart();
   };
 
   return (
@@ -63,12 +68,15 @@ const CartItem = ({ product, onChangeQuantity, onClickRemove }) => {
 };
 
 export const CartSidebar = () => {
-  const { items, isCartOpen, isCartReady } = useContext(CartStateContext);
-  const { user, loginWithPopup } = useAuth0();
-  const [{ data: checkoutData }, setCheckoutPayload] = useMutation('CreateMyCheckoutSession');
+  const {
+    items,
+    isCartOpen,
+    isCartReady,
+    actions: { removeFromCart, updateCartItem, toggleCart }
+  } = useCart();
 
-  const dispatch = useContext(CartDispatchContext);
-
+  const { user, loginWithRedirect } = useAuth0();
+  const [setCheckoutPayload, { data: checkoutData }] = useMutation(CreateMyCheckoutSession);
   const cartCurrency = items?.[0]?.price?.currency ?? '';
 
   const cartTotal = items
@@ -76,18 +84,21 @@ export const CartSidebar = () => {
     .reduce((prev, current) => prev + current, 0);
 
   const handleRemove = (itemIndex) => {
-    return removeFromCart(dispatch, itemIndex);
+    removeFromCart(itemIndex);
   };
 
   const handleUpdate = (itemIndex, itemPatch) => {
-    return updateCartItem(dispatch, itemIndex, itemPatch);
+    updateCartItem(itemIndex, itemPatch);
   };
 
   const handleCheckout = async () => {
     if (!user) {
-      await loginWithPopup();
+      loginWithRedirect({ redirectTo: window.location.href });
+      return;
     }
-    setCheckoutPayload(getCheckoutPayload(items, '/purchases'));
+    setCheckoutPayload({
+      variables: getCheckoutPayload(items, window.location.href)
+    });
   };
 
   useEffect(() => {
@@ -104,7 +115,7 @@ export const CartSidebar = () => {
 
   const handleCloseButton = (event) => {
     event.preventDefault();
-    return toggleCart(dispatch);
+    toggleCart();
   };
 
   return (

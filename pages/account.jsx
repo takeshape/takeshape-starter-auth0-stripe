@@ -2,10 +2,13 @@ import { Themed, Heading, Divider, Alert, Container, Spinner } from 'theme-ui';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { Page, Section } from 'components/layout';
 import { ProfileForm, CustomerForm } from 'components/forms';
-import { useQuery } from 'lib/hooks/use-takeshape';
+import { useQuery } from '@apollo/client';
+import { GetMyProfile } from 'lib/queries';
+import { useProfile } from 'lib/takeshape';
 
 function AccountPage() {
-  const { data: profileData, error: profileError } = useQuery('GetMyProfile');
+  const { profile } = useProfile();
+  const { data: profileData, error: profileError } = useQuery(GetMyProfile);
 
   return (
     <Page>

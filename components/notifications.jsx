@@ -1,12 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Alert, Close } from 'theme-ui';
-import { CartDispatchContext, CartStateContext, clearCheckoutResult } from 'lib/contexts/cart';
+import { useCart } from 'lib/cart';
 
 const Notifications = () => {
   const [state, setState] = useState({ visible: false, fade: true });
 
-  const dispatch = useContext(CartDispatchContext);
-  const { checkoutResult } = useContext(CartStateContext);
+  const {
+    checkoutResult,
+    actions: { clearCheckoutResult }
+  } = useCart();
 
   let stateTimeout;
   let resultTimeout;
@@ -20,14 +22,14 @@ const Notifications = () => {
     }
 
     setState({ visible: false, fade: false });
-    clearCheckoutResult(dispatch);
+    clearCheckoutResult();
   };
 
   useEffect(() => {
     if (checkoutResult) {
       setState({ visible: true, fade: true });
       stateTimeout = setTimeout(() => setState({ visible: false, fade: true }), 5000);
-      resultTimeout = setTimeout(() => clearCheckoutResult(dispatch), 5500);
+      resultTimeout = setTimeout(() => clearCheckoutResult(), 5500);
     }
   }, [checkoutResult]);
 

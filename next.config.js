@@ -1,7 +1,7 @@
 // https://securityheaders.com
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' 'unsafe-hashes' https://js.stripe.com;
   child-src https://*.stripe.com https://*.stripe.network;
   style-src 'self' 'unsafe-inline' https://*.stripe.com;
   img-src * blob: data: https://*.stripe.com;
@@ -51,6 +51,7 @@ const securityHeaders = [
 ];
 
 module.exports = {
+  trailingSlash: true,
   poweredByHeader: false,
   images: {
     domains: ['files.stripe.com']

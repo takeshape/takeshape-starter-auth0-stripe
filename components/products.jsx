@@ -1,9 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio, Image } from 'theme-ui';
 import orderBy from 'lodash/orderBy';
-import { CartDispatchContext, CartStateContext, addToCart, openCart, toggleCart } from 'lib/contexts/cart';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';
+import { useCart } from 'lib/cart';
 
 const showCartTimeout = 3000;
 const oneTimePurchase = 'one-time';
@@ -73,10 +73,12 @@ export const ProductQuantitySelect = ({ defaultValue, onChange }) => {
 };
 
 export const ProductCard = ({ product }) => {
-  const { name, prices, description, images } = product;
+  const {
+    isCartOpen,
+    actions: { addToCart, openCart, toggleCart }
+  } = useCart();
 
-  const { isCartOpen } = useContext(CartStateContext);
-  const cartDispatch = useContext(CartDispatchContext);
+  const { name, prices, description, images } = product;
 
   if (!prices.length) {
     return null;
@@ -119,11 +121,11 @@ export const ProductCard = ({ product }) => {
   };
 
   const handleAddToCart = () => {
-    addToCart(cartDispatch, { ...product, price, quantity });
+    addToCart({ ...product, price, quantity });
 
     if (!isCartOpen) {
-      openCart(cartDispatch);
-      setTimeout(() => toggleCart(cartDispatch), showCartTimeout);
+      openCart();
+      setTimeout(() => toggleCart(), showCartTimeout);
     }
   };
 

@@ -1,9 +1,9 @@
 import { Themed, Divider, Alert, Spinner, Container } from 'theme-ui';
 import { Page } from 'components/layout';
 import { ProductList } from 'components/products';
-import { createGraphqlRequest } from 'lib/utils/graphql';
 import { takeshapeApiUrl, takeshapeApiKey } from 'lib/config';
 import { GetStripeProducts } from 'lib/queries';
+import { createApolloClient } from 'lib/apollo';
 
 function HomePage({ products, error }) {
   return (
@@ -30,13 +30,15 @@ function HomePage({ products, error }) {
 }
 
 export async function getStaticProps() {
-  const productsQuery = createGraphqlRequest(takeshapeApiUrl, () => takeshapeApiKey, GetStripeProducts);
+  const client = createApolloClient(takeshapeApiUrl, () => takeshapeApiKey);
 
   let products = [];
   let error = null;
 
   try {
-    const data = await productsQuery();
+    const { data } = await client.query({
+      query: GetStripeProducts
+    });
 
     if (data.errors) {
       error = data.errors;

@@ -9,6 +9,7 @@
     "export": "next build && next export"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.5",
     "@auth0/auth0-react": "^1.8.0",
     "@emotion/react": "^11.7.0",
     "@stripe/react-stripe-js": "^1.6.0",

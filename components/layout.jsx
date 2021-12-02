@@ -2,13 +2,11 @@ import { Container, Flex, NavLink, Box, Text, Button } from 'theme-ui';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useAuth0 } from '@auth0/auth0-react';
-import useLogin from 'lib/hooks/use-login';
 import { CartIcon, CartSidebar } from './cart';
 import Notifications from './notifications';
 
 export const Header = () => {
-  const { user, loginWithPopup, logout } = useAuth0();
-  const { login } = useLogin();
+  const { user, loginWithRedirect, logout } = useAuth0();
 
   return (
     <Container as="header">
@@ -36,7 +34,7 @@ export const Header = () => {
           </>
         ) : (
           <Box variant="links.nav">
-            <Button variant="login" onClick={login} p={2} mr={2}>
+            <Button variant="login" onClick={loginWithRedirect} p={2} mr={2}>
               Login
             </Button>
           </Box>

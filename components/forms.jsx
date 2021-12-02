@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex, Select } from 'theme-ui';
+import useCountries from 'lib/countries/use-countries';
+import { useUpload } from 'lib/hooks/use-upload';
 import { buildImageUrl } from 'lib/utils/images';
-import useCountries from 'lib/hooks/use-countries';
+import { useMutation } from '@apollo/client';
+import { UpsertMyCustomer, UpsertMyProfile, GetMyProfile, UploadAssets } from 'lib/queries';
 import { SubmitButton } from './buttons';
-import { useMutation, useUpload } from 'lib/hooks/use-takeshape';
 
 export const CustomerForm = ({ customer }) => {
-  const [{ isLoading }, setCustomerPayload] = useMutation('UpsertMyCustomer', {
-    revalidateQueryName: 'GetMyCustomer'
+  const [setCustomerPayload, { loading }] = useMutation(UpsertMyCustomer, {
+    refetchQueries: [GetMyProfile],
+    awaitRefetchQueries: true
   });
 
   const { register, handleSubmit, watch } = useForm({
@@ -31,7 +34,7 @@ export const CustomerForm = ({ customer }) => {
 
   return (
     <>
-      <Box as="form" onSubmit={handleSubmit(setCustomerPayload)}>
+      <Box as="form" onSubmit={handleSubmit((variables) => setCustomerPayload({ variables }))}>
         <Box mb={4}>
           <Label variant="disabledLabel" htmlFor="id">
             ID
@@ -82,16 +85,17 @@ export const CustomerForm = ({ customer }) => {
           </Box>
         </Box>
 
-        <SubmitButton text="Update" isSubmitting={isLoading} type="submit" />
+        <SubmitButton text="Update" isSubmitting={loading} type="submit" />
       </Box>
     </>
   );
 };
 
 const ProfileAvatarUploadForm = ({ profile }) => {
-  const [{ data: assetsData }, setAssetsPayload] = useMutation('UploadAssets');
-  const [{ isLoading: isUpsertingProfile }, setProfilePayload] = useMutation('UpsertMyProfile', {
-    revalidateQueryName: 'GetMyProfile'
+  const [setAssetsPayload, { data: assetsData }] = useMutation(UploadAssets);
+  const [setProfilePayload, { loading: isUpsertingProfile }] = useMutation(UpsertMyProfile, {
+    refetchQueries: [GetMyProfile],
+    awaitRefetchQueries: true
   });
   const [{ progress }, setUploadUrl, setUploadFile] = useUpload();
 
@@ -103,7 +107,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
     if (file && !isHandlingFile) {
       setIsHandlingFile(true);
       setTotalProgress(0);
-      setAssetsPayload({ files: [{ name: file.name, type: file.type }] });
+      setAssetsPayload({ variables: { files: [{ name: file.name, type: file.type }] } });
     }
   }, [file, isHandlingFile]);
 
@@ -123,7 +127,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
 
   useEffect(() => {
     if (progress === 1 && assetsData?.uploadAssets?.[0]) {
-      setProfilePayload({ avatarId: assetsData.uploadAssets[0].asset._id });
+      setProfilePayload({ variables: { avatarId: assetsData.uploadAssets[0].asset._id } });
       setTotalProgress(1);
     }
   }, [progress, assetsData]);
@@ -164,8 +168,9 @@ const ProfileAvatarUploadForm = ({ profile }) => {
 };
 
 const ProfileTextForm = ({ profile }) => {
-  const [{ isLoading }, setProfilePayload] = useMutation('UpsertMyProfile', {
-    revalidateQueryName: 'GetMyProfile'
+  const [setProfilePayload, { loading }] = useMutation(UpsertMyProfile, {
+    refetchQueries: [GetMyProfile],
+    awaitRefetchQueries: true
   });
 
   const { register, handleSubmit } = useForm({
@@ -179,7 +184,7 @@ const ProfileTextForm = ({ profile }) => {
   });
 
   return (
-    <Box as="form" onSubmit={handleSubmit(setProfilePayload)}>
+    <Box as="form" onSubmit={handleSubmit((variables) => setProfilePayload({ variables }))}>
       <Box mb={4}>
         <Label variant="disabledLabel" htmlFor="id">
           Auth0 ID
@@ -197,7 +202,7 @@ const ProfileTextForm = ({ profile }) => {
         <Textarea {...register('bio')} rows="4" cols="50"></Textarea>
       </Box>
 
-      <SubmitButton type="submit" isSubmitting={isLoading} text="Update" />
+      <SubmitButton type="submit" isSubmitting={loading} text="Update" />
     </Box>
   );
 };

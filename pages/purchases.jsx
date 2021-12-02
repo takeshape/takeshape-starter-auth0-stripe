@@ -3,11 +3,12 @@ import { Themed, Heading, Divider, Alert, Spinner, Container } from 'theme-ui';
 import { Page, Section } from 'components/layout';
 import { SubscriptionList } from 'components/subscriptions';
 import { PaymentList } from 'components/payments';
-import useTakeshape from 'lib/hooks/use-takeshape';
+import { useQuery } from '@apollo/client';
+import { GetMySubscriptions, GetMyPayments } from 'lib/queries';
 
 function PurchasesPage() {
-  const { data: subscriptionsData, error: subscriptionsError } = useTakeshape('GetMySubscriptions');
-  const { data: paymentsData, error: paymentsError } = useTakeshape('GetMyPayments');
+  const { data: subscriptionsData, error: subscriptionsError } = useQuery(GetMySubscriptions);
+  const { data: paymentsData, error: paymentsError } = useQuery(GetMyPayments);
 
   return (
     <Page>

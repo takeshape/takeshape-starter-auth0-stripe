@@ -1,32 +1,30 @@
 import { useState } from 'react';
-import { Grid, Box, Card, Heading, Paragraph, Text } from 'theme-ui';
+import { Grid, Box, Card, Heading, Paragraph, Text, Alert } from 'theme-ui';
+import { useMutation } from '@apollo/client';
 import { formatPrice } from 'lib/utils/text';
+import { DeleteMySubscription, GetMySubscriptions } from 'lib/queries';
 import { locale } from 'lib/config';
 import { SubmitButton } from './buttons';
 import { ProductImage } from './products';
-import { useMutation } from 'lib/hooks/use-takeshape';
 
 export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
-  const [canceling, setCanceling] = useState(false);
-  const [{ error: deleteError }, setDeletePayload] = useMutation('DeleteMySubscription', {
-    revalidateQueryName: 'GetMySubscriptions'
+  const [setCancelPayload, { error: cancelError, loading: cancelLoading }] = useMutation(DeleteMySubscription, {
+    refetchQueries: [GetMySubscriptions],
+    awaitRefetchQueries: true
   });
 
-  const { current_period_end } = subscription;
-  const nextBillDate = new Date(current_period_end * 1000);
+  const { current_period_end: currentPeriodEnd } = subscription;
+  const nextBillDate = new Date(currentPeriodEnd * 1000);
 
   const {
     price: { product, ...price }
   } = subscriptionItem;
 
   const handleCancelSubscription = () => {
-    setCanceling(true);
-    setDeletePayload({ subscriptionId: subscription.id });
+    setCancelPayload({
+      variables: { subscriptionId: subscription.id }
+    });
   };
-
-  if (deleteError) {
-    setCanceling(false);
-  }
 
   return (
     <Card>
@@ -42,14 +40,14 @@ export const SubscriptionItemCard = ({ subscription, subscriptionItem }) => {
         <Text>{nextBillDate.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric' })}</Text>
       </Paragraph>
 
-      {deleteError && (
+      {cancelError && (
         <>
-          <Alert>Error deleting Stripe subscription</Alert>
-          <pre style={{ color: 'red' }}>{JSON.stringify(deleteError, null, 2)}</pre>
+          <Alert>Error canceling Stripe subscription</Alert>
+          <pre style={{ color: 'red' }}>{JSON.stringify(cancelError, null, 2)}</pre>
         </>
       )}
 
-      <SubmitButton text="Cancel" onClick={handleCancelSubscription} isSubmitting={canceling} />
+      <SubmitButton text="Cancel" onClick={handleCancelSubscription} isSubmitting={cancelLoading} />
     </Card>
   );
 };
