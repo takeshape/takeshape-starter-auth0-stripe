@@ -7,8 +7,10 @@ import { GetMyProfile } from 'lib/queries';
 import { useProfile } from 'lib/takeshape';
 
 function AccountPage() {
-  const { profile } = useProfile();
-  const { data: profileData, error: profileError } = useQuery(GetMyProfile);
+  const { isProfileReady } = useProfile();
+  const { data: profileData, error: profileError } = useQuery(GetMyProfile, {
+    skip: !isProfileReady
+  });
 
   return (
     <Page>
@@ -19,11 +21,7 @@ function AccountPage() {
         <Heading>TakeShape Profile</Heading>
         <Divider />
 
-        {!profileData && (
-          <Container variant="layout.loading">
-            <Spinner />
-          </Container>
-        )}
+        {!profileData && <Spinner />}
 
         {profileData && <ProfileForm profile={profileData.profile} />}
       </Section>
@@ -32,11 +30,7 @@ function AccountPage() {
         <Heading>Stripe Customer</Heading>
         <Divider />
 
-        {!profileData && (
-          <Container variant="layout.loading">
-            <Spinner />
-          </Container>
-        )}
+        {!profileData && <Spinner />}
 
         {profileData && <CustomerForm customer={profileData.profile.customer} />}
       </Section>

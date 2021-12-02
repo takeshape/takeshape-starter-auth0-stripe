@@ -5,10 +5,13 @@ import { SubscriptionList } from 'components/subscriptions';
 import { PaymentList } from 'components/payments';
 import { useQuery } from '@apollo/client';
 import { GetMySubscriptions, GetMyPayments } from 'lib/queries';
+import { useProfile } from 'lib/takeshape';
 
 function PurchasesPage() {
-  const { data: subscriptionsData, error: subscriptionsError } = useQuery(GetMySubscriptions);
-  const { data: paymentsData, error: paymentsError } = useQuery(GetMyPayments);
+  const { isProfileReady } = useProfile();
+  const skip = !isProfileReady;
+  const { data: subscriptionsData, error: subscriptionsError } = useQuery(GetMySubscriptions, { skip });
+  const { data: paymentsData, error: paymentsError } = useQuery(GetMyPayments, { skip });
 
   return (
     <Page>
@@ -19,11 +22,7 @@ function PurchasesPage() {
         <Heading id="subscriptions">Active Subscriptions</Heading>
         <Divider />
 
-        {!subscriptionsData && (
-          <Container variant="layout.loading">
-            <Spinner />
-          </Container>
-        )}
+        {!subscriptionsData && <Spinner />}
 
         {subscriptionsData && <SubscriptionList subscriptions={subscriptionsData.subscriptions} />}
 
@@ -39,11 +38,7 @@ function PurchasesPage() {
         <Heading id="payments">Past Payments</Heading>
         <Divider />
 
-        {!paymentsData && (
-          <Container variant="layout.loading">
-            <Spinner />
-          </Container>
-        )}
+        {!paymentsData && <Spinner />}
 
         {paymentsData && <PaymentList payments={paymentsData.payments} />}
 

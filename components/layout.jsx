@@ -1,12 +1,13 @@
-import { Container, Flex, NavLink, Box, Text, Button } from 'theme-ui';
+import { Container, Flex, NavLink, Box, Text } from 'theme-ui';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useAuth0 } from '@auth0/auth0-react';
 import { CartIcon, CartSidebar } from './cart';
 import Notifications from './notifications';
+import { Logout, Login } from './user';
 
 export const Header = () => {
-  const { user, loginWithRedirect, logout } = useAuth0();
+  const { user } = useAuth0();
 
   return (
     <Container as="header">
@@ -27,16 +28,12 @@ export const Header = () => {
               <NavLink p={2}>Purchases</NavLink>
             </Link>
             <Box variant="links.nav">
-              <Button variant="logout" onClick={logout} p={2} mr={2}>
-                Logout
-              </Button>
+              <Logout />
             </Box>
           </>
         ) : (
           <Box variant="links.nav">
-            <Button variant="login" onClick={loginWithRedirect} p={2} mr={2}>
-              Login
-            </Button>
+            <Login />
           </Box>
         )}
         <Box variant="links.nav">

@@ -177,8 +177,7 @@ const ProfileTextForm = ({ profile }) => {
     defaultValues: {
       id: profile?.id || '',
       email: profile?.email || '',
-      firstName: profile?.firstName || '',
-      lastName: profile?.lastName || '',
+      name: profile?.name || '',
       bio: profile?.bio || ''
     }
   });
@@ -194,10 +193,8 @@ const ProfileTextForm = ({ profile }) => {
           Email
         </Label>
         <Input {...register('email')} mb={3} readOnly />
-        <Label htmlFor="firstName">First Name</Label>
-        <Input {...register('firstName')} mb={3} />
-        <Label htmlFor="lastName">Last Name</Label>
-        <Input {...register('lastName')} mb={3} />
+        <Label htmlFor="name">Name</Label>
+        <Input {...register('name')} mb={3} />
         <Label htmlFor="bio">Bio</Label>
         <Textarea {...register('bio')} rows="4" cols="50"></Textarea>
       </Box>

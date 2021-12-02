@@ -2,12 +2,53 @@
   "apiVersion": "2",
   "dataKey": "AQIDAHi9nATJb1LYgj5u7ShOGp43y2H6TuckRKGDlwTU4b6ryQHpD1ExP5EeUSOHKV9LG+ofAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUCghZNs1AGoyxZ8MAgEQgDuRWxn8sl1YiM0CkUifGRkgeXzEU0/2IDozZfB4uuketCRxaEqcxBzh6l7lrIJAKkPOQGTYQD32doiYog==",
   "projectId": "79b5254d-5bc3-4034-8b05-e9c2f097de5a",
-  "version": 149,
+  "version": 163,
   "created": "2021-06-08T13:12:26.923Z",
-  "updated": "2021-11-18T22:28:23.105Z",
+  "updated": "2021-12-02T22:33:34.205Z",
   "defaultLocale": "en-us",
   "locales": ["en-us"],
-  "schemaVersion": "3.9.0",
+  "workflows": {},
+  "forms": {
+    "Profile": {
+      "default": {
+        "properties": {
+          "id": { "widget": "singleLineText" },
+          "name": { "widget": "singleLineText" },
+          "email": { "widget": "singleLineText" },
+          "bio": { "widget": "paragraphText" },
+          "avatar": { "widget": "image" },
+          "stripeCustomerId": { "widget": "singleLineText" }
+        },
+        "order": ["id", "name", "email", "bio", "avatar", "stripeCustomerId"]
+      }
+    }
+  },
+  "services": {
+    "auth-0": {
+      "id": "auth-0",
+      "provider": "auth0",
+      "title": "auth0",
+      "serviceType": "authentication",
+      "authenticationType": "none",
+      "options": {
+        "domain": "dev-by9w1mxg.us.auth0.com",
+        "audience": "https://api.takeshape.io/project/79b5254d-5bc3-4034-8b05-e9c2f097de5a/auth-0"
+      }
+    },
+    "stripe": {
+      "id": "stripe",
+      "provider": "stripe",
+      "title": "Stripe",
+      "namespace": "Stripe",
+      "serviceType": "openapi",
+      "authenticationType": "bearer",
+      "authentication": "p9DgOOYDpr8i3/35NMZ7wgci2HQj0uQyQVugZ22+kqWUl1sIusqmpPzJCsrXTN6FxreMcWCn3BFTuHXv9epMjzQROnM8PNvAsih6PUkiuGHeHvoKiXfNyvjrvZwuXMxWuyVPrm/ONuKQclds2cNrBdyzMeLwi9T3iJhY+nWm6tJC5XfLiVMJ+rlFr9UoT4uWRceXI2bzz3TvfYSB8Abryr2V/g9G+5uCaSgsFrqVP67v8g==",
+      "options": {
+        "endpoint": "https://api.stripe.com/",
+        "spec": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
+      }
+    }
+  },
   "queries": {
     "getMyProfile": {
       "shape": "Profile",
@@ -56,9 +97,7 @@
       "description": "Get my subscriptions",
       "args": {
         "type": "object",
-        "properties": {
-          "expand": { "type": "array", "items": { "type": "string" } }
-        }
+        "properties": { "expand": { "type": "array", "items": { "type": "string" } } }
       }
     },
     "getMyInvoices": {
@@ -87,7 +126,9 @@
                   "mapping": "$resolvers.profile.stripeCustomerId"
                 }
               ],
-              "serialize": { "defaults": { "style": "deepObject", "explode": true } }
+              "serialize": {
+                "defaults": { "style": "deepObject", "explode": true }
+              }
             }
           }
         ],
@@ -100,7 +141,10 @@
         "type": "object",
         "properties": {
           "expand": { "type": "array", "items": { "type": "string" } },
-          "status": { "type": "string", "enum": ["draft", "open", "paid", "uncollectable", "void"] },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "open", "paid", "uncollectable", "void"]
+          },
           "limit": { "type": "number" },
           "created": {},
           "startingAfter": { "type": "string" }
@@ -135,7 +179,9 @@
                   "mapping": "$resolvers.profile.stripeCustomerId"
                 }
               ],
-              "serialize": { "defaults": { "style": "deepObject", "explode": true } }
+              "serialize": {
+                "defaults": { "style": "deepObject", "explode": true }
+              }
             }
           }
         ],
@@ -144,7 +190,12 @@
             {
               "path": "$",
               "mapping": [
-                ["expressionEval", { "expression": "filter(['status', 'succeeded'], $resolvers.payments.data)" }]
+                [
+                  "expressionEval",
+                  {
+                    "expression": "filter(['status', 'succeeded'], $resolvers.payments.data)"
+                  }
+                ]
               ]
             }
           ]
@@ -245,6 +296,29 @@
             "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
           },
           {
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId)",
+            "id": "existingCustomerByEmail",
+            "name": "rest:get",
+            "service": "stripe",
+            "path": "/v1/customers",
+            "searchParams": {
+              "ops": [{ "path": "email", "mapping": "$claims.email" }]
+            }
+          },
+          {
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId) && isEmpty($resolvers.existingCustomerByEmail.id)",
+            "id": "createCustomer",
+            "name": "rest:post",
+            "service": "stripe",
+            "path": "/v1/customers",
+            "form": {
+              "ops": [{ "path": "email", "mapping": "$claims.email" }],
+              "serialize": {
+                "defaults": { "style": "deepObject", "explode": true }
+              }
+            }
+          },
+          {
             "if": "isEmpty($resolvers.existingProfile)",
             "id": "createProfile",
             "name": "takeshape:create",
@@ -254,10 +328,16 @@
               "ops": [
                 { "path": "input.id", "mapping": "$claims.sub" },
                 { "path": "input.email", "mapping": "$claims.email" },
-                { "path": "input.firstName", "mapping": "$args.firstName" },
-                { "path": "input.lastName", "mapping": "$args.lastName" },
+                { "path": "input.name", "mapping": "$args.name" },
                 { "path": "input.bio", "mapping": "$args.bio" },
-                { "path": "input.avatar.id", "mapping": "$args.avatarId" }
+                { "path": "input.avatar.id", "mapping": "$args.avatarId" },
+                {
+                  "path": "input.stripeCustomerId",
+                  "mapping": [
+                    ["get", { "path": "$resolvers.existingCustomerByEmail.id" }],
+                    ["get", { "path": "$resolvers.createCustomer.id" }]
+                  ]
+                }
               ]
             }
           },
@@ -274,10 +354,17 @@
                   "mapping": "$resolvers.existingProfile._id"
                 },
                 { "path": "input.email", "mapping": "$claims.email" },
-                { "path": "input.firstName", "mapping": "$args.firstName" },
-                { "path": "input.lastName", "mapping": "$args.lastName" },
+                { "path": "input.name", "mapping": "$args.name" },
                 { "path": "input.bio", "mapping": "$args.bio" },
-                { "path": "input.avatar.id", "mapping": "$args.avatarId" }
+                { "path": "input.avatar.id", "mapping": "$args.avatarId" },
+                {
+                  "path": "input.stripeCustomerId",
+                  "mapping": [
+                    ["get", { "path": "$resolvers.existingProfile.stripeCustomerId" }],
+                    ["get", { "path": "$resolvers.existingCustomerByEmail.id" }],
+                    ["get", { "path": "$resolvers.createCustomer.id" }]
+                  ]
+                }
               ]
             }
           }
@@ -287,8 +374,7 @@
       "args": {
         "type": "object",
         "properties": {
-          "firstName": { "type": "string" },
-          "lastName": { "type": "string" },
+          "name": { "type": "string" },
           "bio": { "type": "string" },
           "avatarId": { "type": "string" }
         }
@@ -298,7 +384,7 @@
       "shape": "stripe:Customer",
       "resolver": {
         "results": {
-          "ops": [{ "path": "$", "mapping": "$steps.updatedCustomer" }]
+          "ops": [{ "path": "$", "mapping": "$resolvers.updatedCustomer" }]
         },
         "compose": [
           {
@@ -354,16 +440,11 @@
             },
             "form": {
               "ops": [
-                { "path": "email", "mapping": "$claims.email" },
-                { "path": "name", "mapping": "$args.name" },
-                { "path": "description", "mapping": "$args.description" },
-                { "path": "address", "mapping": "$args.address" }
+                { "path": "$", "mapping": "$args" },
+                { "path": "email", "mapping": "$claims.email" }
               ],
               "serialize": {
-                "defaults": {
-                  "style": "deepObject",
-                  "explode": true
-                }
+                "defaults": { "style": "deepObject", "explode": true }
               }
             }
           },
@@ -503,7 +584,10 @@
         "type": "object",
         "properties": {
           "redirectUrl": { "type": "string" },
-          "mode": { "type": "string", "enum": ["payment", "subscription", "setup"] },
+          "mode": {
+            "type": "string",
+            "enum": ["payment", "subscription", "setup"]
+          },
           "lineItems": {
             "type": "array",
             "items": {
@@ -625,19 +709,12 @@
             "title": "ID",
             "@mapping": "takeshape:local:Profile.zCUrxUP8h"
           },
-          "firstName": {
+          "name": {
             "minLength": 0,
             "type": "string",
             "description": "",
-            "title": "First Name",
+            "title": "Name",
             "@mapping": "takeshape:local:Profile.-DrKuNqxZ"
-          },
-          "lastName": {
-            "minLength": 0,
-            "type": "string",
-            "description": "",
-            "title": "Last Name",
-            "@mapping": "takeshape:local:Profile.02oCExZgT"
           },
           "email": {
             "minLength": 0,
@@ -674,19 +751,10 @@
             "@resolver": {
               "name": "rest:get",
               "service": "stripe",
-              "options": {
-                "ignoreErrors": true
-              },
+              "options": { "ignoreErrors": true },
               "path": {
-                "ops": [
-                  {
-                    "path": "customer",
-                    "mapping": "$source.stripeCustomerId"
-                  }
-                ],
-                "serialize": {
-                  "template": "/v1/customers/{customer}"
-                }
+                "ops": [{ "path": "customer", "mapping": "$source.stripeCustomerId" }],
+                "serialize": { "template": "/v1/customers/{customer}" }
               }
             }
           }
@@ -694,47 +762,5 @@
       }
     }
   },
-  "workflows": {},
-  "forms": {
-    "Profile": {
-      "default": {
-        "properties": {
-          "id": { "widget": "singleLineText" },
-          "firstName": { "widget": "singleLineText" },
-          "lastName": { "widget": "singleLineText" },
-          "email": { "widget": "singleLineText" },
-          "bio": { "widget": "paragraphText" },
-          "avatar": { "widget": "image" },
-          "stripeCustomerId": { "widget": "singleLineText" }
-        },
-        "order": ["id", "firstName", "lastName", "email", "bio", "avatar", "stripeCustomerId"]
-      }
-    }
-  },
-  "services": {
-    "auth-0": {
-      "id": "auth-0",
-      "provider": "auth0",
-      "title": "auth0",
-      "serviceType": "authentication",
-      "authenticationType": "none",
-      "options": {
-        "domain": "dev-by9w1mxg.us.auth0.com",
-        "audience": "https://api.takeshape.io/project/79b5254d-5bc3-4034-8b05-e9c2f097de5a/auth-0"
-      }
-    },
-    "stripe": {
-      "id": "stripe",
-      "provider": "stripe",
-      "title": "Stripe",
-      "namespace": "Stripe",
-      "serviceType": "openapi",
-      "authenticationType": "bearer",
-      "authentication": "p9DgOOYDpr8i3/35NMZ7wgci2HQj0uQyQVugZ22+kqWUl1sIusqmpPzJCsrXTN6FxreMcWCn3BFTuHXv9epMjzQROnM8PNvAsih6PUkiuGHeHvoKiXfNyvjrvZwuXMxWuyVPrm/ONuKQclds2cNrBdyzMeLwi9T3iJhY+nWm6tJC5XfLiVMJ+rlFr9UoT4uWRceXI2bzz3TvfYSB8Abryr2V/g9G+5uCaSgsFrqVP67v8g==",
-      "options": {
-        "endpoint": "https://api.stripe.com/",
-        "spec": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
-      }
-    }
-  }
+  "schemaVersion": "3.10.0"
 }
