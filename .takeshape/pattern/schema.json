@@ -30,10 +30,7 @@
       "title": "auth0",
       "serviceType": "authentication",
       "authenticationType": "none",
-      "options": {
-        "domain": "dev-by9w1mxg.us.auth0.com",
-        "audience": "https://api.takeshape.io/project/79b5254d-5bc3-4034-8b05-e9c2f097de5a/auth-0"
-      }
+      "options": {}
     },
     "stripe": {
       "id": "stripe",
@@ -42,7 +39,6 @@
       "namespace": "Stripe",
       "serviceType": "openapi",
       "authenticationType": "bearer",
-      "authentication": "p9DgOOYDpr8i3/35NMZ7wgci2HQj0uQyQVugZ22+kqWUl1sIusqmpPzJCsrXTN6FxreMcWCn3BFTuHXv9epMjzQROnM8PNvAsih6PUkiuGHeHvoKiXfNyvjrvZwuXMxWuyVPrm/ONuKQclds2cNrBdyzMeLwi9T3iJhY+nWm6tJC5XfLiVMJ+rlFr9UoT4uWRceXI2bzz3TvfYSB8Abryr2V/g9G+5uCaSgsFrqVP67v8g==",
       "options": {
         "endpoint": "https://api.stripe.com/",
         "spec": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
