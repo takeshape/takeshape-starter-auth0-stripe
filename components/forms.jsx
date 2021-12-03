@@ -14,20 +14,11 @@ export const CustomerForm = ({ customer }) => {
     awaitRefetchQueries: true
   });
 
-  const { register, handleSubmit, watch } = useForm({
-    defaultValues: {
-      id: customer?.id ?? '',
-      name: customer?.name ?? '',
-      address: {
-        line1: customer?.address?.line1 ?? '',
-        line2: customer?.address?.line2 ?? '',
-        city: customer?.address?.city ?? '',
-        state: customer?.address?.state ?? '',
-        postal_code: customer?.address?.postal_code ?? '',
-        country: customer?.address?.country ?? ''
-      }
-    }
-  });
+  const { register, handleSubmit, watch, reset } = useForm();
+
+  useEffect(() => {
+    reset(customer);
+  }, [customer]);
 
   const countries = useCountries();
   const watchCountry = watch('address.country');
@@ -41,7 +32,7 @@ export const CustomerForm = ({ customer }) => {
           </Label>
           <Input {...register('id')} mb={3} readOnly />
           <Label htmlFor="name">Name</Label>
-          <Input {...register('name')} mb={3} />
+          <Input {...register('name')} mb={3} readOnly />
           <Label htmlFor="address.country">Country</Label>
 
           {countries?.length ? (
@@ -173,14 +164,11 @@ const ProfileTextForm = ({ profile }) => {
     awaitRefetchQueries: true
   });
 
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      id: profile?.id || '',
-      email: profile?.email || '',
-      name: profile?.name || '',
-      bio: profile?.bio || ''
-    }
-  });
+  const { register, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    reset(profile);
+  }, [profile]);
 
   return (
     <Box as="form" onSubmit={handleSubmit((variables) => setProfilePayload({ variables }))}>

@@ -293,10 +293,12 @@
             "name": "takeshape:find",
             "service": "takeshape:local",
             "shapeName": "Profile",
-            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+            "args": {
+              "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }]
+            }
           },
           {
-            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId)",
+            "if": "!isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId)",
             "id": "existingCustomerByEmail",
             "name": "rest:get",
             "service": "stripe",
@@ -306,20 +308,52 @@
             }
           },
           {
-            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId) && isEmpty($resolvers.existingCustomerByEmail.id)",
+            "if": "!isEmpty($claims.email) && isEmpty($resolvers.existingProfile.stripeCustomerId) && isEmpty($resolvers.existingCustomerByEmail.data[0].id)",
             "id": "createCustomer",
             "name": "rest:post",
             "service": "stripe",
             "path": "/v1/customers",
             "form": {
-              "ops": [{ "path": "email", "mapping": "$claims.email" }],
+              "ops": [
+                { "path": "email", "mapping": "$claims.email" },
+                { "path": "name", "mapping": "$args.name" }
+              ],
               "serialize": {
                 "defaults": { "style": "deepObject", "explode": true }
               }
             }
           },
           {
-            "if": "isEmpty($resolvers.existingProfile)",
+            "if": "!isEmpty($claims.sub) && (!isEmpty($resolvers.existingProfile.stripeCustomerId) || !isEmpty($resolvers.existingCustomerByEmail.data[0].id)) && isEmpty($resolvers.createCustomer)",
+            "id": "updateCustomer",
+            "name": "rest:post",
+            "service": "stripe",
+            "path": {
+              "ops": [
+                {
+                  "path": "customer",
+                  "mapping": [
+                    ["get", { "path": "$resolvers.existingCustomerByEmail.data[0].id" }],
+                    ["get", { "path": "$resolvers.existingProfile.stripeCustomerId" }]
+                  ]
+                }
+              ],
+              "serialize": {
+                "template": "/v1/customers/{customer}"
+              }
+            },
+            "form": {
+              "ops": [
+                { "path": "email", "mapping": "$claims.email" },
+                { "path": "name", "mapping": "$args.name" }
+              ],
+              "serialize": {
+                "defaults": { "style": "deepObject", "explode": true }
+              }
+            }
+          },
+          {
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && isEmpty($resolvers.existingProfile)",
             "id": "createProfile",
             "name": "takeshape:create",
             "service": "takeshape:local",
@@ -334,7 +368,7 @@
                 {
                   "path": "input.stripeCustomerId",
                   "mapping": [
-                    ["get", { "path": "$resolvers.existingCustomerByEmail.id" }],
+                    ["get", { "path": "$resolvers.existingCustomerByEmail.data[0].id" }],
                     ["get", { "path": "$resolvers.createCustomer.id" }]
                   ]
                 }
@@ -342,7 +376,7 @@
             }
           },
           {
-            "if": "!isEmpty($resolvers.existingProfile)",
+            "if": "!isEmpty($claims.sub) && !isEmpty($claims.email) && !isEmpty($resolvers.existingProfile)",
             "id": "updateProfile",
             "name": "takeshape:update",
             "service": "takeshape:local",
@@ -361,7 +395,7 @@
                   "path": "input.stripeCustomerId",
                   "mapping": [
                     ["get", { "path": "$resolvers.existingProfile.stripeCustomerId" }],
-                    ["get", { "path": "$resolvers.existingCustomerByEmail.id" }],
+                    ["get", { "path": "$resolvers.existingCustomerByEmail.data[0].id" }],
                     ["get", { "path": "$resolvers.createCustomer.id" }]
                   ]
                 }

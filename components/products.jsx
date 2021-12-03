@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio, Image } from 'theme-ui';
+import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio, AspectImage, Flex } from 'theme-ui';
 import orderBy from 'lodash/orderBy';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';
@@ -18,14 +18,14 @@ export const ProductPrice = ({ price, quantity }) => {
     `every ${pluralizeText(price.recurring.intervalCount, price.recurring.interval, `${price.recurring.interval}s`)}`;
 
   return (
-    <Box>
+    <Box sx={{ fontWeight: 'bold' }}>
       {formatPrice(price.currency, price.unitAmount * quantity)} {recurringText}
     </Box>
   );
 };
 
 export const ProductImage = ({ images }) => {
-  return images?.[0] ? <Image src={images[0]} width={300} height={300} objectFit="fill" /> : null;
+  return images?.[0] ? <AspectImage src={images[0]} ratio={1} /> : null;
 };
 
 export const ProductPaymentToggle = ({ purchaseType, onChange }) => {
@@ -130,33 +130,41 @@ export const ProductCard = ({ product }) => {
   };
 
   return (
-    <Card>
-      <ProductImage images={images} />
+    <Card sx={{ height: '100%' }}>
+      <Flex sx={{ height: '100%', flexDirection: 'column' }}>
+        <Box>
+          <ProductImage images={images} />
+        </Box>
+        <Box>
+          <Heading>{name}</Heading>
+        </Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <Paragraph>{description}</Paragraph>
+        </Box>
+        <Box>
+          <ProductPrice price={price} />
 
-      <Heading>{name}</Heading>
-      <Paragraph>{description}</Paragraph>
+          {oneTimePayment && recurringPayments.length ? (
+            <ProductPaymentToggle purchaseType={purchaseType} onChange={handleUpdatePurchaseType} />
+          ) : null}
 
-      <ProductPrice price={price} />
+          {recurringPayments.length ? (
+            <ProductRecurringSelect
+              currentPrice={price}
+              recurringPayments={recurringPayments}
+              onChange={handleUpdateRecurring}
+            />
+          ) : null}
 
-      {oneTimePayment && recurringPayments.length ? (
-        <ProductPaymentToggle purchaseType={purchaseType} onChange={handleUpdatePurchaseType} />
-      ) : null}
-
-      {recurringPayments.length ? (
-        <ProductRecurringSelect
-          currentPrice={price}
-          recurringPayments={recurringPayments}
-          onChange={handleUpdateRecurring}
-        />
-      ) : null}
-
-      <Box>Quantity</Box>
-      <Grid columns={[2]}>
-        <ProductQuantitySelect onChange={handleUpdateQuantity} />
-        <Button type="button" onClick={handleAddToCart}>
-          <small>ADD TO CART</small>
-        </Button>
-      </Grid>
+          <Box>Quantity</Box>
+          <Grid columns={[2]}>
+            <ProductQuantitySelect onChange={handleUpdateQuantity} />
+            <Button type="button" onClick={handleAddToCart}>
+              <small>ADD TO CART</small>
+            </Button>
+          </Grid>
+        </Box>
+      </Flex>
     </Card>
   );
 };
@@ -165,9 +173,9 @@ export const ProductList = ({ products }) => {
   return (
     <>
       {products.length ? (
-        <Grid gap={2} columns={3}>
+        <Grid gap={2} columns={3} sx={{ gridAutoRows: '1fr' }}>
           {products.map((product) => (
-            <Box key={product.id}>
+            <Box key={product.id} sx={{ height: '100%' }}>
               <ProductCard product={product} />
             </Box>
           ))}
