@@ -51,7 +51,6 @@ const securityHeaders = [
 ];
 
 module.exports = {
-  trailingSlash: true,
   poweredByHeader: false,
   images: {
     domains: ['files.stripe.com']

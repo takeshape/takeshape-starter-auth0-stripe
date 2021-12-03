@@ -93,7 +93,7 @@ export const CartSidebar = () => {
 
   const handleCheckout = async () => {
     if (!user) {
-      loginWithRedirect({ redirectTo: window.location.href });
+      loginWithRedirect({ appState: { returnTo: '/_checkout' } });
       return;
     }
     setCheckoutPayload({
