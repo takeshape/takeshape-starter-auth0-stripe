@@ -27,6 +27,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     setPersistedCartItems(state.items);
     setCartIsReady(dispatch);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(state.items)]);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export const CartProvider = ({ children }) => {
     if (action === stripeCheckoutActionSuccess) {
       clearCart(dispatch);
     }
-  }, [action]);
+  }, [action, pathname, query, replace]);
 
   return (
     <CartDispatchContext.Provider value={dispatch}>

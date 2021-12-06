@@ -47,7 +47,7 @@ function AboutPage() {
 
       <Section>
         <Paragraph>
-          This project demonstrates using <Link to="https://auth0.com">Auth0</Link> to manage a user's account and make
+          This project demonstrates using <Link to="https://auth0.com">Auth0</Link> to manage a user‘s account and make
           purchases through <Link to="https://stripe.com">Stripe</Link>.
         </Paragraph>
 
@@ -59,7 +59,7 @@ function AboutPage() {
         <Paragraph>
           We opted to use the Single Page App approach to Auth0 to make the project as simple as possible to deploy, and
           to highlight that working with our GraphQL API removes the need for a dedicated backend. The official Auth0
-          Next.js library only makes access tokens available in API routes — we've avoided those entirely so that you
+          Next.js library only makes access tokens available in API routes — we‘ve avoided those entirely so that you
           can run `npm run export` and host your bundle on any static file service.
         </Paragraph>
       </Section>

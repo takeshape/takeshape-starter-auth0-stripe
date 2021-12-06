@@ -18,7 +18,7 @@ export const CustomerForm = ({ customer }) => {
 
   useEffect(() => {
     reset(customer);
-  }, [customer]);
+  }, [customer, reset]);
 
   const countries = useCountries();
   const watchCountry = watch('address.country');
@@ -100,7 +100,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
       setTotalProgress(0);
       setAssetsPayload({ variables: { files: [{ name: file.name, type: file.type }] } });
     }
-  }, [file, isHandlingFile]);
+  }, [file, isHandlingFile, setAssetsPayload]);
 
   useEffect(() => {
     if (file && assetsData?.uploadAssets?.[0]) {
@@ -108,7 +108,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
       setUploadFile(file);
       setTotalProgress(0.25);
     }
-  }, [file, assetsData]);
+  }, [file, assetsData, setUploadUrl, setUploadFile]);
 
   useEffect(() => {
     if (progress !== null) {
@@ -121,7 +121,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
       setProfilePayload({ variables: { avatarId: assetsData.uploadAssets[0].asset._id } });
       setTotalProgress(1);
     }
-  }, [progress, assetsData]);
+  }, [progress, assetsData, setProfilePayload]);
 
   useEffect(() => {
     if (isUpsertingProfile === false) {
@@ -168,7 +168,7 @@ const ProfileTextForm = ({ profile }) => {
 
   useEffect(() => {
     reset(profile);
-  }, [profile]);
+  }, [profile, reset]);
 
   return (
     <Box as="form" onSubmit={handleSubmit((variables) => setProfilePayload({ variables }))}>

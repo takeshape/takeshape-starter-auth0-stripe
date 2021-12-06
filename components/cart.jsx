@@ -47,7 +47,7 @@ const CartItem = ({ product, onChangeQuantity, onClickRemove }) => {
     <Box variant="cart.item">
       <Grid variant="cart.itemGrid" gap={2} columns={[3, '0.5fr 2fr 0.5fr']}>
         <Box>
-          {product.images?.[0] ? <Image src={product.images?.[0]} width={100} height={100} objectFit="fill" /> : ''}
+          {product.images?.[0] ? <Image alt={`Image of ${product.name}`} src={product.images?.[0]} width={100} height={100} objectFit="fill" /> : ''}
         </Box>
         <Box>
           <div>

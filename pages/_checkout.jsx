@@ -30,7 +30,7 @@ function _CheckoutPage() {
     if (isProfileReady) {
       doCheckout();
     }
-  }, [items, isProfileReady]);
+  }, [client, items, isProfileReady]);
 
   return (
     <Container variant="layout.loading">

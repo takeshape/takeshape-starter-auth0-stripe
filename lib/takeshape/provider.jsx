@@ -19,7 +19,7 @@ export const TakeshapeProvider = ({ children }) => {
     if (user && !profileUpdating && !profileData) {
       upsertMyProfile();
     }
-  }, [user, profileData, profileUpdating]);
+  }, [user, profileData, profileUpdating, upsertMyProfile]);
 
   return (
     <TakeshapeContext.Provider

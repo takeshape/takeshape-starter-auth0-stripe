@@ -80,20 +80,20 @@ export const ProductCard = ({ product }) => {
 
   const { name, prices, description, images } = product;
 
-  if (!prices.length) {
-    return null;
-  }
-
-  const oneTimePayment = prices.find((p) => !p.recurring);
+  const oneTimePayment = prices?.find((p) => !p.recurring);
   const recurringPayments = orderBy(
-    prices.filter((p) => p.recurring),
+    prices?.filter((p) => p.recurring),
     [(v) => intervalOrderMap.indexOf(v.recurring.interval), 'recurring.intervalCount'],
     ['asc', 'asc']
   );
 
   const [purchaseType, setPurchaseType] = useState(oneTimePayment ? oneTimePurchase : recurringPurchase);
   const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState(oneTimePayment ? oneTimePayment : recurringPayments[0]);
+  const [price, setPrice] = useState(oneTimePayment ? oneTimePayment : recurringPayments?.[0]);
+
+  if (!prices.length) {
+    return null;
+  }
 
   const findPriceById = (priceId) => prices.find((p) => p.id === priceId);
 
