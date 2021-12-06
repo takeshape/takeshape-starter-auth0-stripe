@@ -28,7 +28,9 @@ const Notifications = () => {
   useEffect(() => {
     if (checkoutResult) {
       setState({ visible: true, fade: true });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       stateTimeout = setTimeout(() => setState({ visible: false, fade: true }), 5000);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       resultTimeout = setTimeout(() => clearCheckoutResult(), 5500);
     }
   }, [checkoutResult]);
