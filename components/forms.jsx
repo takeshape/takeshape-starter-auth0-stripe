@@ -21,7 +21,8 @@ export const CustomerForm = ({ customer }) => {
   }, [customer, reset]);
 
   const countries = useCountries();
-  const watchCountry = watch('address.country');
+  const watchCountry = watch('address.country', customer?.address?.country);
+  const selectedCountry = watchCountry && countries?.find((c) => c.iso2 === watchCountry);
 
   return (
     <>
@@ -56,17 +57,17 @@ export const CustomerForm = ({ customer }) => {
             </Box>
             <Box>
               <Label htmlFor="address.state">State</Label>
-              <Select {...register('address.state')} mb={3}>
-                {countries && watchCountry
-                  ? countries
-                      .find((c) => c.iso2 === watchCountry)
-                      .states.map(({ name, state_code }) => (
+              {countries?.length ? (
+                <Select {...register('address.state')} mb={3}>
+                  {selectedCountry
+                    ? selectedCountry.states.map(({ name, state_code }) => (
                         <option key={state_code} value={state_code}>
                           {name}
                         </option>
                       ))
-                  : null}
-              </Select>
+                    : null}
+                </Select>
+              ) : null}
             </Box>
           </Grid>
 
