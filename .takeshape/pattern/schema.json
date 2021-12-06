@@ -186,10 +186,11 @@
             {
               "path": "$",
               "mapping": [
+                ["get", { "path": "$resolvers.payments.data" }],
                 [
-                  "expressionEval",
+                  "filter",
                   {
-                    "expression": "filter(['status', 'succeeded'], $resolvers.payments.data)"
+                    "predicate": ["status", "succeeded"]
                   }
                 ]
               ]
