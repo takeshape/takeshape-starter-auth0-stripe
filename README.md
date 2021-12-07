@@ -42,7 +42,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
    - Go to the API tab, then to API Keys.
    - Create a new API Key, name it whatever you like, `starter` would be fine.
-   - Give it `Read` permissions.
+   - Give it the `anonymous` role.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
 6. Now go back to your Auth0 account where you'll create an API for your application.
