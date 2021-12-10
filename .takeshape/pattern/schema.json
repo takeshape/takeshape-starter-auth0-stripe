@@ -581,9 +581,15 @@
                   "path": "cancel_url",
                   "mapping": [
                     [
-                      "expressionEval",
+                      "get",
                       {
-                        "expression": "format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=canceled', $args.redirectUrl)"
+                        "path": "$args.redirectUrl"
+                      }
+                    ],
+                    [
+                      "format",
+                      {
+                        "template": "%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=canceled"
                       }
                     ]
                   ]
@@ -592,9 +598,15 @@
                   "path": "success_url",
                   "mapping": [
                     [
-                      "expressionEval",
+                      "get",
                       {
-                        "expression": "format('%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=success', $args.redirectUrl)"
+                        "path": "$args.redirectUrl"
+                      }
+                    ],
+                    [
+                      "format",
+                      {
+                        "template": "%s?stripe_checkout_session_id={CHECKOUT_SESSION_ID}&stripe_checkout_action=success"
                       }
                     ]
                   ]
@@ -793,5 +805,5 @@
       }
     }
   },
-  "schemaVersion": "3.10.0"
+  "schemaVersion": "3.11.0"
 }
