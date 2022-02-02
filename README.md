@@ -7,6 +7,10 @@ Stripe GraphQL API.
 This is a [Next.js](https://nextjs.org/) project bootstrapped with
 [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Screenshot
+
+<img width="991" alt="Screen Shot 2022-02-02 at 16 43 39" src="https://user-images.githubusercontent.com/277401/152242353-7fb5dd47-8e61-47bd-9ea6-1ed2e9c03bde.png">
+
 ## Instructions
 
 ### Auth0
