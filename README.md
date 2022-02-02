@@ -23,7 +23,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
      - Allowed Logout URLs: http://localhost:3000/
      - Allowed Web Origins: http://localhost:3000/
      - Allowed Origins (CORS): http://localhost:3000/
-   - Now go to the `Advanced` section, select the `Grants` tab, and allow the `authorization_code` grant.
+   - Now go to the `Advanced` section, select the `Grants` tab, and verify that `Authorization Code`, `Implicit` and
+     `Refresh Token` are all selected.
    - Scroll down to the very bottom of page and click **Save Changes**; the application doesn't automatically save
      itself!
 

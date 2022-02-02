@@ -32,7 +32,7 @@ function AccountPage() {
 
         {!profileData && <Spinner />}
 
-        {profileData && <CustomerForm customer={profileData.profile.customer} />}
+        {profileData && <CustomerForm customer={profileData.profile?.customer} />}
       </Section>
 
       {profileError && (
