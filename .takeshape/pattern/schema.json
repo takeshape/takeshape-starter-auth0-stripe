@@ -692,7 +692,7 @@
       "name": "StripeProductWithPrices",
       "title": "StripeProductWithPrices",
       "schema": {
-        "allOf": [
+        "extends": [
           { "@ref": "stripe:Product" },
           {
             "type": "object",
@@ -708,32 +708,29 @@
       "name": "Stripe_Price",
       "title": "Stripe_Price",
       "schema": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "active": { "type": "boolean" },
-          "billing_scheme": { "type": "string" },
-          "created": { "type": "number" },
-          "livemode": { "type": "boolean" },
-          "currency": { "type": "string" },
-          "type": { "type": "string" },
-          "unit_amount": { "type": "number" },
-          "recurring": { "@ref": "stripe:Recurring" },
-          "product": {
-            "description": "The Stripe product associated with this subscription.",
-            "title": "Stripe Product",
-            "@ref": "stripe:Product",
-            "@resolver": {
-              "name": "rest:get",
-              "service": "stripe",
-              "options": { "ignoreErrors": true },
-              "path": {
-                "ops": [{ "path": "product", "mapping": "$source.product" }],
-                "serialize": { "template": "/v1/products/{product}" }
+        "extends": [
+          { "@ref": "stripe:Price" },
+          {
+            "type": "object",
+            "properties": {
+              "recurring": { "@ref": "stripe:Recurring" },
+              "product": {
+                "description": "The Stripe product associated with this subscription.",
+                "title": "Stripe Product",
+                "@ref": "stripe:Product",
+                "@resolver": {
+                  "name": "rest:get",
+                  "service": "stripe",
+                  "options": { "ignoreErrors": true },
+                  "path": {
+                    "ops": [{ "path": "product", "mapping": "$source.product" }],
+                    "serialize": { "template": "/v1/products/{product}" }
+                  }
+                }
               }
             }
           }
-        }
+        ]
       }
     },
     "Profile": {
@@ -805,5 +802,5 @@
       }
     }
   },
-  "schemaVersion": "3.13.0"
+  "schemaVersion": "3.15.0"
 }
