@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
-import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid, Image } from 'theme-ui';
+import { Flex, Box, Divider, Heading, Close, IconButton, Button, Text, Grid, Image } from '@theme-ui/components';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useMutation } from '@apollo/client';
 import { formatPrice } from 'lib/utils/text';
@@ -47,7 +47,17 @@ const CartItem = ({ product, onChangeQuantity, onClickRemove }) => {
     <Box variant="cart.item">
       <Grid variant="cart.itemGrid" gap={2} columns={[3, '0.5fr 2fr 0.5fr']}>
         <Box>
-          {product.images?.[0] ? <Image alt={`Image of ${product.name}`} src={product.images?.[0]} width={100} height={100} objectFit="fill" /> : ''}
+          {product.images?.[0] ? (
+            <Image
+              alt={`Image of ${product.name}`}
+              src={product.images?.[0]}
+              width={100}
+              height={100}
+              objectFit="fill"
+            />
+          ) : (
+            ''
+          )}
         </Box>
         <Box>
           <div>

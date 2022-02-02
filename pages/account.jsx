@@ -1,4 +1,4 @@
-import { Themed, Heading, Divider, Alert, Container, Spinner } from 'theme-ui';
+import { Heading, Divider, Alert, Container, Spinner } from '@theme-ui/components';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { Page, Section } from 'components/layout';
 import { ProfileForm, CustomerForm } from 'components/forms';
@@ -14,11 +14,11 @@ function AccountPage() {
 
   return (
     <Page>
-      <Themed.h1>Account</Themed.h1>
+      <Heading as="h1">Account</Heading>
       <Divider />
 
       <Section>
-        <Heading>TakeShape Profile</Heading>
+        <Heading variant="smallHeading">TakeShape Profile</Heading>
         <Divider />
 
         {!profileData && <Spinner />}
@@ -27,7 +27,7 @@ function AccountPage() {
       </Section>
 
       <Section>
-        <Heading>Stripe Customer</Heading>
+        <Heading variant="smallHeading">Stripe Customer</Heading>
         <Divider />
 
         {!profileData && <Spinner />}

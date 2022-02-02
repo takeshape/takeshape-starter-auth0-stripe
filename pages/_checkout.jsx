@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Container, Spinner } from 'theme-ui';
+import { Container, Spinner } from '@theme-ui/components';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { useCart } from 'lib/cart';
 import { useApolloClient } from '@apollo/client';

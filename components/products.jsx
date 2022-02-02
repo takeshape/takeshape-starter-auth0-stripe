@@ -1,5 +1,17 @@
 import { useState } from 'react';
-import { Grid, Box, Card, Heading, Paragraph, Button, Select, Label, Radio, AspectImage, Flex } from 'theme-ui';
+import {
+  Grid,
+  Box,
+  Card,
+  Heading,
+  Paragraph,
+  Button,
+  Select,
+  Label,
+  Radio,
+  AspectImage,
+  Flex
+} from '@theme-ui/components';
 import orderBy from 'lodash/orderBy';
 import { range } from 'lib/utils/range';
 import { pluralizeText, formatPrice } from 'lib/utils/text';

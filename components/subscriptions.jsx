@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Grid, Box, Card, Heading, Paragraph, Text, Alert } from 'theme-ui';
+import { Grid, Box, Card, Heading, Paragraph, Text, Alert } from '@theme-ui/components';
 import { useMutation } from '@apollo/client';
 import { formatPrice } from 'lib/utils/text';
 import { DeleteMySubscription, GetMySubscriptions } from 'lib/queries';

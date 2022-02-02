@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Alert, Close } from 'theme-ui';
+import { Box, Alert, Close } from '@theme-ui/components';
 import { useCart } from 'lib/cart';
 
 const Notifications = () => {

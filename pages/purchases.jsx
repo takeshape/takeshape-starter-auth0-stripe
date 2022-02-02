@@ -1,5 +1,5 @@
 import { withAuthenticationRequired } from '@auth0/auth0-react';
-import { Themed, Heading, Divider, Alert, Spinner, Container } from 'theme-ui';
+import { Heading, Divider, Alert, Spinner, Container } from '@theme-ui/components';
 import { Page, Section } from 'components/layout';
 import { SubscriptionList } from 'components/subscriptions';
 import { PaymentList } from 'components/payments';
@@ -15,11 +15,13 @@ function PurchasesPage() {
 
   return (
     <Page>
-      <Themed.h1>Purchases</Themed.h1>
+      <Heading as="h1">Purchases</Heading>
       <Divider />
 
       <Section>
-        <Heading id="subscriptions">Active Subscriptions</Heading>
+        <Heading variant="smallHeading" id="subscriptions">
+          Active Subscriptions
+        </Heading>
         <Divider />
 
         {!subscriptionsData && <Spinner />}
@@ -35,7 +37,9 @@ function PurchasesPage() {
       </Section>
 
       <Section>
-        <Heading id="payments">Past Payments</Heading>
+        <Heading variant="smallHeading" id="payments">
+          Past Payments
+        </Heading>
         <Divider />
 
         {!paymentsData && <Spinner />}

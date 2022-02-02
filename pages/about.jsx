@@ -1,4 +1,4 @@
-import { Divider, Heading, Paragraph, Themed, Link } from 'theme-ui';
+import { Divider, Heading, Paragraph, Link } from '@theme-ui/components';
 import { Page, Section } from 'components/layout';
 
 const dependencies = [
@@ -42,7 +42,7 @@ const dependencies = [
 function AboutPage() {
   return (
     <Page>
-      <Themed.h1>About</Themed.h1>
+      <Heading as="h1">About</Heading>
       <Divider />
 
       <Section>
@@ -65,7 +65,7 @@ function AboutPage() {
       </Section>
 
       <Section>
-        <Heading>Key Dependencies</Heading>
+        <Heading variant="h3">Key Dependencies</Heading>
         <Divider />
         <ul
           sx={{
@@ -82,7 +82,9 @@ function AboutPage() {
                 mb: 4
               }}
             >
-              <Themed.h3
+              <Heading
+                variant="smallHeading"
+                as="h3"
                 sx={{
                   m: 0
                 }}
@@ -101,7 +103,7 @@ function AboutPage() {
                 >
                   {dependency.title}
                 </Link>
-              </Themed.h3>
+              </Heading>
               <Paragraph>{dependency.description}</Paragraph>
             </li>
           ))}

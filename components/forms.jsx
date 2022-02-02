@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Themed, Flex, Select } from 'theme-ui';
+import { Label, Input, Textarea, Grid, Box, Progress, Avatar, Heading, Flex, Select } from '@theme-ui/components';
 import useCountries from 'lib/countries/use-countries';
 import { useUpload } from 'lib/hooks/use-upload';
 import { buildImageUrl } from 'lib/utils/images';
@@ -138,7 +138,7 @@ const ProfileAvatarUploadForm = ({ profile }) => {
 
   return (
     <Flex sx={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-      <Themed.h4>Avatar</Themed.h4>
+      <Heading variant="h5">Avatar</Heading>
       <Box sx={{ textAlign: 'center' }}>
         {profile?.avatar ? (
           <Avatar src={buildImageUrl(profile.avatar, { h: 400, w: 400 })} sx={{ objectFit: 'cover' }} />

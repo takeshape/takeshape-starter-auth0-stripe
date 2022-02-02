@@ -1,4 +1,4 @@
-import { Themed, Divider, Alert, Spinner, Container } from 'theme-ui';
+import { Heading, Divider, Alert, Spinner, Container } from '@theme-ui/components';
 import { Page } from 'components/layout';
 import { ProductList } from 'components/products';
 import { takeshapeApiUrl, takeshapeApiKey } from 'lib/config';
@@ -8,7 +8,7 @@ import { createApolloClient } from 'lib/apollo';
 function HomePage({ products, error }) {
   return (
     <Page>
-      <Themed.h1>Products</Themed.h1>
+      <Heading as="h1">Products</Heading>
       <Divider />
 
       {!products && (

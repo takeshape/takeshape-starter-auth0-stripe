@@ -1,4 +1,4 @@
-import { Container, Flex, NavLink, Box, Text } from 'theme-ui';
+import { Container, Flex, NavLink, Box, Text } from '@theme-ui/components';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useAuth0 } from '@auth0/auth0-react';

@@ -1,4 +1,4 @@
-import { Button, Flex, Text, Spinner } from 'theme-ui';
+import { Button, Flex, Text, Spinner } from '@theme-ui/components';
 
 export const SubmitButton = ({ isSubmitting, text, ...props }) => {
   return (
