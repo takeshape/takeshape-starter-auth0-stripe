@@ -23,6 +23,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
      - Allowed Logout URLs: http://localhost:3000/
      - Allowed Web Origins: http://localhost:3000/
      - Allowed Origins (CORS): http://localhost:3000/
+   - Now go to the `Advanced` section, select the `Grants` tab, and allow the `authorization_code` grant.
    - Scroll down to the very bottom of page and click **Save Changes**; the application doesn't automatically save
      itself!
 
@@ -40,7 +41,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 5. Set up your TakeShape API Key for making public queries. You'll need to use this for getting a list of products
    available to purchase.
 
-   - Go to the API tab, then to API Keys.
+   - Go to the `Settings` tab, then to `API Keys`.
    - Create a new API Key, name it whatever you like, `starter` would be fine.
    - Give it the `anonymous` role.
    - Copy the key and save it somewhere. This is the only time you'll see it.
@@ -68,7 +69,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 3. In TakeShape, set up your Stripe service.
 
-   - Select **Stripe** from the list of services on the Schema page.
+   - Select **Stripe** from the list of services on the `API` tab, in the `Patterns & Services` pane.
    - Enter the Stripe secret key into the **Authentication → API Key** field.
    - **Save** the service.
 
@@ -83,8 +84,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 5. Give your Stripe account a name. This is required for Stripe Checkout.
 
-   - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account).
-   - Enter an Account Name where indicated.
+   - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account). In the Stripe UI, click the gear
+     icon in the upper right. Then in the lower section of the page, "Business Settings," you'll see the
+     `Account details` link.
+   - Enter an `Account name` where indicated.
    - **Save** the settings.
 
 ### Running the Starter
