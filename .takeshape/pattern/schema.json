@@ -1,7 +1,7 @@
 {
   "apiVersion": "2",
-  "projectId": "79b5254d-5bc3-4034-8b05-e9c2f097de5a",
-  "dataKey": "AQIDAHi9nATJb1LYgj5u7ShOGp43y2H6TuckRKGDlwTU4b6ryQHpD1ExP5EeUSOHKV9LG+ofAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUCghZNs1AGoyxZ8MAgEQgDuRWxn8sl1YiM0CkUifGRkgeXzEU0/2IDozZfB4uuketCRxaEqcxBzh6l7lrIJAKkPOQGTYQD32doiYog==",
+  "projectId": "",
+  "dataKey": "",
   "version": 163,
   "created": "2021-06-08T13:12:26.923Z",
   "updated": "2021-12-02T22:33:34.205Z",
@@ -45,19 +45,48 @@
       }
     }
   },
+  "indexedShapes": {
+    "Stripe_Product": {
+      "queries": {
+        "list": {
+          "name": "getStripeProducts",
+          "pagination": {
+            "type": "cursor",
+            "cursorPath": "data[(@.length-1)].id",
+            "itemsToIndexPath": "data",
+            "hasMorePath": "has_more",
+            "cursorArg": "starting_after",
+            "pageSizeArg": "limit"
+          }
+        }
+      },
+      "triggers": [{"type": "schedule", "query": "list", "interval": 1640}]
+    }
+  },
   "queries": {
+    "getIndexedProductList": {
+      "shape": "PaginatedList<Stripe_Product>",
+      "resolver": {
+        "shapeName": "Stripe_Product",
+        "name": "takeshape:queryApiIndex",
+        "service": "takeshape:local",
+        "options": {"indexedShape": "Stripe_Product"}
+      },
+      "description": "Fetch Stripe products from the API Index.",
+      "args": "TSListArgs<Stripe_Product>"
+    },
     "getMyProfile": {
       "shape": "Profile",
       "resolver": {
         "name": "takeshape:find",
         "service": "takeshape:local",
         "shapeName": "Profile",
-        "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+        "args": {"ops": [{"path": "where.id.eq", "mapping": "$claims.sub"}]}
       },
       "description": "Get my profile"
     },
     "getMySubscriptions": {
-      "shape": { "type": "array", "items": { "@ref": "stripe:Subscription" } },
+      "shape": {"type": "array", "items": {"@ref": "stripe:Subscription"}},
       "resolver": {
         "compose": [
           {
@@ -66,7 +95,7 @@
             "name": "takeshape:find",
             "service": "takeshape:local",
             "shapeName": "Profile",
-            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+            "args": {"ops": [{"path": "where.id.eq", "mapping": "$claims.sub"}]}
           },
           {
             "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
@@ -80,24 +109,24 @@
                   "path": "customer",
                   "mapping": "$resolvers.profile.stripeCustomerId"
                 },
-                { "path": "expand", "mapping": "$args.expand" }
+                {"path": "expand", "mapping": "$args.expand"}
               ],
-              "serialize": { "paths": { "expand": { "style": "deepObject" } } }
+              "serialize": {"paths": {"expand": {"style": "deepObject"}}}
             }
           }
         ],
         "results": {
-          "ops": [{ "path": "$", "mapping": "$resolvers.subscriptions.data" }]
+          "ops": [{"path": "$", "mapping": "$resolvers.subscriptions.data"}]
         }
       },
       "description": "Get my subscriptions",
       "args": {
         "type": "object",
-        "properties": { "expand": { "type": "array", "items": { "type": "string" } } }
+        "properties": {"expand": {"type": "array", "items": {"type": "string"}}}
       }
     },
     "getMyInvoices": {
-      "shape": { "type": "array", "items": { "@ref": "stripe:Invoice" } },
+      "shape": {"type": "array", "items": {"@ref": "stripe:Invoice"}},
       "resolver": {
         "compose": [
           {
@@ -106,7 +135,7 @@
             "name": "takeshape:find",
             "service": "takeshape:local",
             "shapeName": "Profile",
-            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+            "args": {"ops": [{"path": "where.id.eq", "mapping": "$claims.sub"}]}
           },
           {
             "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
@@ -116,39 +145,39 @@
             "path": "/v1/invoices",
             "searchParams": {
               "ops": [
-                { "path": "$", "mapping": "$args" },
+                {"path": "$", "mapping": "$args"},
                 {
                   "path": "customer",
                   "mapping": "$resolvers.profile.stripeCustomerId"
                 }
               ],
               "serialize": {
-                "defaults": { "style": "deepObject", "explode": true }
+                "defaults": {"style": "deepObject", "explode": true}
               }
             }
           }
         ],
         "results": {
-          "ops": [{ "path": "$", "mapping": "$resolvers.invoices.data" }]
+          "ops": [{"path": "$", "mapping": "$resolvers.invoices.data"}]
         }
       },
       "description": "Get my invoices",
       "args": {
         "type": "object",
         "properties": {
-          "expand": { "type": "array", "items": { "type": "string" } },
+          "expand": {"type": "array", "items": {"type": "string"}},
           "status": {
             "type": "string",
             "enum": ["draft", "open", "paid", "uncollectable", "void"]
           },
-          "limit": { "type": "number" },
+          "limit": {"type": "number"},
           "created": {},
-          "startingAfter": { "type": "string" }
+          "startingAfter": {"type": "string"}
         }
       }
     },
     "getMyPayments": {
-      "shape": { "type": "array", "items": { "@ref": "stripe:PaymentIntent" } },
+      "shape": {"type": "array", "items": {"@ref": "stripe:PaymentIntent"}},
       "resolver": {
         "compose": [
           {
@@ -157,7 +186,7 @@
             "name": "takeshape:find",
             "service": "takeshape:local",
             "shapeName": "Profile",
-            "args": { "ops": [{ "path": "where.id.eq", "mapping": "$claims.sub" }] }
+            "args": {"ops": [{"path": "where.id.eq", "mapping": "$claims.sub"}]}
           },
           {
             "if": "!isEmpty($resolvers.profile.stripeCustomerId)",
@@ -167,16 +196,16 @@
             "path": "/v1/payment_intents",
             "searchParams": {
               "ops": [
-                { "path": "$", "mapping": "$args" },
-                { "path": "starting_after", "mapping": "$args.startingAfter" },
-                { "path": "ending_before", "mapping": "$args.endingBefore" },
+                {"path": "$", "mapping": "$args"},
+                {"path": "starting_after", "mapping": "$args.startingAfter"},
+                {"path": "ending_before", "mapping": "$args.endingBefore"},
                 {
                   "path": "customer",
                   "mapping": "$resolvers.profile.stripeCustomerId"
                 }
               ],
               "serialize": {
-                "defaults": { "style": "deepObject", "explode": true }
+                "defaults": {"style": "deepObject", "explode": true}
               }
             }
           }
@@ -186,13 +215,8 @@
             {
               "path": "$",
               "mapping": [
-                ["get", { "path": "$resolvers.payments.data" }],
-                [
-                  "filter",
-                  {
-                    "predicate": ["status", "succeeded"]
-                  }
-                ]
+                ["get", {"path": "$resolvers.payments.data"}],
+                ["filter", {"predicate": ["status", "succeeded"]}]
               ]
             }
           ]
@@ -202,53 +226,21 @@
       "args": {
         "type": "object",
         "properties": {
-          "expand": { "type": "array", "items": { "type": "string" } },
-          "limit": { "type": "number" },
+          "expand": {"type": "array", "items": {"type": "string"}},
+          "limit": {"type": "number"},
           "created": {},
-          "startingAfter": { "type": "string" },
-          "endingBefore": { "type": "string" }
+          "startingAfter": {"type": "string"},
+          "endingBefore": {"type": "string"}
         }
       }
     },
     "getStripeProducts": {
-      "shape": {
-        "type": "array",
-        "items": { "@ref": "takeshape:local:StripeProductWithPrices" }
-      },
+      "shape": "Stripe_ListProductsResponse",
       "resolver": {
-        "results": {
-          "ops": [
-            {
-              "path": "$",
-              "mapping": [
-                [
-                  "expressionEval",
-                  {
-                    "expression": "map(compose(set('prices', placeholder, newObject()), get(placeholder, groupBy('product', $resolvers.prices.data)), get('id')), $resolvers.products.data)"
-                  }
-                ],
-                ["getMultiple", { "paths": ["$previousDirective", "$resolvers.products.data"] }],
-                ["zipAndMerge", {}]
-              ]
-            }
-          ]
-        },
-        "compose": [
-          {
-            "id": "products",
-            "name": "rest:get",
-            "service": "stripe",
-            "path": "/v1/products",
-            "searchParams": { "ops": [{ "path": "active", "value": "true" }] }
-          },
-          {
-            "id": "prices",
-            "name": "rest:get",
-            "service": "stripe",
-            "path": "/v1/prices",
-            "searchParams": { "ops": [{ "path": "active", "value": "true" }] }
-          }
-        ]
+        "name": "rest:get",
+        "service": "stripe",
+        "path": "/v1/products",
+        "searchParams": {"ops": [{"path": "active", "value": "true"}]}
       },
       "description": "Get Stripe products."
     },
@@ -687,17 +679,34 @@
     }
   },
   "shapes": {
-    "StripeProductWithPrices": {
-      "id": "StripeProductWithPrices",
-      "name": "StripeProductWithPrices",
-      "title": "StripeProductWithPrices",
+    "Stripe_Product": {
+      "id": "Stripe_Product",
+      "name": "Stripe_Product",
+      "title": "Stripe_Product",
       "schema": {
         "extends": [
-          { "@ref": "stripe:Product" },
+          {"@ref": "stripe:Product"},
           {
             "type": "object",
             "properties": {
-              "prices": { "type": "array", "items": { "@ref": "stripe:Price" } }
+              "prices": {
+                "type": "array",
+                "items": {"@ref": "stripe:Price"},
+                "@resolver": {
+                  "name": "rest:get",
+                  "service": "stripe",
+                  "path": "/v1/prices",
+                  "searchParams": {
+                    "ops": [
+                      {"path": "active", "value": "true"},
+                      {"path": "product", "mapping": "$source.id"}
+                    ]
+                  },
+                  "results": {
+                    "ops": [{"path": "$", "mapping": "$finalResolver.data"}]
+                  }
+                }
+              }
             }
           }
         ]
@@ -709,11 +718,11 @@
       "title": "Stripe_Price",
       "schema": {
         "extends": [
-          { "@ref": "stripe:Price" },
+          {"@ref": "stripe:Price"},
           {
             "type": "object",
             "properties": {
-              "recurring": { "@ref": "stripe:Recurring" },
+              "recurring": {"@ref": "stripe:Recurring"},
               "product": {
                 "description": "The Stripe product associated with this subscription.",
                 "title": "Stripe Product",
@@ -721,10 +730,10 @@
                 "@resolver": {
                   "name": "rest:get",
                   "service": "stripe",
-                  "options": { "ignoreErrors": true },
+                  "options": {"ignoreErrors": true},
                   "path": {
-                    "ops": [{ "path": "product", "mapping": "$source.product" }],
-                    "serialize": { "template": "/v1/products/{product}" }
+                    "ops": [{"path": "product", "mapping": "$source.product"}],
+                    "serialize": {"template": "/v1/products/{product}"}
                   }
                 }
               }
@@ -738,7 +747,7 @@
       "name": "Profile",
       "title": "Profile",
       "workflow": "default",
-      "model": { "type": "multiple" },
+      "model": {"type": "multiple"},
       "schema": {
         "type": "object",
         "properties": {
@@ -773,7 +782,7 @@
           "avatar": {
             "description": "",
             "$ref": "#/shapes/TSRelationship/schema",
-            "@relationship": { "shapeIds": ["ASSET"] },
+            "@relationship": {"shapeIds": ["ASSET"]},
             "title": "Avatar",
             "@mapping": "takeshape:local:Profile.k0Ha4O7oV"
           },
@@ -791,10 +800,12 @@
             "@resolver": {
               "name": "rest:get",
               "service": "stripe",
-              "options": { "ignoreErrors": true },
+              "options": {"ignoreErrors": true},
               "path": {
-                "ops": [{ "path": "customer", "mapping": "$source.stripeCustomerId" }],
-                "serialize": { "template": "/v1/customers/{customer}" }
+                "ops": [
+                  {"path": "customer", "mapping": "$source.stripeCustomerId"}
+                ],
+                "serialize": {"template": "/v1/customers/{customer}"}
               }
             }
           }

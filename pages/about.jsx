@@ -47,8 +47,10 @@ function AboutPage() {
 
       <Section>
         <Paragraph>
-          This project demonstrates using <Link to="https://auth0.com">Auth0</Link> to manage a user‘s account and make
-          purchases through <Link to="https://stripe.com">Stripe</Link>.
+          This project demonstrates using our{' '}
+          <Link to="https://app.takeshape.io/docs/schema/api-indexing-guide">API Indexing</Link> with{' '}
+          <Link to="https://auth0.com">Auth0</Link> to manage a user‘s account and make purchases through{' '}
+          <Link to="https://stripe.com">Stripe</Link>.
         </Paragraph>
 
         <Paragraph>

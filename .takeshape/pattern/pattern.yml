@@ -1,5 +1,5 @@
-name: Auth0 + Stripe Starter
-description: 'This project pattern demonstrates how to use TakeShape with Auth0 and Stripe to provide user accounts for managing and purchasing Stripe subscriptions.'
+name: API Indexing with Auth0 + Stripe Starter
+description: 'This project pattern demonstrates our API Indexing with Auth0 and Stripe.'
 icon: dollar-sign
 color: '#95bf46'
 categories:
@@ -7,3 +7,4 @@ categories:
   - subscriptions
   - ecommerce
   - services
+  - api indexing
