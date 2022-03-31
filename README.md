@@ -75,44 +75,59 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
    - Go to [Developers → API Keys](https://dashboard.stripe.com/test/apikeys)
    - You are going to need your **publishable key** and your **secret key**.
 
-3. In TakeShape, set up your Stripe service.
+3. (Optional) Take note of your Stripe webhook endpoint secret.
 
-   - Select **Stripe** from the list of services on the `API` tab, in the `Patterns & Services` pane.
-   - Enter the Stripe secret key into the **Authentication → API Key** field.
-   - **Save** the service.
-
-4. Create your business model in Stripe.
-
-   - Go to [Products → Add Product](https://dashboard.stripe.com/test/products/create).
-   - Provide a name, description and image for your product.
-   - Use the **standard pricing** pricing model, provide a **recurring** or **one time** price, then **save** the
-     product. _Note: this starter supports a single active one time price, and multiple recurring prices per product._
-   - Do this a few time to add several products. You can experiment with multiple / different pricing options, but
-     please stick to the **Standard pricing** model.
-
-5. Give your Stripe account a name. This is required for Stripe Checkout.
-
-   - Go to [Settings → Account Details](https://dashboard.stripe.com/settings/account). In the Stripe UI, click the gear
-     icon in the upper right. Then in the lower section of the page, "Business Settings," you'll see the
-     `Account details` link.
-   - Enter an `Account name` where indicated.
-   - **Save** the settings.
-
-6. Navigate to your TakeShape project dashboard and select the API tab. Open your schema by selecting Schema and
-   selecting the JSON tab.
-
-<img width="991" alt="The API tab." src="./images/api-tab.png">
-
-2. Take note of your Stripe API keys.
-
-   - Go to [Developers → API Keys](https://dashboard.stripe.com/test/apikeys)
-   - You are going to need your **publishable key** and your **secret key**.
+   - Go to [Developers → Webhooks](https://dashboard.stripe.com/test/webhooks).
+   - Click Add an Endpoint, then enter a publicly accessible HTTP endpoint that is configured to receive Stripe webhooks. Follow [these instructions from Stripe](https://stripe.com/docs/webhooks#webhooks-summary) for more information.
+   - Click **Select events** and input `product` into the search field. You should see checkboxes for `product.created`, `product.updated` and `product.deleted`. Check all three and select **Add events**.
+   - Click **Add endpoint**, and you'll be taken to the webhook endpoint's page. Here you'll see **Signing secret**, with text under it that says **Reveal**. Click **Reveal**, and copy this secret. You'll need it to configure Stripe webhooks with your TakeShape project.
 
 3. In TakeShape, set up your Stripe service.
 
    - Select **Stripe** from the list of services on the `API` tab, in the `Patterns & Services` pane.
    - Enter the Stripe secret key into the **Authentication → API Key** field.
+   - (Optional) Enter your Stripe webhook endpoint secret in the **Webhook Secret** field.
    - **Save** the service.
+
+4. Set up API Indexing
+
+   - After saving your service, you'll be shown a popup modal with a list of all available queries and mutations you can import into your project. Select "Skip".
+   - Next, you should see a snackbar notification at the bottom of your screen that will first say "Started indexing Stripe_Product," then says "Finished indexing Stripe_Product (x successful, y failed)" with x and y representing the number of products successfully and unsuccessfully indexed.
+
+   ![Indexing snackbar](./images/finished-indexing.png)
+
+   - If you do not see this snackbar, you can re-trigger Indexing by clicking on Stripe in your list of services on the left. You will be taken to the service page, where you can click the **Reindex Data** button as shown below.
+
+   ![Navigating to the Stripe service page](./images/nav-to-stripe.png)
+
+   ![Reindexing button](./images/reindex.png)
+
+   - (Optional) To configure your webhooks, navigate to the API tab and click the JSON tab in the workbench as shown below.
+
+      ![Navigating to the JSON schema](./images/nav-to-json.png)
+
+      - In your project's JSON schema, you'll find a root-level `indexedShapes` object. This is where your API indexing is configured. To trigger indexing whenever a webhook event fires, add a new object to your `triggers` array as shown below:
+      ```
+      {
+         "query": "list",
+         "type": "webhook",
+         "service": "stripe",
+         "events": ["product.updated", "product.created", "product.deleted"]
+      }
+      ```
+      - Your triggers array should look like this if done right:
+      ```
+      "triggers": [
+         {"type": "schedule", "query": "list", "interval": 1640},
+         {
+            "query": "list",
+            "type": "webhook",
+            "service": "stripe",
+            "events": ["product.updated", "product.created", "product.deleted"]
+         }
+      ]
+      ```
+      - Deploy your schema changes by clicking the **Deploy** button.
 
 4. Create your business model in Stripe.
 

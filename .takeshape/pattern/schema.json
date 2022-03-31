@@ -60,7 +60,13 @@
           }
         }
       },
-      "triggers": [{"type": "schedule", "query": "list", "interval": 1640}]
+      "triggers": [
+        {
+          "type": "schedule",
+          "query": "list",
+          "interval": 1440
+        }
+      ]
     }
   },
   "queries": {
