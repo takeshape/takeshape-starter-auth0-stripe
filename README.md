@@ -1,4 +1,4 @@
-# TakeShape API Indexing Starter: Auth0 + Stripe
+# TakeShape Starter: Auth0 + Stripe
 
 TakeShape's API Indexing is not only useful as a fallback when external services go down, but also as a means of reducing overall requests to those services.
 
@@ -37,7 +37,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 3. Create a TakeShape project using the pattern in this repo. This button will deploy the project for you:
 
-   - <a href="https://app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/takeshape-starter-auth0-stripe/tree/add-api-indexing/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://camo.githubusercontent.com/1b580e3ce353d235bde0f376ca35b0fb26d685f3750a3013ae4b225dd3aaf344/68747470733a2f2f696d616765732e74616b6573686170652e696f2f32636363633832352d373062652d343331632d396261302d3130616233386563643361372f6465762f38653266376264612d306530382d346564652d613534362d3664663539626536613862622f4465706c6f79253230746f25323054616b65536861706525343032782e706e673f6175746f3d666f726d6174253243636f6d7072657373" width="205" height="38" data-canonical-src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" style="max-width:100%;"></a>
+   - <a href="https://app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/takeshape-starter-auth0-stripe/tree/main/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://camo.githubusercontent.com/1b580e3ce353d235bde0f376ca35b0fb26d685f3750a3013ae4b225dd3aaf344/68747470733a2f2f696d616765732e74616b6573686170652e696f2f32636363633832352d373062652d343331632d396261302d3130616233386563643361372f6465762f38653266376264612d306530382d346564652d613534362d3664663539626536613862622f4465706c6f79253230746f25323054616b65536861706525343032782e706e673f6175746f3d666f726d6174253243636f6d7072657373" width="205" height="38" data-canonical-src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" style="max-width:100%;"></a>
 
 4. With your project imported, you should see an Auth0 and a Stripe service on the dashboard.
 
@@ -51,7 +51,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
    - Go to the `Settings` tab, then to `API Keys`.
    - Create a new API Key and name it whatever you like, such as `starter`.
-   - Give it `read` permissions.
+   - Give it the `anonymous` role.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
 6. Now go back to your Auth0 account where you'll create an API for your application.
@@ -106,7 +106,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
       ![Navigating to the JSON schema](./images/nav-to-json.png)
 
-      - In your project's JSON schema, you'll find a root-level `indexedShapes` object. This is where your API indexing is configured. To trigger indexing whenever a webhook event fires, add a new object to your `triggers` array as shown below:
+      - In your project's JSON schema, you'll find a root-level `indexedShapes` object. This is where your API indexing is configured. Set up the `triggers` array as shown below to reindex your products whenever they change in Stripe. This uses the Stripe webhook you set up earlier.
       ```
       {
          "query": "list",
@@ -150,7 +150,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 1. Head over to your trusty terminal or tool of choice.
 
-   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-api-indexing-auth0-stripe`.
+   - Clone this repo with `git clone https://github.com/takeshape/takeshape-starter-auth0-stripe.git`.
    - `cd` into the folder that the cloning created.
    - Run `mv .env.local-example .env.local` to rename the environment variables file.
    - Run `npm install`.
