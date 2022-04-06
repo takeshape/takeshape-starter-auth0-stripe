@@ -2,7 +2,7 @@ import { Heading, Divider, Alert, Spinner, Container } from '@theme-ui/component
 import { Page } from 'components/layout';
 import { ProductList } from 'components/products';
 import { takeshapeApiUrl, takeshapeApiKey } from 'lib/config';
-import { GetStripeProducts } from 'lib/queries';
+import { GetIndexedStripeProducts } from 'lib/queries';
 import { createApolloClient } from 'lib/apollo';
 
 function HomePage({ products, error }) {
@@ -37,13 +37,13 @@ export async function getStaticProps() {
 
   try {
     const { data } = await client.query({
-      query: GetStripeProducts
+      query: GetIndexedStripeProducts
     });
 
     if (data.errors) {
       error = data.errors;
     } else {
-      products = data.products;
+      products = data.products.items;
     }
   } catch (err) {
     console.error(err);

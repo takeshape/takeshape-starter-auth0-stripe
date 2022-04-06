@@ -12,7 +12,7 @@
         Action: ['workflow:*']
       - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getMy*']
         Effect: 'Allow'
-        Action: ['graphql:execute']        
+        Action: ['graphql:execute']
       - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Mutation.upsertMyProfile']
         Effect: 'Allow'
         Action: ['graphql:execute']
@@ -40,7 +40,7 @@
 - name: anonymous
   permissions:
     Statement:
-      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getStripeProducts']
+      - Resource: ['ts:graphql:4a0614fc-9519-4dbe-976a-99622dc4fe37:Query.getIndexedProductList']
         Effect: 'Allow'
         Action: ['graphql:execute']
       - Resource: ['ts:shape:4a0614fc-9519-4dbe-976a-99622dc4fe37:Stripe*']

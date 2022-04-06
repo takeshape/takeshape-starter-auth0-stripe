@@ -1,11 +1,14 @@
-# TakeShape Starter Auth0 + Stripe
+# TakeShape Starter: Auth0 + Stripe
 
-The following is a guide to launch a Next.JS project that uses Auth0 for authentication, Stripe for purchasing
-subscription products, and TakeShape to store custom user profile information and generate an easy-to-use, user-scoped
-Stripe GraphQL API.
+TakeShape's API Indexing is not only useful as a fallback when external services go down, but also as a means of reducing overall requests to those services.
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with
-[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+In this starter, we will demonstrate how you can use TakeShape to combine what would be multiple Stripe API requests into a single TakeShape API request that doesn't query Stripe directly. In this starter's schema, API Indexing is configured to index Stripe products once every 72 hours, so none of the queries made from the frontend application will hit Stripe's servers.
+
+To learn more about API Indexing, [check out our guide on integrating it into your TakeShape projects](https://app.takeshape.io/docs/schema/api-indexing-guide/).
+
+The following is a guide to launch a Next.JS project that uses Auth0 for authentication, Stripe for purchasing subscription products, and TakeShape to store custom user profile information and generate an easy-to-use, user-scoped Stripe GraphQL API.
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Screenshot
 
@@ -47,7 +50,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    available to purchase.
 
    - Go to the `Settings` tab, then to `API Keys`.
-   - Create a new API Key, name it whatever you like, `starter` would be fine.
+   - Create a new API Key and name it whatever you like, such as `starter`.
    - Give it the `anonymous` role.
    - Copy the key and save it somewhere. This is the only time you'll see it.
 
@@ -72,11 +75,59 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
    - Go to [Developers → API Keys](https://dashboard.stripe.com/test/apikeys)
    - You are going to need your **publishable key** and your **secret key**.
 
+3. (Optional) Take note of your Stripe webhook endpoint secret.
+
+   - Go to [Developers → Webhooks](https://dashboard.stripe.com/test/webhooks).
+   - Click Add an Endpoint, then enter a publicly accessible HTTP endpoint that is configured to receive Stripe webhooks. Follow [these instructions from Stripe](https://stripe.com/docs/webhooks#webhooks-summary) for more information.
+   - Click **Select events** and input `product` into the search field. You should see checkboxes for `product.created`, `product.updated` and `product.deleted`. Check all three and select **Add events**.
+   - Click **Add endpoint**, and you'll be taken to the webhook endpoint's page. Here you'll see **Signing secret**, with text under it that says **Reveal**. Click **Reveal**, and copy this secret. You'll need it to configure Stripe webhooks with your TakeShape project.
+
 3. In TakeShape, set up your Stripe service.
 
    - Select **Stripe** from the list of services on the `API` tab, in the `Patterns & Services` pane.
    - Enter the Stripe secret key into the **Authentication → API Key** field.
+   - (Optional) Enter your Stripe webhook endpoint secret in the **Webhook Secret** field.
    - **Save** the service.
+
+4. Set up API Indexing
+
+   - After saving your service, you'll be shown a popup modal with a list of all available queries and mutations you can import into your project. Select "Skip".
+   - Next, you should see a snackbar notification at the bottom of your screen that will first say "Started indexing Stripe_Product," then says "Finished indexing Stripe_Product (x successful, y failed)" with x and y representing the number of products successfully and unsuccessfully indexed.
+
+   ![Indexing snackbar](./images/finished-indexing.png)
+
+   - If you do not see this snackbar, you can re-trigger Indexing by clicking on Stripe in your list of services on the left. You will be taken to the service page, where you can click the **Reindex Data** button as shown below.
+
+   ![Navigating to the Stripe service page](./images/nav-to-stripe.png)
+
+   ![Reindexing button](./images/reindex.png)
+
+   - (Optional) To configure your webhooks, navigate to the API tab and click the JSON tab in the workbench as shown below.
+
+      ![Navigating to the JSON schema](./images/nav-to-json.png)
+
+      - In your project's JSON schema, you'll find a root-level `indexedShapes` object. This is where your API indexing is configured. Set up the `triggers` array as shown below to reindex your products whenever they change in Stripe. This uses the Stripe webhook you set up earlier.
+      ```
+      {
+         "query": "list",
+         "type": "webhook",
+         "service": "stripe",
+         "events": ["product.updated", "product.created", "product.deleted"]
+      }
+      ```
+      - Your triggers array should look like this if done right:
+      ```
+      "triggers": [
+         {"type": "schedule", "query": "list", "interval": 1640},
+         {
+            "query": "list",
+            "type": "webhook",
+            "service": "stripe",
+            "events": ["product.updated", "product.created", "product.deleted"]
+         }
+      ]
+      ```
+      - Deploy your schema changes by clicking the **Deploy** button.
 
 4. Create your business model in Stripe.
 
